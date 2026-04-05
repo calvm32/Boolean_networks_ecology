@@ -99,7 +99,6 @@ def update_individuals(state, env, parameters):
     # --------------------
     # Influx (summer only)
     # --------------------
-
     if Te == 1:
         n_influx = len(NHi_NIn_next) + len(Ot_next) # active bats reproduce
         
@@ -108,11 +107,8 @@ def update_individuals(state, env, parameters):
             if rand.uniform(0, 1) <= p_influx:
                 births += 1
 
-        # newborns start as non-hibernating, non-infected
         NHi_NIn_next.extend([1]*births)
-
-        # extend De so indexing doesn't break
-        De_next.extend([0]*births)
+        De_next.extend([0]*births) # extend De so indexing doesn't break
 
     return {
         "Hi": Hi_next,
