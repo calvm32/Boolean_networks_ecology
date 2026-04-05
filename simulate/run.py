@@ -29,7 +29,7 @@ Ot_num = 0              # other bats
 water = 5000            # number of bats it would take to deplete water completely
 food = 5000             # number of bats it would take to deplete food completely
 
-time = 1000              # total days
+time = 120              # total days
 winter = 120            # length of winter season
 
 # ----------

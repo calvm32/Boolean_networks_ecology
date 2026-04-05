@@ -63,8 +63,9 @@ def plot_history(history, sample=[]):
     ax2.plot(t, history["Ot"], label="Other species (Ot)") if np.any(history["Ot"]) else None
 
     # if there's sample data, compare:
-    obs_times = sample[0]; obs_NHi_NIn = sample[1]
-    ax2.scatter(obs_times, obs_NHi_NIn, label="Observed total tricolored bats") if len(sample) != 0 else None
+    if len(sample) != 0:
+        obs_times = sample[0]; obs_NHi_NIn = sample[1]
+        ax2.scatter(obs_times, obs_NHi_NIn, label="Observed total tricolored bats")
 
     ax2.set_xlabel("Time step")
     ax2.set_ylabel("Population count")
