@@ -13,7 +13,7 @@ from mpi4py import MPI
 data = happy_jack_data()
 
 START_YEAR = data[0]["year"]
-SAMPLE_DAY = 140 # manually change
+SAMPLE_DAY = 140
 
 obs_times = []
 obs_NHi_NIn = []
@@ -36,8 +36,8 @@ def sample_params():
         "p_recover": 0, #rand.uniform(0.01, 0.8),
         "p_hibernate": 0.5,
         "p_influx": 0.0002,
-        "water": rand.uniform(10,1000),
-        "food": rand.uniform(10,1000),
+        "water": rand.uniform(100,500),
+        "food": rand.uniform(100,500),
         "winter": 120
     }
 
@@ -143,16 +143,7 @@ def simulate(initial_state, steps, parameters):
 
     return history
 
-
 def main():
-    comm = MPI.COMM_WORLD
-    rank = comm.Get_rank()
-    size = comm.Get_size()
-
-    # change seeds for even more searches
-    rand.seed(42 + rank)
-    np.random.seed(42 + rank)
-
     inhabitant_nodes = ["Hi", "NHi_NIn", "In", "Ot", "De"]
     resource_nodes = ["Wa", "Fo"]
     environment_nodes = ["Te", "Hu", "El", "Po", "Su", "Ba", "WNS"]
@@ -171,71 +162,47 @@ def main():
         "winter": winter
     }
 
+    best = None
+    best_loss = float("inf")
     local_best = None
     local_best_loss = float("inf")
 
-    # split work over nodes
-    n_iter = 5000
-    best_SIZE = 20
-    best = [] # best (loss, params)
+    n_iter = 10000
+    local_iters = n_iter // size
 
-    for k in range(n_iter // size):
-        i = k * size + rank # share same counting variable
-        # cheap and broad sweep first, expensive later
-        if i < n_iter // 2 or len(best) < best_SIZE:
-            params = sample_params()
-        else:
-            params2 = best[rand.randint(0, len(best)-1)][1]
-            #params1 = perturb(params2, ["p_awake", "p_hibernate", "p_influx"], 0.001)
-            params = perturb(params2, ["food", "water"], 0.1)
+    for i in range(local_iters):
+        params = sample_params()
+        L = loss(params)
 
-        L = loss(params, runs=2)
-
-        # refine
+        if L < best_loss:
+            best_loss = L
+            best = params
+            print("New best:", best_loss, best)
+        
         if L < local_best_loss:
-            L = loss(params, runs=8)
-
-        # update local best
-        if L < local_best_loss:
+            print(f"checked {i}")
             local_best_loss = L
             local_best = params
 
-        # update best group
-        if len(best) < best_SIZE:
-            best.append((L, params))
-        else:
-            worst = max(best, key=lambda x: x[0])
-            if L < worst[0]:
-                best.remove(worst)
-                best.append((L, params))
-
-        # share best lists
-        if i % 50 == 0:
-            all_best = comm.allgather(best)
-            
-            # flatten
-            merged = [item for sublist in all_best for item in sublist]
-            
-            # keep top K globally
-            merged.sort(key=lambda x: x[0])
-            best = merged[:best_SIZE]
+        print(f"[rank {rank}] iteration {i}, loss={L}")
 
     # gather results
     all_results = comm.gather((local_best_loss, local_best), root=0)
 
     if rank == 0:
-        # re-evaluate top candidates properly
-        best_candidates = [p for _, p in all_results]
+        best_loss = float("inf")
+        best_params = None
 
-        refined = [(loss(p, runs=10), p) for p in best_candidates]
-
-        best_loss, best_params = min(refined, key=lambda x: x[0])
+        for L, p in all_results:
+            if L < best_loss:
+                best_loss = L
+                best_params = p
 
         print("\nGLOBAL BEST:")
         print(best_loss, best_params)
 
-        best_sim = simulate(make_initial_state(), steps = 4500, parameters=best_params)
-        plot_history(best_sim, sample=[obs_times, obs_NHi_NIn])
+    best_sim = simulate(state0, steps = 4500, parameters=best)
+    plot_history(best_sim, sample=[obs_times, obs_NHi_NIn])
 
 
 if __name__ == "__main__":
@@ -257,12 +224,16 @@ GLOBAL BEST: 302.3636363636364 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0.26956
 GLOBAL BEST: 324.70454545454544 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0.08629881107887209, 'p_recover': 0, 'p_hibernate': 0.4521499873392658, 'p_influx': 0.00021204118330130886, 'water': 191.12299861491675, 'food': 58.85014554319323, 'winter': 120}
 GLOBAL BEST: 355.5909090909091 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0.053821586907585324, 'p_recover': 0, 'p_hibernate': 0.5757344511791069, 'p_influx': 0.00021559487804763611, 'water': 616.2438584507863, 'food': 60.8566143812073, 'winter': 120}
 GLOBAL BEST: 344.77272727272725 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0.14891365897212455, 'p_recover': 0, 'p_hibernate': 0.4777174885328155, 'p_influx': 0.0002050202186951778, 'water': 412.01349345275577, 'food': 898.6018997126824, 'winter': 120}
+New best: 317.9545454545455 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0.04345960635454034, 'p_recover': 0, 'p_hibernate': 0.5332425535631224, 'p_influx': 0.00024123902192027023, 'water': 869.4131416026416, 'food': 920.9508227333656, 'winter': 120}
+New best: 321.1363636363636 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0.11996019118621024, 'p_recover': 0, 'p_hibernate': 0.5358468255532175, 'p_influx': 0.00022540489216466345, 'water': 246.9063201140136, 'food': 386.8256630780159, 'winter': 120}
+New best: 308.72727272727275 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0.08, 'p_recover': 0, 'p_hibernate': 0.5, 'p_influx': 0.0002, 'water': 350.34867097205273, 'food': 324.50109337947646, 'winter': 120}
+New best: 308.04545454545456 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0.08, 'p_recover': 0, 'p_hibernate': 0.5, 'p_influx': 0.0002, 'water': 371.46665433373187, 'food': 164.4683879543965, 'winter': 120}
 
 RESULTS:
     - p_awake = 0.08
     - p_influx = 0.00021
     - p_hibernate = 0.5
     - food and water genuinely seem to have no effect here, 
-      although that rule currently doesn't affect the data points that we do have
+      but that makes sense given the data we're testing against
 
 """

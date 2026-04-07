@@ -164,7 +164,7 @@ def main():
 
     best = None
     best_loss = float("inf")
-    n_iter = 20
+    n_iter = 100
 
     for i in range(n_iter):
         params = sample_params()
@@ -203,6 +203,7 @@ GLOBAL BEST: 344.77272727272725 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0.1489
 New best: 317.9545454545455 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0.04345960635454034, 'p_recover': 0, 'p_hibernate': 0.5332425535631224, 'p_influx': 0.00024123902192027023, 'water': 869.4131416026416, 'food': 920.9508227333656, 'winter': 120}
 New best: 321.1363636363636 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0.11996019118621024, 'p_recover': 0, 'p_hibernate': 0.5358468255532175, 'p_influx': 0.00022540489216466345, 'water': 246.9063201140136, 'food': 386.8256630780159, 'winter': 120}
 New best: 308.72727272727275 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0.08, 'p_recover': 0, 'p_hibernate': 0.5, 'p_influx': 0.0002, 'water': 350.34867097205273, 'food': 324.50109337947646, 'winter': 120}
+New best: 308.04545454545456 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0.08, 'p_recover': 0, 'p_hibernate': 0.5, 'p_influx': 0.0002, 'water': 371.46665433373187, 'food': 164.4683879543965, 'winter': 120}
 
 RESULTS:
     - p_awake = 0.08
