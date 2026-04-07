@@ -42,7 +42,7 @@ for d in data:
 
 def sample_params():
     return {
-        "p_infected": 0, #rand.uniform(0.001, 0.05),
+        "p_infected": 0, # not needed for control
         "p_dead": 0, # not needed for control
         "p_awake": rand.uniform(0.001, 0.3),
         "p_recover": 0, # not needed for control
@@ -86,25 +86,25 @@ winter = 120            # length of winter season
 # initialize
 # ----------
 
-state0 = {
-    "Hi": [1]*Hi_num,
-    "NHi_NIn": [1]*NHi_NIn_num,
-    "Ot": [1]*Ot_num,
-    "In": [1]*In_num,
-    "De": [0]*(Hi_num + NHi_NIn_num + In_num),
-
-    "Wa": 1,
-    "Fo": 1,
-    "Te": 0,
-    "Hu": 0,
-    "WNS": 0,
-}
+def make_initial_state():
+    return {
+        "Hi": [1]*Hi_num,
+        "NHi_NIn": [1]*NHi_NIn_num,
+        "Ot": [1]*Ot_num,
+        "In": [1]*In_num,
+        "De": [0]*(Hi_num + NHi_NIn_num + In_num),
+        "Wa": 1,
+        "Fo": 1,
+        "Te": 0,
+        "Hu": 0,
+        "WNS": 0, # MUST set = 1 IF EVER In = 1
+    }
     
-def loss(parameters, runs=4):
+def loss(parameters, runs=2):
     losses = []
 
     for _ in range(runs):
-        sim = simulate(copy.deepcopy(state0), steps=max(obs_times)+1, parameters=parameters)
+        sim = simulate(make_initial_state(), steps=max(obs_times)+1, parameters=parameters)
 
         error = 0.0
         for i, t in enumerate(obs_times):
@@ -179,25 +179,45 @@ def main():
         "winter": winter
     }
 
-    if In_num != 0:
-        state0["WNS"] = 1
-
     local_best = None
     local_best_loss = float("inf")
 
     # split work over nodes
     n_iter = 1000
-    local_iters = n_iter // size
+    best_SIZE = 20
+    best = [] # best (loss, params)
 
-    for i in range(local_iters):
-        params = sample_params()
-        L = loss(params)
+    for i in range(rank, n_iter, size):
+        # ---- cheap and broad sweep first, expensive later ----
+        if i < local_iters // 2 or len(best) < best_SIZE:
+            params = sample_params()
+        else:
+            base = best[rand.randint(0, len(best)-1)][1]
+            params = perturb(base)
 
+        # ---- cheap evaluation ----
+        L = loss(params, runs=2)
+
+        # ---- refine promising candidates ----
+        if L < local_best_loss:
+            L = loss(params, runs=8)
+
+        # ---- update local best ----
         if L < local_best_loss:
             local_best_loss = L
             local_best = params
 
-        #print(f"[rank {rank}] iteration {i}, loss={L}")
+        # ---- update best pool ----
+        if len(best) < best_SIZE:
+            best.append((L, params))
+        else:
+            worst = max(best, key=lambda x: x[0])
+            if L < worst[0]:
+                best.remove(worst)
+                best.append((L, params))
+
+        if i == local_iters // 2:
+            print(f"[rank {rank}] switching to local refinement")
 
     # gather results
     all_results = comm.gather((local_best_loss, local_best), root=0)
@@ -229,6 +249,9 @@ New best: 349.79545454545456 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0, 'p_rec
 New best: 340.4318181818182 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0, 'p_recover': 0, 'p_hibernate': 0.5375541529135586, 'p_influx': 0.0002226736397319496, 'water': 5000, 'food': 5000, 'winter': 120}
 New best: 353.59090909090907 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0, 'p_recover': 0, 'p_hibernate': 0.5217376853281397, 'p_influx': 0.0002371693157187258, 'water': 5000, 'food': 5000, 'winter': 127.79382882757909}
 New best: 351.3636363636364 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0.14737923993374222, 'p_recover': 0, 'p_hibernate': 0.5398474209465732, 'p_influx': 0.00024587321732499006, 'water': 5000, 'food': 5000, 'winter': 120}
+GLOBAL BEST: 324.8863636363636 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0.08177036053584033, 'p_recover': 0, 'p_hibernate': 0.506130033345668, 'p_influx': 0.00022945884090207235, 'water': 5000, 'food': 5000, 'winter': 120}
+GLOBAL BEST: 302.3636363636364 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0.26956807970377467, 'p_recover': 0, 'p_hibernate': 0.5448954517680774, 'p_influx': 0.00021523603923560332, 'water': 927.0382284770973, 'food': 414.8102016331979, 'winter': 120}
+GLOBAL BEST: 324.70454545454544 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0.08629881107887209, 'p_recover': 0, 'p_hibernate': 0.4521499873392658, 'p_influx': 0.00021204118330130886, 'water': 191.12299861491675, 'food': 58.85014554319323, 'winter': 120}
 
 RESULTS:
     - p_influx = 0.0002

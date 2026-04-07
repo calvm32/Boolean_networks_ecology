@@ -36,19 +36,19 @@ winter = 120            # length of winter season
 # initialize
 # ----------
 
-state0 = {
-    "Hi": [1]*Hi_num,
-    "NHi_NIn": [1]*NHi_NIn_num,
-    "Ot": [1]*Ot_num,
-    "In": [1]*In_num,
-    "De": [0]*(Hi_num + NHi_NIn_num + In_num),
-
-    "Wa": 1,
-    "Fo": 1,
-    "Te": 0,
-    "Hu": 0,
-    "WNS": 0,
-}
+def make_initial_state():
+    return {
+        "Hi": [1]*Hi_num,
+        "NHi_NIn": [1]*NHi_NIn_num,
+        "Ot": [1]*Ot_num,
+        "In": [1]*In_num,
+        "De": [0]*(Hi_num + NHi_NIn_num + In_num),
+        "Wa": 1,
+        "Fo": 1,
+        "Te": 0,
+        "Hu": 0,
+        "WNS": 0, # MUST set = 1 IF EVER In = 1
+    }
 
 def simulate(initial_state, steps, parameters):
     state = initial_state
@@ -102,10 +102,7 @@ def main():
         "winter": winter
     }
 
-    if In_num != 0:
-        state0["WNS"] = 1
-
-    history = simulate(state0, steps=time, parameters=parameters)
+    history = simulate(make_initial_state(), steps=time, parameters=parameters)
     plot_history(history)
 
 if __name__ == "__main__":
