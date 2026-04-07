@@ -188,7 +188,7 @@ def main():
             local_best_loss = L
             local_best = params
 
-        print(f"[rank {rank}] iteration {i}, loss={L}")
+        #print(f"[rank {rank}] iteration {i}, loss={L}")
 
     # gather results
     all_results = comm.gather((local_best_loss, local_best), root=0)
