@@ -19,6 +19,7 @@ def update_environment(state, agg, parameters):
     if Wa == 0: Fo_next = 0 # rule 5
     if Te == 1: Wa_next = 1; Fo_next = 1 # rule 7
     if Wa == 1 and Hu == 1: WNS_next = 0
+    if In == 1: WNS_next = 1
 
     return {
         "Wa": int(Wa_next),

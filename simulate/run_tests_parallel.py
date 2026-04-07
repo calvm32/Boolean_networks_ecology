@@ -24,6 +24,14 @@ data = [
     {"year": 2025, "NHi_NIn": 86, "Ot": 0, "In": 0},
 ]
 
+# raven's nest data
+data = [
+    {"year": 2014, "NHi_NIn": 5, "Ot": 17, "In": 0},
+    {"year": 2015, "NHi_NIn": 7, "Ot": 13, "In": 6},
+    {"year": 2016, "NHi_NIn": 0, "Ot": 33, "In": 10},
+    {"year": 2017, "NHi_NIn": 0, "Ot": 10, "In": 0},
+]
+
 START_YEAR = 2014
 SAMPLE_DAY = 140
 
@@ -42,14 +50,14 @@ for d in data:
 
 def sample_params():
     return {
-        "p_infected": 0, # not needed for control
-        "p_dead": 0, # not needed for control
-        "p_awake": rand.uniform(0.01, 0.2),
-        "p_recover": 0, # not needed for control
-        "p_hibernate": rand.uniform(0.45, 0.6),
-        "p_influx": rand.uniform(0.00015, 0.00025),
-        "water": rand.uniform(30,1000),
-        "food": rand.uniform(30,1000),
+        "p_infected": rand.uniform(0.01, 0.8),
+        "p_dead": rand.uniform(0.01, 0.8),
+        "p_awake": 0.08,
+        "p_recover": rand.uniform(0.01, 0.8),
+        "p_hibernate": 0.5,
+        "p_influx": 0.0002,
+        "water": 1000,
+        "food": 1000,
         "winter": 120
     }
 
@@ -58,8 +66,8 @@ def sample_params():
 # ------------------------------------------
 
 # probabilities
-p_infected = 0.01         # chance a hibernating bat gets infected (given that WNS is on) on any given day
-p_dead = 0.005            # chance that an infected bat dies on any given day
+p_infected = 0.0          # chance a hibernating bat gets infected (given that WNS is on) on any given day
+p_dead = 0.0              # chance that an infected bat dies on any given day
 p_awake = 0.02            # chance of a waking bat arousing a hibernating bat from torpor on any given day
 p_recover = 0.01          # chance of recovering and going back into hibernation on any given day
 p_hibernate = 0.5         # chance of a bat switching between hibernating and not (given that Te switches) on any given day
@@ -70,16 +78,16 @@ p_influx = 0.001          # chance of new bat due to immigration/birth per day
 # ----------------------------------------
 
 # population counts
-Hi_num = 62            # hibernating bats
-NHi_NIn_num = 0         # non-hibernating non-infected bats
-In_num = 0              # non-hibernating infected bats
-Ot_num = 0              # other bats
+Hi_num = data[0]["NHi_NIn"]         # hibernating bats
+NHi_NIn_num = 0                     # non-hibernating non-infected bats
+In_num = data[0]["In"]              # non-hibernating infected bats
+Ot_num = data[0]["Ot"]              # other bats
 
 # resource limits
 water = 5000            # number of bats it would take to deplete water completely
 food = 5000             # number of bats it would take to deplete food completely
 
-time = 1000              # total days
+time = 120              # total days
 winter = 120            # length of winter season
 
 # ----------
@@ -232,6 +240,9 @@ def main():
         print("\nGLOBAL BEST:")
         print(best_loss, best_params)
 
+    best_sim = simulate(make_initial_state(), steps = 4500, parameters=best_params)
+    plot_history(best_sim, sample=[obs_times, obs_NHi_NIn])
+
 
 if __name__ == "__main__":
     main()
@@ -257,7 +268,7 @@ RESULTS:
     - p_awake = 0.08
     - p_influx = 0.00021
     - p_hibernate = 0.5
-    - water = much higher than population
-    - 
+    - food and water genuinely seem to have no effect here, 
+      although that rule currently doesn't affect the data points that we do have
 
 """
