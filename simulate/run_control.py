@@ -189,7 +189,7 @@ def main():
 
     for i in range(rank, n_iter, size):
         # ---- cheap and broad sweep first, expensive later ----
-        if i < local_iters // 2 or len(best) < best_SIZE:
+        if i < n_iters // 2 or len(best) < best_SIZE:
             params = sample_params()
         else:
             base = best[rand.randint(0, len(best)-1)][1]
@@ -215,9 +215,6 @@ def main():
             if L < worst[0]:
                 best.remove(worst)
                 best.append((L, params))
-
-        if i == local_iters // 2:
-            print(f"[rank {rank}] switching to local refinement")
 
     # gather results
     all_results = comm.gather((local_best_loss, local_best), root=0)
