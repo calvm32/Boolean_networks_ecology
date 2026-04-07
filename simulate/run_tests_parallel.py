@@ -12,8 +12,8 @@ from mpi4py import MPI
 
 data = happy_jack_data()
 
-START_YEAR = 2014
-SAMPLE_DAY = 140
+START_YEAR = data[0]["year"]
+SAMPLE_DAY = 140 # manually change
 
 obs_times = []
 obs_NHi_NIn = []
@@ -181,8 +181,8 @@ def main():
             params = sample_params()
         else:
             params2 = best[rand.randint(0, len(best)-1)][1]
-            params1 = perturb(params2, ["p_awake", "p_hibernate", "p_influx"], 0.001)
-            params = perturb(params1, ["food", "water"], 0.1)
+            #params1 = perturb(params2, ["p_awake", "p_hibernate", "p_influx"], 0.001)
+            params = perturb(params2, ["food", "water"], 0.1)
 
         L = loss(params, runs=2)
 
