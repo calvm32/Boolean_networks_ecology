@@ -149,6 +149,10 @@ def main():
     rank = comm.Get_rank()
     size = comm.Get_size()
 
+    # change seeds for even more searches
+    rand.seed(42 + rank)
+    np.random.seed(42 + rank)
+
     inhabitant_nodes = ["Hi", "NHi_NIn", "In", "Ot", "De"]
     resource_nodes = ["Wa", "Fo"]
     environment_nodes = ["Te", "Hu", "El", "Po", "Su", "Ba", "WNS"]
@@ -204,17 +208,27 @@ def main():
                 best.remove(worst)
                 best.append((L, params))
 
+        # share best lists
+        if i % 50 == 0:
+            all_best = comm.allgather(best)
+            
+            # flatten
+            merged = [item for sublist in all_best for item in sublist]
+            
+            # keep top K globally
+            merged.sort(key=lambda x: x[0])
+            best = merged[:best_SIZE]
+
     # gather results
     all_results = comm.gather((local_best_loss, local_best), root=0)
 
     if rank == 0:
-        best_loss = float("inf")
-        best_params = None
+        # re-evaluate top candidates properly
+        best_candidates = [p for _, p in all_results]
 
-        for L, p in all_results:
-            if L < best_loss:
-                best_loss = L
-                best_params = p
+        refined = [(loss(p, runs=10), p) for p in best_candidates]
+
+        best_loss, best_params = min(refined, key=lambda x: x[0])
 
         print("\nGLOBAL BEST:")
         print(best_loss, best_params)
