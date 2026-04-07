@@ -48,8 +48,8 @@ def sample_params():
         "p_recover": 0, # not needed for control
         "p_hibernate": rand.uniform(0.45, 0.6),
         "p_influx": rand.uniform(0.0001, 0.0003),
-        "water": 5000,
-        "food": 5000,
+        "water": rand.uniform(30,1000),
+        "food": rand.uniform(30,1000),
         "winter": 120
     }
 
