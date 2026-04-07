@@ -144,6 +144,10 @@ def simulate(initial_state, steps, parameters):
     return history
 
 def main():
+    comm = MPI.COMM_WORLD
+    rank = comm.Get_rank()
+    size = comm.Get_size()
+
     inhabitant_nodes = ["Hi", "NHi_NIn", "In", "Ot", "De"]
     resource_nodes = ["Wa", "Fo"]
     environment_nodes = ["Te", "Hu", "El", "Po", "Su", "Ba", "WNS"]
