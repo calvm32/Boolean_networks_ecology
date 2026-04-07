@@ -240,8 +240,8 @@ def main():
         print("\nGLOBAL BEST:")
         print(best_loss, best_params)
 
-    best_sim = simulate(make_initial_state(), steps = 4500, parameters=best_params)
-    plot_history(best_sim, sample=[obs_times, obs_NHi_NIn])
+        best_sim = simulate(make_initial_state(), steps = 4500, parameters=best_params)
+        plot_history(best_sim, sample=[obs_times, obs_NHi_NIn])
 
 
 if __name__ == "__main__":
