@@ -189,7 +189,7 @@ def main():
 
     for i in range(rank, n_iter, size):
         # ---- cheap and broad sweep first, expensive later ----
-        if i < n_iters // 2 or len(best) < best_SIZE:
+        if i < n_iter // 2 or len(best) < best_SIZE:
             params = sample_params()
         else:
             base = best[rand.randint(0, len(best)-1)][1]
