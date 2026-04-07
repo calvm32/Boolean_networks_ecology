@@ -26,10 +26,10 @@ In_num = 1              # non-hibernating infected bats
 Ot_num = 0              # other bats
 
 # resource limits
-water = 1000            # number of bats it would take to deplete water completely
-food = 1000             # number of bats it would take to deplete food completely
+water = 350            # OKAY # number of bats it would take to deplete water completely
+food = 350             # OKAY # number of bats it would take to deplete food completely
 
-time = 240              # total days
+time = 4500              # total days
 winter = 120            # CONFIDENT # length of winter season in Nebraska mines
 
 # ----------

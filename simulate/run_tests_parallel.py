@@ -179,7 +179,8 @@ def main():
     best_SIZE = 20
     best = [] # best (loss, params)
 
-    for i in range(rank, n_iter, size):
+    for k in range(n_iter // size):
+        i = k * size + rank # share same counting variable
         # cheap and broad sweep first, expensive later
         if i < n_iter // 2 or len(best) < best_SIZE:
             params = sample_params()

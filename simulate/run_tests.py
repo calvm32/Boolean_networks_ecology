@@ -35,8 +35,8 @@ def sample_params():
         "p_recover": 0, #rand.uniform(0.01, 0.8),
         "p_hibernate": 0.5,
         "p_influx": 0.0002,
-        "water": rand.uniform(10,1000),
-        "food": rand.uniform(10,1000),
+        "water": rand.uniform(100,500),
+        "food": rand.uniform(100,500),
         "winter": 120
     }
 
@@ -164,7 +164,7 @@ def main():
 
     best = None
     best_loss = float("inf")
-    n_iter = 100
+    n_iter = 20
 
     for i in range(n_iter):
         params = sample_params()
@@ -178,7 +178,7 @@ def main():
         print(f"checked {i}")
 
     best_sim = simulate(make_initial_state(), steps = 4500, parameters=best)
-    plot_history(best_sim, sample=[obs_times, obs_NHi_NIn])
+    plot_history_highlights(best_sim, winter, sample=[obs_times, obs_NHi_NIn])
 
 
 if __name__ == "__main__":

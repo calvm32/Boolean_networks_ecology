@@ -82,3 +82,57 @@ def plot_history(history, sample=[]):
 
     plt.tight_layout()
     plt.show()
+
+def plot_history_highlights(history, winter, sample=[]):
+    t = range(len(history["Hi"]))
+
+    fig, (ax1, ax2) = plt.subplots(
+        1, 2,
+        constrained_layout=True,
+        figsize = (14,7)
+    )
+
+    # -----------------
+    # individual counts
+    # -----------------
+
+    ax1.plot(t, history["Hi"], label="Hibernating (Hi)")
+    ax1.plot(t, history["NHi_NIn"], label="Non-hibernating, non-infected (NHi_NIN)")
+    ax1.plot(t, history["In"], label="Infected (In)")
+    ax1.plot(t, history["De"], label="Deceased (De)")
+    ax1.plot(t, history["Ot"], label="Other species (Ot)") if np.any(history["Ot"]) else None
+
+    ax1.set_xlabel("Time step")
+    ax1.set_ylabel("Population count")
+    ax1.set_title("Bat Population Dynamics (Boolean Network)")
+    ax1.legend()
+    ax1.grid()
+
+    # ------------
+    # total counts
+    # ------------
+
+    total = np.array(history["Hi"]) + np.array(history["NHi_NIn"]) + np.array(history["In"])
+
+    ax2.plot(t, total, label="Total tricolored bats")
+    ax2.plot(t, history["Ot"], label="Other species (Ot)") if np.any(history["Ot"]) else None
+
+    # if there's sample data, compare:
+    if len(sample) != 0:
+        obs_times = sample[0]; obs_NHi_NIn = sample[1]
+        ax2.scatter(obs_times, obs_NHi_NIn, label="Observed total tricolored bats")
+
+    ax2.set_xlabel("Time step")
+    ax2.set_ylabel("Population count")
+    ax2.set_title("Bat Population Dynamics (Boolean Network)")
+    ax2.legend()
+    ax2.grid()
+
+    # highlight the winter data
+    for time in t:
+        if time % 365 == winter:
+            ax1.axvspan(time - winter, time, facecolor='blue', alpha=0.2)
+            ax2.axvspan(time - winter, time, facecolor='blue', alpha=0.2)
+
+    plt.tight_layout()
+    plt.show()
