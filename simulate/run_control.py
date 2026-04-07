@@ -44,10 +44,10 @@ def sample_params():
     return {
         "p_infected": 0, # not needed for control
         "p_dead": 0, # not needed for control
-        "p_awake": rand.uniform(0.001, 0.3),
+        "p_awake": rand.uniform(0.01, 0.2),
         "p_recover": 0, # not needed for control
         "p_hibernate": rand.uniform(0.45, 0.6),
-        "p_influx": rand.uniform(0.0001, 0.0003),
+        "p_influx": rand.uniform(0.00015, 0.00025),
         "water": rand.uniform(30,1000),
         "food": rand.uniform(30,1000),
         "winter": 120
@@ -250,10 +250,12 @@ New best: 351.3636363636364 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0.14737923
 GLOBAL BEST: 324.8863636363636 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0.08177036053584033, 'p_recover': 0, 'p_hibernate': 0.506130033345668, 'p_influx': 0.00022945884090207235, 'water': 5000, 'food': 5000, 'winter': 120}
 GLOBAL BEST: 302.3636363636364 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0.26956807970377467, 'p_recover': 0, 'p_hibernate': 0.5448954517680774, 'p_influx': 0.00021523603923560332, 'water': 927.0382284770973, 'food': 414.8102016331979, 'winter': 120}
 GLOBAL BEST: 324.70454545454544 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0.08629881107887209, 'p_recover': 0, 'p_hibernate': 0.4521499873392658, 'p_influx': 0.00021204118330130886, 'water': 191.12299861491675, 'food': 58.85014554319323, 'winter': 120}
+GLOBAL BEST: 355.5909090909091 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0.053821586907585324, 'p_recover': 0, 'p_hibernate': 0.5757344511791069, 'p_influx': 0.00021559487804763611, 'water': 616.2438584507863, 'food': 60.8566143812073, 'winter': 120}
 
 RESULTS:
-    - p_influx = 0.0002
-    - p_hibernate = 0.56
+    - p_awake = 0.08
+    - p_influx = 0.00021
+    - p_hibernate = 0.5
     - water = much higher than population
     - 
 
