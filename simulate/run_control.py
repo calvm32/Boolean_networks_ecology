@@ -193,7 +193,7 @@ def main():
             params = sample_params()
         else:
             base = best[rand.randint(0, len(best)-1)][1]
-            base2 = perturb(base, ["p_awake", "p_hibernate", "p_influx"], 0.01)
+            base2 = perturb(base, ["p_awake", "p_hibernate", "p_influx"], 0.001)
             params = perturb(base2, ["food", "water"], 0.1)
 
         # ---- cheap evaluation ----
@@ -251,6 +251,7 @@ GLOBAL BEST: 324.8863636363636 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0.08177
 GLOBAL BEST: 302.3636363636364 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0.26956807970377467, 'p_recover': 0, 'p_hibernate': 0.5448954517680774, 'p_influx': 0.00021523603923560332, 'water': 927.0382284770973, 'food': 414.8102016331979, 'winter': 120}
 GLOBAL BEST: 324.70454545454544 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0.08629881107887209, 'p_recover': 0, 'p_hibernate': 0.4521499873392658, 'p_influx': 0.00021204118330130886, 'water': 191.12299861491675, 'food': 58.85014554319323, 'winter': 120}
 GLOBAL BEST: 355.5909090909091 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0.053821586907585324, 'p_recover': 0, 'p_hibernate': 0.5757344511791069, 'p_influx': 0.00021559487804763611, 'water': 616.2438584507863, 'food': 60.8566143812073, 'winter': 120}
+GLOBAL BEST: 344.77272727272725 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0.14891365897212455, 'p_recover': 0, 'p_hibernate': 0.4777174885328155, 'p_influx': 0.0002050202186951778, 'water': 412.01349345275577, 'food': 898.6018997126824, 'winter': 120}
 
 RESULTS:
     - p_awake = 0.08
