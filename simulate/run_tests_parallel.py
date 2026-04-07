@@ -30,14 +30,14 @@ for d in data:
 
 def sample_params():
     return {
-        "p_infected": rand.uniform(0.01, 0.8),
-        "p_dead": rand.uniform(0.01, 0.8),
+        "p_infected": 0, #rand.uniform(0.01, 0.8),
+        "p_dead": 0, #rand.uniform(0.01, 0.8),
         "p_awake": 0.08,
-        "p_recover": rand.uniform(0.01, 0.8),
+        "p_recover": 0, #rand.uniform(0.01, 0.8),
         "p_hibernate": 0.5,
         "p_influx": 0.0002,
-        "water": 1000,
-        "food": 1000,
+        "water": rand.uniform(10,1000),
+        "food": rand.uniform(10,1000),
         "winter": 120
     }
 

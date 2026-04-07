@@ -13,6 +13,8 @@ def happy_jack_data():
         {"year": 2024, "NHi_NIn": 95, "Ot": 0, "In": 0},
         {"year": 2025, "NHi_NIn": 86, "Ot": 0, "In": 0},
     ]
+    
+    return data
 
 # nebraska mine 2
 def ravens_nest_data():
@@ -22,6 +24,8 @@ def ravens_nest_data():
         {"year": 2016, "NHi_NIn": 0, "Ot": 33, "In": 10},
         {"year": 2017, "NHi_NIn": 0, "Ot": 10, "In": 0},
     ]
+
+    return data
 
 # APPROXIMATE # south carolina cave https://pmc.ncbi.nlm.nih.gov/articles/PMC9259850/
 def stumphouse_tunnel_data():
@@ -35,3 +39,5 @@ def stumphouse_tunnel_data():
         {"year": 2020, "NHi_NIn": 45, "Ot": 2, "In": "?"},
         {"year": 2021, "NHi_NIn": 55, "Ot": 0, "In": "?"},
     ]
+
+    return data

@@ -2,6 +2,7 @@ import random as rand
 import numpy as np
 from helper_funcs import *
 from rules import *
+from data import *
 import copy
 
 # --------------------
@@ -28,14 +29,14 @@ for d in data:
 
 def sample_params():
     return {
-        "p_infected": rand.uniform(0.01, 0.8),
-        "p_dead": rand.uniform(0.01, 0.8),
+        "p_infected": 0, #rand.uniform(0.01, 0.8),
+        "p_dead": 0, #rand.uniform(0.01, 0.8),
         "p_awake": 0.08,
-        "p_recover": rand.uniform(0.01, 0.8),
+        "p_recover": 0, #rand.uniform(0.01, 0.8),
         "p_hibernate": 0.5,
         "p_influx": 0.0002,
-        "water": 1000,
-        "food": 1000,
+        "water": rand.uniform(10,1000),
+        "food": rand.uniform(10,1000),
         "winter": 120
     }
 
@@ -201,6 +202,7 @@ GLOBAL BEST: 355.5909090909091 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0.05382
 GLOBAL BEST: 344.77272727272725 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0.14891365897212455, 'p_recover': 0, 'p_hibernate': 0.4777174885328155, 'p_influx': 0.0002050202186951778, 'water': 412.01349345275577, 'food': 898.6018997126824, 'winter': 120}
 New best: 317.9545454545455 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0.04345960635454034, 'p_recover': 0, 'p_hibernate': 0.5332425535631224, 'p_influx': 0.00024123902192027023, 'water': 869.4131416026416, 'food': 920.9508227333656, 'winter': 120}
 New best: 321.1363636363636 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0.11996019118621024, 'p_recover': 0, 'p_hibernate': 0.5358468255532175, 'p_influx': 0.00022540489216466345, 'water': 246.9063201140136, 'food': 386.8256630780159, 'winter': 120}
+New best: 308.72727272727275 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0.08, 'p_recover': 0, 'p_hibernate': 0.5, 'p_influx': 0.0002, 'water': 350.34867097205273, 'food': 324.50109337947646, 'winter': 120}
 
 RESULTS:
     - p_awake = 0.08
