@@ -27,14 +27,13 @@ def count(state):
         "De": sum(state["De"]),
     }
 
-def perturb(params, keys=["p_awake", "p_hibernate", "p_influx"], scale=0.15):
+def perturb(params, keys, scale=0.15):
     new = params.copy()
     for k in keys:
         val = params[k]
         if val > 0:
             new[k] = max(0, val + np.random.normal(0, scale * val))
     return new
-
 
 def plot_history(history, sample=[]):
     t = range(len(history["Hi"]))

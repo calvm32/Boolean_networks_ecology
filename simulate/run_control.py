@@ -183,7 +183,7 @@ def main():
     local_best_loss = float("inf")
 
     # split work over nodes
-    n_iter = 1000
+    n_iter = 5000
     best_SIZE = 20
     best = [] # best (loss, params)
 
@@ -193,7 +193,8 @@ def main():
             params = sample_params()
         else:
             base = best[rand.randint(0, len(best)-1)][1]
-            params = perturb(base)
+            base2 = perturb(base, ["p_awake", "p_hibernate", "p_influx"], 0.001)
+            params = perturb(base2, ["food", "water"], 10)
 
         # ---- cheap evaluation ----
         L = loss(params, runs=2)
