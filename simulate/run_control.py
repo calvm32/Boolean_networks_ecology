@@ -3,6 +3,7 @@ import numpy as np
 from helper_funcs import *
 from rules import *
 import copy
+from mpi4py import MPI
 
 # --------------------------------------
 # set up control group (happy jack mine)
@@ -43,10 +44,10 @@ def sample_params():
     return {
         "p_infected": 0, #rand.uniform(0.001, 0.05),
         "p_dead": 0, # not needed for control
-        "p_awake": 0, # rand.uniform(0.001, 0.1),
+        "p_awake": rand.uniform(0.001, 0.3),
         "p_recover": 0, # not needed for control
-        "p_hibernate": rand.uniform(0.1, 0.9),
-        "p_influx": rand.uniform(0.0, 0.0005),
+        "p_hibernate": rand.uniform(0.45, 0.6),
+        "p_influx": rand.uniform(0.0001, 0.0003),
         "water": 5000,
         "food": 5000,
         "winter": 120
@@ -156,6 +157,9 @@ def simulate(initial_state, steps, parameters):
 
 
 def main():
+    comm = MPI.COMM_WORLD
+    rank = comm.Get_rank()
+    size = comm.Get_size()
 
     inhabitant_nodes = ["Hi", "NHi_NIn", "In", "Ot", "De"]
     resource_nodes = ["Wa", "Fo"]
@@ -178,22 +182,38 @@ def main():
     if In_num != 0:
         state0["WNS"] = 1
 
-    best = None
-    best_loss = float("inf")
+    local_best = None
+    local_best_loss = float("inf")
 
-    for i in range(100):
+    # split work over nodes
+    n_iter = 1000
+    local_iters = n_iter // size
+
+    for i in range(local_iters):
         params = sample_params()
         L = loss(params)
 
-        if L < best_loss:
-            best_loss = L
-            best = params
-            print("New best:", best_loss, best)
-        
-        print(f"checked {i}")
+        if L < local_best_loss:
+            local_best_loss = L
+            local_best = params
 
-    best_sim = simulate(state0, steps = 4500, parameters=best)
-    plot_history(best_sim, sample=[obs_times, obs_NHi_NIn])
+        print(f"[rank {rank}] iteration {i}, loss={L}")
+
+    # gather results
+    all_results = comm.gather((local_best_loss, local_best), root=0)
+
+    if rank == 0:
+        best_loss = float("inf")
+        best_params = None
+
+        for L, p in all_results:
+            if L < best_loss:
+                best_loss = L
+                best_params = p
+
+        print("\nGLOBAL BEST:")
+        print(best_loss, best_params)
+
 
 if __name__ == "__main__":
     main()
@@ -205,6 +225,10 @@ New best: 3743.8863636363635 {'p_infected': 0.041521217775843514, 'p_dead': 0, '
 New best: 1235.3636363636365 {'p_infected': 0.01524217865079747, 'p_dead': 0, 'p_awake': 0, 'p_recover': 0, 'p_hibernate': 0.2697086101327978, 'p_influx': 0.0004065503241910787, 'water': 735.3878583939961, 'food': 5000, 'winter': 120}
 New best: 362.0909090909091 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0, 'p_recover': 0, 'p_hibernate': 0.5629538071675663, 'p_influx': 0.0002439501436381033, 'water': 1829.7787389194987, 'food': 5000, 'winter': 120}
 New best: 358.22727272727275 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0, 'p_recover': 0, 'p_hibernate': 0.48303984638268127, 'p_influx': 0.00020677835763457532, 'water': 5000, 'food': 5000, 'winter': 120}
+New best: 349.79545454545456 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0, 'p_recover': 0, 'p_hibernate': 0.5573477611867865, 'p_influx': 0.0002470489971729022, 'water': 5000, 'food': 5000, 'winter': 120}
+New best: 340.4318181818182 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0, 'p_recover': 0, 'p_hibernate': 0.5375541529135586, 'p_influx': 0.0002226736397319496, 'water': 5000, 'food': 5000, 'winter': 120}
+New best: 353.59090909090907 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0, 'p_recover': 0, 'p_hibernate': 0.5217376853281397, 'p_influx': 0.0002371693157187258, 'water': 5000, 'food': 5000, 'winter': 127.79382882757909}
+New best: 351.3636363636364 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0.14737923993374222, 'p_recover': 0, 'p_hibernate': 0.5398474209465732, 'p_influx': 0.00024587321732499006, 'water': 5000, 'food': 5000, 'winter': 120}
 
 RESULTS:
     - p_influx = 0.0002
