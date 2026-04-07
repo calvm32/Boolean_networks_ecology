@@ -2,35 +2,15 @@ import random as rand
 import numpy as np
 from helper_funcs import *
 from rules import *
+from data import *
 import copy
 from mpi4py import MPI
 
-# --------------------------------------
-# set up control group (happy jack mine)
-# --------------------------------------
+# --------------------
+# set up control group
+# --------------------
 
-# happy jack data
-data = [
-    {"year": 2014, "NHi_NIn": 62, "Ot": 0, "In": 0},
-    {"year": 2015, "NHi_NIn": 52, "Ot": 0, "In": 0},
-    {"year": 2016, "NHi_NIn": 72, "Ot": 0, "In": 0},
-    {"year": 2017, "NHi_NIn": 101, "Ot": 0, "In": 0},
-    {"year": 2018, "NHi_NIn": 73, "Ot": 0, "In": 0},
-    {"year": 2019, "NHi_NIn": 96, "Ot": 0, "In": 0},
-    {"year": 2021, "NHi_NIn": 108, "Ot": 2, "In": 0},
-    {"year": 2022, "NHi_NIn": 128, "Ot": 0, "In": 0},
-    {"year": 2023, "NHi_NIn": 128, "Ot": 5, "In": 0},
-    {"year": 2024, "NHi_NIn": 95, "Ot": 0, "In": 0},
-    {"year": 2025, "NHi_NIn": 86, "Ot": 0, "In": 0},
-]
-
-# raven's nest data
-data = [
-    {"year": 2014, "NHi_NIn": 5, "Ot": 17, "In": 0},
-    {"year": 2015, "NHi_NIn": 7, "Ot": 13, "In": 6},
-    {"year": 2016, "NHi_NIn": 0, "Ot": 33, "In": 10},
-    {"year": 2017, "NHi_NIn": 0, "Ot": 10, "In": 0},
-]
+data = happy_jack_data()
 
 START_YEAR = 2014
 SAMPLE_DAY = 140
@@ -196,27 +176,26 @@ def main():
     best = [] # best (loss, params)
 
     for i in range(rank, n_iter, size):
-        # ---- cheap and broad sweep first, expensive later ----
+        # cheap and broad sweep first, expensive later
         if i < n_iter // 2 or len(best) < best_SIZE:
             params = sample_params()
         else:
-            base = best[rand.randint(0, len(best)-1)][1]
-            base2 = perturb(base, ["p_awake", "p_hibernate", "p_influx"], 0.001)
-            params = perturb(base2, ["food", "water"], 0.1)
+            params2 = best[rand.randint(0, len(best)-1)][1]
+            params1 = perturb(params2, ["p_awake", "p_hibernate", "p_influx"], 0.001)
+            params = perturb(params1, ["food", "water"], 0.1)
 
-        # ---- cheap evaluation ----
         L = loss(params, runs=2)
 
-        # ---- refine promising candidates ----
+        # refine
         if L < local_best_loss:
             L = loss(params, runs=8)
 
-        # ---- update local best ----
+        # update local best
         if L < local_best_loss:
             local_best_loss = L
             local_best = params
 
-        # ---- update best pool ----
+        # update best group
         if len(best) < best_SIZE:
             best.append((L, params))
         else:

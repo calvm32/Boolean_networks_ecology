@@ -10,10 +10,10 @@ from rules import *
 # probabilities
 p_infected = 0.01         # chance a hibernating bat gets infected (given that WNS is on) on any given day
 p_dead = 0.005            # chance that an infected bat dies on any given day
-p_awake = 0.02            # chance of a waking bat arousing a hibernating bat from torpor on any given day
+p_awake = 0.08            # OKAY # chance of a waking bat arousing a hibernating bat from torpor on any given day
 p_recover = 0.01          # chance of recovering and going back into hibernation on any given day
-p_hibernate = 0.5         # chance of a bat switching between hibernating and not (given that Te switches) on any given day
-p_influx = 0.001          # chance of new bat due to immigration/birth per day
+p_hibernate = 0.5         # CONFIDENT # chance of a bat switching between hibernating and not (given that Te switches) on any given day
+p_influx = 0.0002         # CONFIDENT # chance of new bat due to immigration/birth per day
 
 # ----------------------------------------
 # hibernacula-DEPENDENT initial conditions
@@ -26,11 +26,11 @@ In_num = 1              # non-hibernating infected bats
 Ot_num = 0              # other bats
 
 # resource limits
-water = 5000            # number of bats it would take to deplete water completely
-food = 5000             # number of bats it would take to deplete food completely
+water = 1000            # number of bats it would take to deplete water completely
+food = 1000             # number of bats it would take to deplete food completely
 
-time = 120              # total days
-winter = 120            # length of winter season
+time = 240              # total days
+winter = 120            # CONFIDENT # length of winter season
 
 # ----------
 # initialize
