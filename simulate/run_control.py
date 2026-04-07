@@ -193,8 +193,8 @@ def main():
             params = sample_params()
         else:
             base = best[rand.randint(0, len(best)-1)][1]
-            base2 = perturb(base, ["p_awake", "p_hibernate", "p_influx"], 0.001)
-            params = perturb(base2, ["food", "water"], 10)
+            base2 = perturb(base, ["p_awake", "p_hibernate", "p_influx"], 0.01)
+            params = perturb(base2, ["food", "water"], 0.1)
 
         # ---- cheap evaluation ----
         L = loss(params, runs=2)
