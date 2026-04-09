@@ -20,7 +20,7 @@ p_influx = 0.0002         # CONFIDENT # chance of new bat due to immigration/bir
 # ----------------------------------------
 
 # population counts
-Hi_num = 200            # hibernating bats
+Hi_num = 50            # hibernating bats
 NHi_NIn_num = 0         # non-hibernating non-infected bats
 In_num = 1              # non-hibernating infected bats
 Ot_num = 0              # other bats
@@ -29,7 +29,7 @@ Ot_num = 0              # other bats
 water = 350            # OKAY # number of bats it would take to deplete water completely
 food = 350             # OKAY # number of bats it would take to deplete food completely
 
-time = 4500              # total days
+time = 3650              # total days
 winter = 120            # CONFIDENT # length of winter season in Nebraska mines
 
 # ----------

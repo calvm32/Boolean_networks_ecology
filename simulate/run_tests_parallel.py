@@ -205,8 +205,8 @@ def main():
         print("\nGLOBAL BEST:")
         print(best_loss, best_params)
 
-    best_sim = simulate(state0, steps = 4500, parameters=best)
-    plot_history(best_sim, sample=[obs_times, obs_NHi_NIn])
+    best_sim = simulate(make_initial_state(), steps = 4500, parameters=best)
+    plot_history_highlights(best_sim, winter, sample=[obs_times, obs_NHi_NIn])
 
 
 if __name__ == "__main__":
@@ -232,6 +232,7 @@ New best: 317.9545454545455 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0.04345960
 New best: 321.1363636363636 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0.11996019118621024, 'p_recover': 0, 'p_hibernate': 0.5358468255532175, 'p_influx': 0.00022540489216466345, 'water': 246.9063201140136, 'food': 386.8256630780159, 'winter': 120}
 New best: 308.72727272727275 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0.08, 'p_recover': 0, 'p_hibernate': 0.5, 'p_influx': 0.0002, 'water': 350.34867097205273, 'food': 324.50109337947646, 'winter': 120}
 New best: 308.04545454545456 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0.08, 'p_recover': 0, 'p_hibernate': 0.5, 'p_influx': 0.0002, 'water': 371.46665433373187, 'food': 164.4683879543965, 'winter': 120}
+GLOBAL BEST: 286.0909090909091 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0.08, 'p_recover': 0 , 'p_hibernate': 0.5, 'p_influx': 0.0002, 'water': 406.0607758097961, 'food': 389.59646170871036, 'winter': 120}
 
 RESULTS:
     - p_awake = 0.08

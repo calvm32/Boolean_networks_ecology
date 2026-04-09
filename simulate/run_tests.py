@@ -164,7 +164,7 @@ def main():
 
     best = None
     best_loss = float("inf")
-    n_iter = 100
+    n_iter = 20
 
     for i in range(n_iter):
         params = sample_params()

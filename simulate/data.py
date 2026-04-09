@@ -12,6 +12,7 @@ def happy_jack_data():
         {"year": 2023, "NHi_NIn": 128, "Ot": 5, "In": 0},
         {"year": 2024, "NHi_NIn": 95, "Ot": 0, "In": 0},
         {"year": 2025, "NHi_NIn": 86, "Ot": 0, "In": 0},
+        {"year": 2026, "NHi_NIn": 117, "Ot": 0, "In": 0},
     ]
     
     return data
