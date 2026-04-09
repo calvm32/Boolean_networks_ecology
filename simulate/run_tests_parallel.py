@@ -51,7 +51,7 @@ p_dead = 0.0              # chance that an infected bat dies on any given day
 p_awake = 0.02            # chance of a waking bat arousing a hibernating bat from torpor on any given day
 p_recover = 0.01          # chance of recovering and going back into hibernation on any given day
 p_hibernate = 0.5         # chance of a bat switching between hibernating and not (given that Te switches) on any given day
-p_influx = 0.001          # chance of new bat due to immigration/birth per day
+p_influx = 0.000215       # chance of new bat due to immigration/birth per day
 
 # ----------------------------------------
 # hibernacula-DEPENDENT initial conditions
@@ -233,6 +233,7 @@ New best: 321.1363636363636 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0.11996019
 New best: 308.72727272727275 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0.08, 'p_recover': 0, 'p_hibernate': 0.5, 'p_influx': 0.0002, 'water': 350.34867097205273, 'food': 324.50109337947646, 'winter': 120}
 New best: 308.04545454545456 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0.08, 'p_recover': 0, 'p_hibernate': 0.5, 'p_influx': 0.0002, 'water': 371.46665433373187, 'food': 164.4683879543965, 'winter': 120}
 GLOBAL BEST: 286.0909090909091 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0.08, 'p_recover': 0 , 'p_hibernate': 0.5, 'p_influx': 0.0002, 'water': 406.0607758097961, 'food': 389.59646170871036, 'winter': 120}
+GLOBAL BEST: 255.58333333333331 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0.08, 'p_recover': 0, 'p_hibernate': 0.5, 'p_influx': 0.00021506633607029088, 'water': 291.10905941 12792, 'food': 168.22746809535204, 'winter': 120}    
 
 RESULTS:
     - p_awake = 0.08
