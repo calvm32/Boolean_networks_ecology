@@ -35,7 +35,7 @@ def sample_params():
         "p_awake": 0.08,
         "p_recover": 0, #rand.uniform(0.01, 0.8),
         "p_hibernate": 0.5,
-        "p_influx": 0.0002,
+        "p_influx": rand.uniform(0.0001, 0.0003),
         "water": rand.uniform(100,500),
         "food": rand.uniform(100,500),
         "winter": 120
