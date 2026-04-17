@@ -1,5 +1,6 @@
 import random as rand
 import numpy as np
+import matplotlib.pyplot as plt
 from helper_funcs import *
 from rules import *
 
@@ -20,17 +21,27 @@ p_netchange = 0.000215    # CONFIDENT # chance of new bat due to immigration/bir
 # ----------------------------------------
 
 # population counts
-Hi_num = 50            # hibernating bats
+Hi_num = 500             # hibernating bats
 NHi_NIn_num = 0         # non-hibernating non-infected bats
 In_num = 1              # non-hibernating infected bats
 Ot_num = 0              # other bats
 
 # resource limits
-water = 350            # OKAY # number of bats it would take to deplete water completely
-food = 350             # OKAY # number of bats it would take to deplete food completely
+water = 290             # OKAY # number of bats it would take to deplete water completely
+food = 170              # OKAY # number of bats it would take to deplete food completely
 
-time = 3650              # total days
+time = 3650             # total days
 winter = 120            # CONFIDENT # length of winter season in Nebraska mines
+
+# ------------------
+# bifurcation values
+# ------------------
+
+times_list = [180, 365, 3*365, 10*365, 20*365, 40*365]
+parameters_list = np.linspace(0.001,0.1,100)
+totals_list = []
+
+param_change = "p_infected"
 
 # ----------
 # initialize
@@ -47,7 +58,7 @@ def make_initial_state():
         "Fo": 1,
         "Te": 0,
         "Hu": 0,
-        "WNS": 0, # MUST set = 1 IF EVER In = 1
+        "WNS": 0,
     }
 
 def simulate(initial_state, steps, parameters):
@@ -102,8 +113,28 @@ def main():
         "winter": winter
     }
 
-    history = simulate(make_initial_state(), steps=time, parameters=parameters)
-    plot_history(history)
+    for i in parameters_list:
+        parameters[param_change] = i
 
+        history = simulate(make_initial_state(), steps=times_list[-1], parameters=parameters)
+        total = np.array(history["Hi"]) + np.array(history["NHi_NIn"]) + np.array(history["In"])
+        totals_list.append(total)
+        print(i)
+
+    fig, axes = plt.subplots(nrows=3, ncols=2, figsize=(8, 10))
+    axes = axes.ravel() # for iteration
+
+    for i, time in enumerate(times_list):
+        totals_at_time = []
+        for total in totals_list:
+            totals_at_time.append(total[time-1])
+        
+        axes[i].plot(parameters_list, totals_at_time)
+        axes[i].set_xlabel(f"{param_change}")
+        axes[i].set_ylabel(f"Population at day {time}")
+
+    plt.tight_layout()
+    plt.show()
+    
 if __name__ == "__main__":
     main()

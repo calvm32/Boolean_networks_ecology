@@ -31,7 +31,7 @@ def update_environment(state, agg, parameters):
 
 def update_individuals(state, env, parameters):
     Wa, Fo, Te, Hu, WNS = env["Wa"], env["Fo"], env["Te"], env["Hu"], env["WNS"]
-    p_awake, p_dead, p_hibernate, p_infected, p_recover, p_influx = parameters["p_awake"], parameters["p_dead"], parameters["p_hibernate"], parameters["p_infected"], parameters["p_recover"], parameters["p_influx"]
+    p_awake, p_dead, p_hibernate, p_infected, p_recover, p_netchange = parameters["p_awake"], parameters["p_dead"], parameters["p_hibernate"], parameters["p_infected"], parameters["p_recover"], parameters["p_netchange"]
     food, water = parameters["food"], parameters["water"]
 
     Hi_next  = []
@@ -105,7 +105,7 @@ def update_individuals(state, env, parameters):
         
         births = 0
         for _ in range(n_influx):
-            if rand.uniform(0, 1) <= p_influx:
+            if rand.uniform(0, 1) <= p_netchange:
                 births += 1
 
         NHi_NIn_next.extend([1]*births)
