@@ -130,8 +130,8 @@ def main():
             total = np.array(history["Hi"]) + np.array(history["NHi_NIn"]) + np.array(history["In"])
 
             totals_list[i][j] = total
-            if j % 10 == 0 and k & 10 == 0: # save some time
-                print(f"list ({j},{k})")
+            if i % 10 == 0 and j & 10 == 0: # save some time
+                print(f"list ({i},{j})")
 
     rows = 2
     cols = len(times_list)// rows
