@@ -42,7 +42,7 @@ winter = 120            # CONFIDENT # length of winter season in Nebraska mines
 times_list = [180, 365, 3*365, 10*365, 20*365, 40*365]
 
 param_change = ["p_infected", "p_dead"]
-num_params = 4
+num_params = 50
 parameters_list = [np.linspace(0.001,0.1,num_params), np.linspace(0.0001,0.01,num_params)]
 totals_list = np.empty((num_params,num_params), dtype=object)
 
@@ -130,7 +130,7 @@ def main():
             total = np.array(history["Hi"]) + np.array(history["NHi_NIn"]) + np.array(history["In"])
 
             totals_list[i][j] = total
-            if i % 10 == 0 and j & 10 == 0: # save some time
+            if (i % 10 == 0) and (j & 10 == 0): # save some time
                 print(f"list ({i},{j})")
 
     rows = 2
