@@ -42,8 +42,8 @@ winter = 120            # CONFIDENT # length of winter season in Nebraska mines
 times_list = [180, 365, 3*365, 10*365, 20*365, 40*365]
 
 param_change = ["p_infected", "p_dead"]
-num_params = 5
-parameters_list = [np.linspace(0.001,0.1,num_params), np.linspace(0.001,0.01,num_params)]
+num_params = 4
+parameters_list = [np.linspace(0.001,0.1,num_params), np.linspace(0.0001,0.01,num_params)]
 totals_list = np.empty((num_params,num_params), dtype=object)
 
 for i in range(num_params):
@@ -157,6 +157,7 @@ def main():
         ax.set_zlabel(f"Population at day {time}")
         ax.set_title(f"Population at day {time}")
 
+    plt.savefig("3D bifurcations.png", dpi=200, bbox_inches='tight')
     plt.show()
     
 if __name__ == "__main__":
