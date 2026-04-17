@@ -130,6 +130,8 @@ def main():
             total = np.array(history["Hi"]) + np.array(history["NHi_NIn"]) + np.array(history["In"])
 
             totals_list[i][j] = total
+            if j % 10 == 0 and k & 10 == 0: # save some time
+                print(f"list ({j},{k})")
 
     rows = 2
     cols = len(times_list)// rows
@@ -146,7 +148,6 @@ def main():
         for j in range(totals_list.shape[0]):
             for k in range(totals_list.shape[1]):
                 Z[j, k] = totals_list[j][k][time - 1]
-                print(f"timed({j},{k}) at time {time}: {Z[j, k]}")
 
         # plot the surface for the current time slice
         ax = axes[i]
@@ -157,7 +158,7 @@ def main():
         ax.set_zlabel(f"Population at day {time}")
         ax.set_title(f"Population at day {time}")
 
-    plt.savefig("3D bifurcations.png", dpi=200, bbox_inches='tight')
+    plt.savefig("3D_bifurcations.png", dpi=200, bbox_inches='tight')
     plt.show()
     
 if __name__ == "__main__":
