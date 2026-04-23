@@ -1,9 +1,10 @@
 import random as rand
 import numpy as np
 import matplotlib.pyplot as plt
-from helper_funcs import *
-from rules import *
 from mpl_toolkits.mplot3d import Axes3D
+
+from simulate.helper_funcs import *
+from simulate.rules import *
 
 # ------------------------------------------
 # hibernacula-INDEPENDENT initial conditions

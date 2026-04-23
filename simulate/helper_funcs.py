@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from rules import *
+from simulate.rules import *
 
 def step(state, parameters):
     agg = aggregate(state)

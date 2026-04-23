@@ -1,9 +1,10 @@
 import random as rand
 import numpy as np
-from helper_funcs import *
-from rules import *
-from data import *
 import copy
+
+from simulate.helper_funcs import *
+from simulate.rules import *
+from simulate.data import *
 
 # --------------------
 # set up control group
