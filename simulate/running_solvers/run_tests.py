@@ -32,12 +32,12 @@ def sample_params():
     return {
         "p_infected": 0, #rand.uniform(0.01, 0.8),
         "p_dead": 0, #rand.uniform(0.01, 0.8),
-        "p_awake": 0.08,
+        "p_awake": rand.uniform(0.01, 0.2),
         "p_recover": 0, #rand.uniform(0.01, 0.8),
-        "p_hibernate": 0.5,
-        "p_netchange": 0.0002,
-        "water": rand.uniform(100,500),
-        "food": rand.uniform(100,500),
+        "p_hibernate": rand.uniform(0.01, 0.8),
+        "p_netchange": rand.uniform(0.0001, 0.0003),
+        "water": rand.uniform(100,5000),
+        "food": rand.uniform(100,5000),
         "winter": 120
     }
 

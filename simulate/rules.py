@@ -3,6 +3,7 @@ import random as rand
 def update_environment(state, agg, parameters):
     Wa, Fo, Te, Hu, WNS = state["Wa"], state["Fo"], state["Te"], state["Hu"], state["WNS"]
     NHi_NIn, Ot, Hi, In = agg["NHi_NIn_any"], agg["Ot_any"], agg["Hi_any"], agg["In_any"]
+    water, food = parameters["water"], parameters["food"]
 
     Wa_next = Wa
     Fo_next = Fo
@@ -12,8 +13,9 @@ def update_environment(state, agg, parameters):
     # -----------
     # apply rules
     # -----------
-    if NHi_NIn + In + Ot >= 5000: # rule 1 + 2
+    if NHi_NIn + In + Ot >= water: # rule 1 + 2
         Wa_next = 0
+    if NHi_NIn + In + Ot >= food: # rule 1 + 2
         Fo_next = 0
     if Wa == 1 and Te == 1: Hu_next = 0 # rule 4
     if Wa == 0: Fo_next = 0 # rule 5
@@ -60,9 +62,9 @@ def update_individuals(state, env, parameters):
         else:
             Hi_next.append(Hi)
 
-    # ----------
-    # Update NHi
-    # ----------
+    # --------------
+    # Update NHi_NIn
+    # --------------
     for i in range(len(state["NHi_NIn"])):
         NHi_NIn = state["NHi_NIn"][i]
 
@@ -91,6 +93,8 @@ def update_individuals(state, env, parameters):
         In = state["In"][i]
 
         if In and rand.uniform(0, 1) <= p_dead: # rule 9
+            De_next[len(state["Hi"]) + len(state["NHi_NIn"]) + len(state["Ot"]) + i] = 1
+        elif not Wa and not Fo: # rule 3
             De_next[len(state["Hi"]) + len(state["NHi_NIn"]) + len(state["Ot"]) + i] = 1
         elif In and rand.uniform(0,1) <= p_recover:
             Hi_next.append(1) # rule 13
