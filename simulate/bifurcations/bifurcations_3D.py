@@ -42,7 +42,7 @@ winter = 120            # CONFIDENT # length of winter season in Nebraska mines
 #times_list = [180, 365, 3*365]
 times_list = [180, 365, 3*365, 10*365, 20*365, 40*365]
 
-param_change = ["p_infected", "p_recover"]
+param_change = ["p_dead", "p_recover"]
 num_params = 50
 parameters_list = [np.linspace(0.001,0.1,num_params), np.linspace(0.0001,0.5,num_params)]
 totals_list = np.empty((num_params,num_params), dtype=object)
