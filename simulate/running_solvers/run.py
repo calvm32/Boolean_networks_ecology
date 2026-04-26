@@ -64,6 +64,7 @@ def simulate(initial_state, steps, parameters):
         "Ot":[],
         "In":[],
         "De":[],
+        "Re":[],
     }
 
     for t in range(steps):
@@ -80,6 +81,7 @@ def simulate(initial_state, steps, parameters):
         history["Ot"].append(counts["Ot"])
         history["In"].append(counts["In"])
         history["De"].append(counts["De"])
+        history["Re"].append(counts["Re"])
 
         state = step(state, parameters)
 
@@ -88,7 +90,7 @@ def simulate(initial_state, steps, parameters):
 
 def main():
 
-    inhabitant_nodes = ["Hi", "NHi_NIn", "In", "Ot", "De"]
+    inhabitant_nodes = ["Hi", "NHi_NIn", "In", "Ot", "De", "Re"]
     resource_nodes = ["Wa", "Fo"]
     environment_nodes = ["Te", "Hu", "El", "Po", "Su", "Ba", "WNS"]
 
