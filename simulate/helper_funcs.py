@@ -64,7 +64,7 @@ def plot_history(history, sample=[]):
     # total counts
     # ------------
 
-    total = np.array(history["Hi"]) + np.array(history["NHi_NIn"]) + np.array(history["In"])
+    total = np.array(history["Hi"]) + np.array(history["NHi_NIn"]) + np.array(history["In"]) + np.array(history["Re"])
 
     ax2.plot(t, total, label="Total tricolored bats")
     ax2.plot(t, history["Ot"], label="Other species (Ot)") if np.any(history["Ot"]) else None
@@ -112,7 +112,7 @@ def plot_history_highlights(history, winter, sample=[]):
     # total counts
     # ------------
 
-    total = np.array(history["Hi"]) + np.array(history["NHi_NIn"]) + np.array(history["In"])
+    total = np.array(history["Hi"]) + np.array(history["NHi_NIn"]) + np.array(history["In"]) + np.array(history["Re"])
 
     ax2.plot(t, total, label="Total tricolored bats")
     ax2.plot(t, history["Ot"], label="Other species (Ot)") if np.any(history["Ot"]) else None

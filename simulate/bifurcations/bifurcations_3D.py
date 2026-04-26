@@ -43,12 +43,12 @@ recovery_period = 130    # number of days spent in recovery before re-infection 
 # ------------------
 
 #times_list = [180, 365, 3*365]
-times_list = [180, 365, 3*365, 10*365, 20*365, 40*365]
+times_list = [180, 1, 3*365, 1, 20*365, 40*365]
 #times_list = [3*365, 10*365, 40*365]
 
-param_change = ["recovery_period", "p_recover"]
+param_change = ["p_dead", "p_recover"]
 num_params = 30
-parameters_list = [np.linspace(0,200,num_params), np.linspace(0.001,0.5,num_params)]
+parameters_list = [np.linspace(0.0001,0.01,num_params), np.linspace(0.001,0.5,num_params)]
 totals_list = np.empty((num_params,num_params), dtype=object)
 
 for i in range(num_params):
@@ -134,7 +134,7 @@ def main():
             parameters[param_change[1]] = parameters_list[1][j]
 
             history = simulate(make_initial_state(), steps=times_list[-1], parameters=parameters)
-            total = np.array(history["Hi"]) + np.array(history["NHi_NIn"]) + np.array(history["In"])
+            total = np.array(history["Hi"]) + np.array(history["NHi_NIn"]) + np.array(history["In"]) + np.array(history["Re"])
 
             totals_list[i][j] = total
             if (i % 10 == 0) and (j % 10 == 0): # save some time

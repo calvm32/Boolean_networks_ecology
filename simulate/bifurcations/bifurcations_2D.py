@@ -122,7 +122,7 @@ def main():
         parameters[param_change] = i
 
         history = simulate(make_initial_state(), steps=times_list[-1], parameters=parameters)
-        total = np.array(history["Hi"]) + np.array(history["NHi_NIn"]) + np.array(history["In"])
+        total = np.array(history["Hi"]) + np.array(history["NHi_NIn"]) + np.array(history["In"]) + np.array(history["Re"])
         totals_list.append(total)
         print(i)
 
