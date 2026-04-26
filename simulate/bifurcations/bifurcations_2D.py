@@ -52,7 +52,7 @@ param_change = "p_recover"
 
 def make_initial_state():
     return {
-        "Hi": [1]*(Hi_num + Re_num),
+        "Hi": [1]*(Hi_num),
         "NHi_NIn": [1]*NHi_NIn_num,
         "Ot": [1]*Ot_num,
         "In": [1]*In_num,

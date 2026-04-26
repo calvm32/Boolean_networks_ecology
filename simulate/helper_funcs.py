@@ -25,7 +25,7 @@ def count(state):
         "Ot": sum(state["Ot"]),
         "In": sum(state["In"]),
         "De": sum(state["De"]),
-        "Re": sum(state["De"])
+        "Re": sum(state["Re"])
     }
 
 def perturb(params, keys, scale=0.15):
@@ -53,7 +53,7 @@ def plot_history(history, sample=[]):
     ax1.plot(t, history["NHi_NIn"], label="Non-hibernating, non-infected (NHi_NIN)")
     ax1.plot(t, history["In"], label="Infected (In)")
     ax1.plot(t, history["De"], label="Deceased (De)")
-    ax1.plot(t, history["Re"], label="Deceased (Re)")
+    ax1.plot(t, history["Re"], label="Recovered (Re)")
     ax1.plot(t, history["Ot"], label="Other species (Ot)") if np.any(history["Ot"]) else None
 
     ax1.set_xlabel("Time step")
@@ -102,7 +102,7 @@ def plot_history_highlights(history, winter, sample=[]):
     ax1.plot(t, history["NHi_NIn"], label="Non-hibernating, non-infected (NHi_NIN)")
     ax1.plot(t, history["In"], label="Infected (In)")
     ax1.plot(t, history["De"], label="Deceased (De)")
-    ax1.plot(t, history["Re"], label="Deceased (Re)")
+    ax1.plot(t, history["Re"], label="Recovered (Re)")
     ax1.plot(t, history["Ot"], label="Other species (Ot)") if np.any(history["Ot"]) else None
 
     ax1.set_xlabel("Time step")
