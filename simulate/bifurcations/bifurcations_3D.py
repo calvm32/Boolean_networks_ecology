@@ -35,7 +35,7 @@ food = 170              # OKAY # number of bats it would take to deplete food co
 
 time = 3650             # total days
 winter = 120            # CONFIDENT # length of winter season in Nebraska mines
-recovery_period = 100    # number of days spent in recovery before re-infection is possible
+recovery_period = 130    # number of days spent in recovery before re-infection is possible
 
 # last tested 60
 # ------------------

@@ -34,17 +34,17 @@ food = 170              # OKAY # number of bats it would take to deplete food co
 
 time = 3650             # total days
 winter = 120            # CONFIDENT # length of winter season in Nebraska mines
-recovery_period = 10    # number of days spent in recovery before re-infection is possible
+recovery_period = 0    # number of days spent in recovery before re-infection is possible
 
 # ------------------
 # bifurcation values
 # ------------------
 
 times_list = [180, 365, 3*365, 10*365, 20*365, 40*365]
-parameters_list = np.linspace(0.001,0.1,100)
+parameters_list = np.linspace(0.001,0.5,100)
 totals_list = []
 
-param_change = "p_infected"
+param_change = "p_recover"
 
 # ----------
 # initialize
