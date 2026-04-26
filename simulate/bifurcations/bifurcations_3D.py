@@ -27,6 +27,7 @@ Hi_num = 500             # hibernating bats
 NHi_NIn_num = 0         # non-hibernating non-infected bats
 In_num = 1              # non-hibernating infected bats
 Ot_num = 0              # other bats
+Re_num = 0              # recovered bats
 
 # resource limits
 water = 290             # OKAY # number of bats it would take to deplete water completely
@@ -34,6 +35,7 @@ food = 170              # OKAY # number of bats it would take to deplete food co
 
 time = 3650             # total days
 winter = 120            # CONFIDENT # length of winter season in Nebraska mines
+recovery_period = 10    # number of days spent in recovery before re-infection is possible
 
 # ------------------
 # bifurcation values
@@ -57,11 +59,12 @@ for i in range(num_params):
 
 def make_initial_state():
     return {
-        "Hi": [1]*Hi_num,
+        "Hi": [1]*(Hi_num + Re_num),
         "NHi_NIn": [1]*NHi_NIn_num,
         "Ot": [1]*Ot_num,
         "In": [1]*In_num,
         "De": [0]*(Hi_num + NHi_NIn_num + In_num),
+        "Re": [0]*Re_num,
         "Wa": 1,
         "Fo": 1,
         "Te": 0,
@@ -118,7 +121,8 @@ def main():
         "p_netchange": p_netchange,
         "water": water,
         "food": food,
-        "winter": winter
+        "winter": winter,
+        "recovery_period": recovery_period
     }
 
     for i in range(len(parameters_list[0])):
