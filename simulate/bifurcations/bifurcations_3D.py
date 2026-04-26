@@ -42,8 +42,8 @@ recovery_period = 10    # number of days spent in recovery before re-infection i
 # ------------------
 
 #times_list = [180, 365, 3*365]
-#times_list = [180, 365, 3*365, 10*365, 20*365, 40*365]
-times_list = [3*365, 10*365, 40*365]
+times_list = [180, 365, 3*365, 10*365, 20*365, 40*365]
+#times_list = [3*365, 10*365, 40*365]
 
 param_change = ["p_infected", "p_recover"]
 num_params = 30
