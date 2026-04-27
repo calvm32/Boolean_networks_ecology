@@ -46,9 +46,9 @@ recovery_period = 130    # number of days spent in recovery before re-infection 
 times_list = [180, 365, 3*365, 10*365, 20*365, 40*365]
 #times_list = [3*365, 10*365, 40*365]
 
-param_change = ["p_dead", "p_recover"]
+param_change = ["p_dead", "p_infected"]
 num_params = 50
-parameters_list = [np.linspace(0.0001,0.01,num_params), np.linspace(0.001,0.5,num_params)]
+parameters_list = [np.linspace(0.0001,0.01,num_params), np.linspace(0.001,0.01,num_params)]
 totals_list = np.empty((num_params,num_params), dtype=object)
 
 for i in range(num_params):
