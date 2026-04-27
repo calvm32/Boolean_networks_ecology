@@ -43,11 +43,11 @@ recovery_period = 130    # number of days spent in recovery before re-infection 
 # ------------------
 
 #times_list = [180, 365, 3*365]
-times_list = [180, 1, 3*365, 1, 20*365, 40*365]
+times_list = [180, 365, 3*365, 10*365, 20*365, 40*365]
 #times_list = [3*365, 10*365, 40*365]
 
 param_change = ["p_dead", "p_recover"]
-num_params = 30
+num_params = 50
 parameters_list = [np.linspace(0.0001,0.01,num_params), np.linspace(0.001,0.5,num_params)]
 totals_list = np.empty((num_params,num_params), dtype=object)
 
@@ -167,7 +167,7 @@ def main():
         ax.set_zlabel(f"Population at day {time}")
         ax.set_title(f"Population at day {time}")
 
-    plt.savefig("3D_bifurcations.png", dpi=200, bbox_inches='tight')
+    plt.savefig("3D_bifurcations.png", dpi=200)
     plt.show()
     
 if __name__ == "__main__":
