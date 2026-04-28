@@ -133,9 +133,13 @@ def plot_history_highlights(history, winter, sample=[]):
 
     # highlight the winter data
     for time in t:
-        if time % 365 == winter:
+        
+        if time % 365 == winter and time <= 365:
             ax1.axvspan(time - winter, time, facecolor='blue', alpha=0.1)
             ax2.axvspan(time - winter, time, facecolor='blue', alpha=0.1)
+        if time % 365 == winter:
+            ax1.axvspan(time - winter + 365, time + 365, facecolor='blue', alpha=0.1)
+            ax2.axvspan(time - winter + 365, time + 365, facecolor='blue', alpha=0.1)
 
     plt.tight_layout()
     plt.show()

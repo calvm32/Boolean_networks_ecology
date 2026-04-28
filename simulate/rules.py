@@ -61,7 +61,7 @@ def update_individuals(state, env, parameters):
     for i in range(len(state["Hi"])):
         Hi = state["Hi"][i]
 
-        if WNS and Hi and rand.uniform(0, 1) <= p_infected: # rule 9
+        if WNS and Hi and rand.uniform(0, 1) and not Te <= p_infected: # rule 9
             In_next.append(1)
         elif not Te and Hi and rand.uniform(0, 1) <= p_awake: # rule 1
             NHi_NIn_next.append(1)

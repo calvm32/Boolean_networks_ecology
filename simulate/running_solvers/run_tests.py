@@ -38,7 +38,8 @@ def sample_params():
         "p_netchange": rand.uniform(0.0001, 0.0003),
         "water": rand.uniform(100,5000),
         "food": rand.uniform(100,5000),
-        "winter": 120
+        "winter": 120,
+        "immunity_period": immunity_period
     }
 
 # ------------------------------------------
