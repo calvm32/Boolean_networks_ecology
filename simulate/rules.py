@@ -126,7 +126,7 @@ def update_individuals(state, env, parameters):
     # Influx (summer only)
     # --------------------
     if Te == 1:
-        n_influx = len(NHi_NIn_next) + len(Ot_next) - len(In_next)
+        n_influx = len(state["NHi_NIn"]) + len(state["Ot"])
         n_influx = max(n_influx, 0) # active and NON-infected bats reproduce
         
         births = 0
