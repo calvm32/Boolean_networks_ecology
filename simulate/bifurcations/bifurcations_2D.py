@@ -41,7 +41,7 @@ immunity_period = 0    # number of days spent in recovery before re-infection is
 # ------------------
 
 times_list = [180, 365, 3*365, 10*365, 20*365, 40*365]
-parameters_list = np.linspace(0.001,0.5,100)
+parameters_list = np.linspace(0.001,0.5,20)
 totals_list = []
 
 param_change = "p_recover"
@@ -120,13 +120,13 @@ def main():
         "immunity_period": immunity_period
     }
 
-    for i in parameters_list:
+    for i in range(len(parameters_list)):
         parameters[param_change] = i
 
         history = simulate(make_initial_state(), steps=times_list[-1], parameters=parameters)
         total = np.array(history["Hi"]) + np.array(history["NHi_NIn"]) + np.array(history["In"]) + np.array(history["Re"])
         totals_list.append(total)
-        print(i)
+        print(f"{i}/{len(parameters_list)}")
 
     fig, axes = plt.subplots(nrows=3, ncols=2, figsize=(8, 10))
     axes = axes.ravel() # for iteration

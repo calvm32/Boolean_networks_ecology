@@ -102,9 +102,7 @@ def update_individuals(state, env, parameters):
         In = state["In"][i]
         idx = len(state["Hi"]) + len(state["NHi_NIn"]) + len(state["Ot"]) + i
 
-        if In and rand.uniform(0, 1) <= p_dead: # rule 9
-            De_next[idx] = 1
-        elif not Wa and not Fo: # rule 3
+        if (In and rand.uniform(0, 1) <= p_dead) or (not Wa and not Fo): # rule 9 or 3
             De_next[idx] = 1
         elif In and rand.uniform(0,1) <= p_recover: # rule 13
             Re_next.append(0) # start recovery counter
@@ -126,7 +124,7 @@ def update_individuals(state, env, parameters):
     # Influx (summer only)
     # --------------------
     if Te == 1:
-        n_influx = len(state["NHi_NIn"]) + len(state["Ot"])
+        n_influx = len(state["NHi_NIn"]) + len(state["Re"])
         n_influx = max(n_influx, 0) # active and NON-infected bats reproduce
         
         births = 0
