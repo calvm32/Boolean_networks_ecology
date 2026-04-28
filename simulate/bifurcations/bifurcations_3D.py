@@ -48,8 +48,8 @@ times_list = [180, 365, 3*365, 10*365, 20*365, 40*365]
 #times_list = [3*365, 10*365, 40*365]
 
 param_change = ["p_dead", "p_infected"]
-num_params = 20
-parameters_list = [np.linspace(0.0001,0.01,num_params), np.linspace(0.01,1.0,num_params)]
+num_params = 40
+parameters_list = [np.linspace(0.001,0.1,num_params), np.linspace(0.01,1.0,num_params)]
 totals_list = np.empty((num_params,num_params), dtype=object)
 
 for i in range(num_params):
@@ -146,7 +146,7 @@ def main():
 
     rows = 2
     cols = len(times_list)// rows
-    fig, axes = plt.subplots(nrows=rows, ncols=cols, figsize=(12, 12*rows//cols), subplot_kw={'projection': '3d'})
+    fig, axes = plt.subplots(nrows=rows, ncols=cols, figsize=(12, 10), subplot_kw={'projection': '3d'}, constrained_layout=True)
     axes = axes.ravel()
 
     # for 3d plotting
@@ -167,9 +167,19 @@ def main():
         ax.set_xlabel(f"{param_change[0]}")
         ax.set_ylabel(f"{param_change[1]}")
         ax.set_zlabel(f"Population at day {time}")
-        ax.set_title(f"Population at day {time}")
+        ax.set_title(f"Population at day {time}", pad=15)
+
+    for ax in axes:
+        ax.zaxis.labelpad = 10
+        ax.xaxis.labelpad = 10
+        ax.yaxis.labelpad = 10
     
-    fig.subplots_adjust(bottom=0.2)
+    fig.set_constrained_layout_pads(
+        w_pad=0.05,   # width padding
+        h_pad=0.1,    # height padding
+        hspace=0.2,
+        wspace=0.2
+    )
 
     plt.savefig("3D_bifurcations.png", dpi=200)
     plt.show()
