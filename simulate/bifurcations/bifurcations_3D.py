@@ -48,7 +48,7 @@ times_list = [180, 365, 3*365, 10*365, 20*365, 40*365]
 
 param_change = ["p_dead", "p_infected"]
 num_params = 20
-parameters_list = [np.linspace(0.0001,0.01,num_params), np.linspace(0.0001,0.01,num_params)]
+parameters_list = [np.linspace(0.0001,0.01,num_params), np.linspace(0.0001,1.0,3*num_params)]
 totals_list = np.empty((num_params,num_params), dtype=object)
 
 for i in range(num_params):
