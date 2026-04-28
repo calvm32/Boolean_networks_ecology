@@ -57,9 +57,9 @@ num_params = 30
 # title = "deadvinf"
 
 # dead vs rec
-param_change = ["p_dead", "p_recover"]
-parameters_list = [np.linspace(0.001,0.1,num_params), np.linspace(0.001,1.0,num_params)]
-title = "deadvrec"
+# param_change = ["p_dead", "p_recover"]
+# parameters_list = [np.linspace(0.001,0.1,num_params), np.linspace(0.001,1.0,num_params)]
+# title = "deadvrec"
 
 # inf vs rec
 # param_change = ["p_infected", "p_recover"]
@@ -72,9 +72,9 @@ title = "deadvrec"
 # title = "infvimm"
 
 # inf v contact rate
-# param_change = ["p_infected", "contact_rate"]
-# parameters_list = [np.linspace(0.001,0.1,num_params), np.linspace(0,130,num_params)]
-# title = "infvcon"
+param_change = ["p_infected", "contact_rate"]
+parameters_list = [np.linspace(0.001,0.1,num_params), np.linspace(0,130,num_params)]
+title = "infvcon"
 
 # --------------
 # actual testing
