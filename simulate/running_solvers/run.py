@@ -21,19 +21,19 @@ p_netchange = 0.000215    # CONFIDENT # chance of new bat due to immigration/bir
 # ----------------------------------------
 
 # population counts
-Hi_num = 50            # hibernating bats
+Hi_num = 500            # hibernating bats
 NHi_NIn_num = 0         # non-hibernating non-infected bats
 In_num = 1              # non-hibernating infected bats
 Ot_num = 0              # other bats
 Re_num = 0              # recovered bats
 
 # resource limits
-water = 350            # OKAY # number of bats it would take to deplete water completely
-food = 350             # OKAY # number of bats it would take to deplete food completely
+water = 1000            # OKAY # number of bats it would take to deplete water completely
+food = 1000             # OKAY # number of bats it would take to deplete food completely
 
 time = 3650              # total days
 winter = 120            # CONFIDENT # length of winter season in Nebraska mines
-immunity_period = 10    # number of days spent in recovery before re-infection is possible
+immunity_period = 130    # number of days spent in recovery before re-infection is possible
 contact_rate = 20       # population-dependent rate of contact btwn health bat and WNS infected bat or surface
 
 # ----------
@@ -106,6 +106,8 @@ def main():
         "p_netchange": p_netchange,
         "water": water,
         "food": food,
+        "water0": water,
+        "food0": food,
         "winter": winter,
         "immunity_period": immunity_period,
         "contact_rate": contact_rate

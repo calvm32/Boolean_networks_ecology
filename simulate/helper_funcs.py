@@ -16,6 +16,10 @@ def aggregate(state):
         "NHi_NIn_any": any(state["NHi_NIn"]),
         "Ot_any": any(state["Ot"]),
         "In_any": any(state["In"]),
+        "Hi_sum": sum(state["Hi"]),
+        "NHi_NIn_sum": sum(state["NHi_NIn"]),
+        "Ot_sum": sum(state["Ot"]),
+        "In_sum": sum(state["In"]),
     }
 
 def count(state):
@@ -25,7 +29,7 @@ def count(state):
         "Ot": sum(state["Ot"]),
         "In": sum(state["In"]),
         "De": sum(state["De"]),
-        "Re": sum(state["Re"])
+        "Re": len(state["Re"])
     }
 
 def perturb(params, keys, scale=0.15):
