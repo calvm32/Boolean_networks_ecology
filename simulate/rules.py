@@ -82,6 +82,7 @@ def update_individuals(state, env, parameters):
 
         if not Wa and not Fo: # rule 3
             De_next[len(state["Hi"]) + i] = 1
+            continue
         elif not Te and NHi_NIn and rand.uniform(0,1) <= p_hibernate: # rules 6/7
             Hi_next.append(1) 
         else:
@@ -96,6 +97,7 @@ def update_individuals(state, env, parameters):
 
         if not Wa and not Fo: # rule 3
             De_next[idx] = 1
+            continue
         else:
             Ot_next.append(Ot)
 
@@ -108,6 +110,7 @@ def update_individuals(state, env, parameters):
 
         if (In and rand.uniform(0, 1) <= p_dead) or (not Wa and not Fo): # rule 9 or 3
             De_next[idx] = 1
+            continue
         elif In and rand.uniform(0,1) <= p_recover: # rule 13
             Re_next.append(0) # start recovery counter
         else:
