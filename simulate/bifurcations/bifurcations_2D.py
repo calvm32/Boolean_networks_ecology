@@ -42,10 +42,12 @@ contact_rate = 20       # population-dependent rate of contact btwn health bat a
 # ------------------
 
 times_list = [180, 365, 3*365, 10*365, 20*365, 40*365]
-parameters_list = np.linspace(0.001,1.0,50)
-totals_list = []
+num_params = 40
 
-param_change = "p_recover"
+param_change = "contact_rate"
+parameters_list = np.linspace(1.0,100.0,num_params)
+
+totals_list = []
 
 # ----------
 # initialize

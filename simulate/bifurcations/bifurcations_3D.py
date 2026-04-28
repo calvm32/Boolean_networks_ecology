@@ -38,28 +38,41 @@ winter = 120            # CONFIDENT # length of winter season in Nebraska mines
 immunity_period = 130    # number of days spent in recovery before re-infection is possible
 contact_rate = 20       # population-dependent rate of contact btwn health bat and WNS infected bat or surface
 
-# last tested 60
+
 # ------------------
 # bifurcation values
 # ------------------
 
-#times_list = [180, 365, 3*365]
 times_list = [180, 365, 3*365, 10*365, 20*365, 40*365]
-#times_list = [3*365, 10*365, 40*365]
-
 num_params = 40
 
-# dead v inf
+# ------------------
+# parameters to test
+# ------------------
+
+# dead vs inf
 # param_change = ["p_dead", "p_infected"]
 # parameters_list = [np.linspace(0.001,0.1,num_params), np.linspace(0.01,1.0,num_params)]
+# title = "deadvinf"
 
-# dead v rec
+# dead vs rec
 # param_change = ["p_dead", "p_recover"]
 # parameters_list = [np.linspace(0.001,0.1,num_params), np.linspace(0.001,1.0,num_params)]
+# title = "deadvrec"
 
-# inf v rec
-param_change = ["p_infected", "p_recover"]
-parameters_list = [np.linspace(0.001,0.1,num_params), np.linspace(0.001,1.0,num_params)]
+# inf vs rec
+# param_change = ["p_infected", "p_recover"]
+# parameters_list = [np.linspace(0.001,0.1,num_params), np.linspace(0.001,1.0,num_params)]
+# title = "infvrec"
+
+# inf v immune
+param_change = ["p_infected", "immunity_period"]
+parameters_list = [np.linspace(0.001,0.1,num_params), np.linspace(0,130,num_params)]
+title = "infvimm"
+
+# --------------
+# actual testing
+# --------------
 
 totals_list = np.empty((num_params,num_params), dtype=object)
 
@@ -192,7 +205,7 @@ def main():
         wspace=0.2
     )
 
-    plt.savefig("3D_bifurcations.png", dpi=200)
+    plt.savefig(f"3D_bifurcations_{title}.png", dpi=200)
     plt.show()
     
 if __name__ == "__main__":
