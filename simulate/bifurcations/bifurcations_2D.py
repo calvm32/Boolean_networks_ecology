@@ -119,9 +119,11 @@ def main():
         "p_netchange": p_netchange,
         "water": water,
         "food": food,
+        "water0": water,
+        "food0": food,
         "winter": winter,
         "immunity_period": immunity_period,
-        "contact_rate": contact_rate,
+        "contact_rate": contact_rate
     }
 
     for i in range(len(parameters_list)):
