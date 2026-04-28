@@ -146,7 +146,7 @@ def main():
 
     rows = 2
     cols = len(times_list)// rows
-    fig, axes = plt.subplots(nrows=rows, ncols=cols, figsize=(12, 12*rows//cols), subplot_kw={'projection': '3d'}, constrained_layout=True)
+    fig, axes = plt.subplots(nrows=rows, ncols=cols, figsize=(12, 12*rows//cols), subplot_kw={'projection': '3d'})
     axes = axes.ravel()
 
     # for 3d plotting
