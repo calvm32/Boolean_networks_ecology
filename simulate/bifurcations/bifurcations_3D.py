@@ -54,7 +54,11 @@ num_params = 40
 # parameters_list = [np.linspace(0.001,0.1,num_params), np.linspace(0.01,1.0,num_params)]
 
 # dead v rec
-param_change = ["p_dead", "p_recover"]
+# param_change = ["p_dead", "p_recover"]
+# parameters_list = [np.linspace(0.001,0.1,num_params), np.linspace(0.001,1.0,num_params)]
+
+# inf v rec
+param_change = ["p_infected", "p_recover"]
 parameters_list = [np.linspace(0.001,0.1,num_params), np.linspace(0.001,1.0,num_params)]
 
 totals_list = np.empty((num_params,num_params), dtype=object)
