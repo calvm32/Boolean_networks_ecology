@@ -24,7 +24,7 @@ p_netchange = 0.000215    # CONFIDENT # chance of new bat due to immigration/bir
 # population counts
 Hi_num = 500            # hibernating bats
 NHi_NIn_num = 0         # non-hibernating non-infected bats
-In_num = 1              # non-hibernating infected bats
+In_num = 10              # non-hibernating infected bats
 Ot_num = 0              # other bats
 Re_num = 0              # recovered bats
 
@@ -42,7 +42,7 @@ contact_rate = 20       # population-dependent rate of contact btwn health bat a
 # ------------------
 
 times_list = [180, 365, 3*365, 10*365, 20*365, 40*365]
-num_params = 40
+num_params = 10
 
 param_change = "contact_rate"
 parameters_list = np.linspace(1.0,100.0,num_params)

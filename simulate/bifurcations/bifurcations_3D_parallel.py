@@ -51,15 +51,15 @@ num_params = 30
 # parameters to test
 # ------------------
 
-# dead vs inf
-param_change = ["p_dead", "p_infected"]
-parameters_list = [np.linspace(0.001,0.1,num_params), np.linspace(0.01,1.0,num_params)]
-title = "deadvinf"
+# dead vs inf DONE
+# param_change = ["p_dead", "p_infected"]
+# parameters_list = [np.linspace(0.001,0.1,num_params), np.linspace(0.01,1.0,num_params)]
+# title = "deadvinf"
 
 # dead vs rec
-# param_change = ["p_dead", "p_recover"]
-# parameters_list = [np.linspace(0.001,0.1,num_params), np.linspace(0.001,1.0,num_params)]
-# title = "deadvrec"
+param_change = ["p_dead", "p_recover"]
+parameters_list = [np.linspace(0.001,0.1,num_params), np.linspace(0.001,1.0,num_params)]
+title = "deadvrec"
 
 # inf vs rec
 # param_change = ["p_infected", "p_recover"]
