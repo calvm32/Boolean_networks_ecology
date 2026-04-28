@@ -44,16 +44,16 @@ contact_rate = 20       # population-dependent rate of contact btwn health bat a
 # ------------------
 
 times_list = [180, 365, 3*365, 10*365, 20*365, 40*365]
-num_params = 40
+num_params = 30
 
 # ------------------
 # parameters to test
 # ------------------
 
 # dead vs inf
-# param_change = ["p_dead", "p_infected"]
-# parameters_list = [np.linspace(0.001,0.1,num_params), np.linspace(0.01,1.0,num_params)]
-# title = "deadvinf"
+param_change = ["p_dead", "p_infected"]
+parameters_list = [np.linspace(0.001,0.1,num_params), np.linspace(0.01,1.0,num_params)]
+title = "deadvinf"
 
 # dead vs rec
 # param_change = ["p_dead", "p_recover"]
@@ -66,9 +66,14 @@ num_params = 40
 # title = "infvrec"
 
 # inf v immune
-param_change = ["p_infected", "immunity_period"]
-parameters_list = [np.linspace(0.001,0.1,num_params), np.linspace(0,130,num_params)]
-title = "infvimm"
+# param_change = ["p_infected", "immunity_period"]
+# parameters_list = [np.linspace(0.001,0.1,num_params), np.linspace(0,130,num_params)]
+# title = "infvimm"
+
+# inf v contact rate
+# param_change = ["p_infected", "contact_rate"]
+# parameters_list = [np.linspace(0.001,0.1,num_params), np.linspace(0,130,num_params)]
+# title = "infvcon"
 
 # --------------
 # actual testing
@@ -170,7 +175,7 @@ def main():
 
     rows = 2
     cols = len(times_list)// rows
-    fig, axes = plt.subplots(nrows=rows, ncols=cols, figsize=(12, 10), subplot_kw={'projection': '3d'}, constrained_layout=True)
+    fig, axes = plt.subplots(nrows=rows, ncols=cols, figsize=(14, 10), subplot_kw={'projection': '3d'}, constrained_layout=True)
     axes = axes.ravel()
 
     # for 3d plotting

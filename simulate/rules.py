@@ -52,11 +52,7 @@ def update_individuals(state, env, parameters):
     )
 
     infected = len(state["In"])
-    susceptible = len(state["Hi"]) + len(state["NHi_NIn"])
-    if susceptible != 0:
-        SIR_infection_rate = (p_infected * contact_rate * infected / susceptible)
-    else:
-        SIR_infection_rate = 0
+    SIR_infection_rate = (p_infected * contact_rate * infected / total_inhabitants)
 
     De_next  = state["De"][:]
     if len(De_next) < total_inhabitants:
