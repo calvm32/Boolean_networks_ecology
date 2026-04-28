@@ -10,7 +10,7 @@ from simulate.rules import *
 
 # probabilities
 p_infected = 0.01         # chance a hibernating bat gets infected (given that WNS is on) on any given day
-p_dead = 0.005            # chance that an infected bat dies on any given day
+p_dead = 0.0001            # chance that an infected bat dies on any given day
 p_recover = 0.01          # chance of recovering and going back into hibernation on any given day
 p_awake = 0.08            # OKAY # chance of a waking bat arousing a hibernating bat from torpor on any given day
 p_hibernate = 0.5         # CONFIDENT # chance of a bat switching between hibernating and not (given that Te switches) on any given day
@@ -23,7 +23,7 @@ p_netchange = 0.000215    # CONFIDENT # chance of new bat due to immigration/bir
 # population counts
 Hi_num = 500            # hibernating bats
 NHi_NIn_num = 0         # non-hibernating non-infected bats
-In_num = 1              # non-hibernating infected bats
+In_num = 0              # non-hibernating infected bats
 Ot_num = 0              # other bats
 Re_num = 0              # recovered bats
 
