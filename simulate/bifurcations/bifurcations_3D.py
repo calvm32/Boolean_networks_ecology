@@ -47,9 +47,16 @@ contact_rate = 20       # population-dependent rate of contact btwn health bat a
 times_list = [180, 365, 3*365, 10*365, 20*365, 40*365]
 #times_list = [3*365, 10*365, 40*365]
 
-param_change = ["p_dead", "p_infected"]
 num_params = 40
-parameters_list = [np.linspace(0.001,0.1,num_params), np.linspace(0.01,1.0,num_params)]
+
+# dead v inf
+# param_change = ["p_dead", "p_infected"]
+# parameters_list = [np.linspace(0.001,0.1,num_params), np.linspace(0.01,1.0,num_params)]
+
+# dead v rec
+param_change = ["p_dead", "p_recover"]
+parameters_list = [np.linspace(0.001,0.1,num_params), np.linspace(0.001,1.0,num_params)]
+
 totals_list = np.empty((num_params,num_params), dtype=object)
 
 for i in range(num_params):
