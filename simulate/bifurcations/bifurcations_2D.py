@@ -34,14 +34,15 @@ food = 170              # OKAY # number of bats it would take to deplete food co
 
 time = 3650             # total days
 winter = 120            # CONFIDENT # length of winter season in Nebraska mines
-immunity_period = 0    # number of days spent in recovery before re-infection is possible
+immunity_period = 20    # number of days spent in recovery before re-infection is possible
+contact_rate = 20       # population-dependent rate of contact btwn health bat and WNS infected bat or surface rate of contact btwn health bat and WNS infected bat or surface
 
 # ------------------
 # bifurcation values
 # ------------------
 
 times_list = [180, 365, 3*365, 10*365, 20*365, 40*365]
-parameters_list = np.linspace(0.001,0.5,20)
+parameters_list = np.linspace(0.001,1.0,50)
 totals_list = []
 
 param_change = "p_recover"
@@ -117,7 +118,8 @@ def main():
         "water": water,
         "food": food,
         "winter": winter,
-        "immunity_period": immunity_period
+        "immunity_period": immunity_period,
+        "contact_rate": contact_rate,
     }
 
     for i in range(len(parameters_list)):
@@ -128,7 +130,7 @@ def main():
         totals_list.append(total)
         print(f"{i}/{len(parameters_list)}")
 
-    fig, axes = plt.subplots(nrows=3, ncols=2, figsize=(8, 10))
+    fig, axes = plt.subplots(nrows=2, ncols=3, figsize=(8, 10))
     axes = axes.ravel() # for iteration
 
     for i, time in enumerate(times_list):

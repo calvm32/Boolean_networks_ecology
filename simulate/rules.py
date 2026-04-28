@@ -34,7 +34,7 @@ def update_environment(state, agg, parameters):
 def update_individuals(state, env, parameters):
     Wa, Fo, Te, Hu, WNS = env["Wa"], env["Fo"], env["Te"], env["Hu"], env["WNS"]
     p_awake, p_dead, p_hibernate, p_infected, p_recover, p_netchange = parameters["p_awake"], parameters["p_dead"], parameters["p_hibernate"], parameters["p_infected"], parameters["p_recover"], parameters["p_netchange"]
-    food, water, immunity_period = parameters["food"], parameters["water"], parameters["immunity_period"]
+    food, water, immunity_period, contact_rate = parameters["food"], parameters["water"], parameters["immunity_period"], parameters["contact_rate"]
 
     Hi_next  = []
     NHi_NIn_next = []
@@ -53,6 +53,10 @@ def update_individuals(state, env, parameters):
 
     infected = len(state["In"])
     susceptible = len(state["Hi"]) + len(state["NHi_NIn"])
+    if susceptible != 0:
+        SIR_infection_rate = (p_infected * contact_rate * infected / susceptible)
+    else:
+        SIR_infection_rate = 0
 
     De_next  = state["De"][:]
     if len(De_next) < total_inhabitants:
@@ -64,7 +68,7 @@ def update_individuals(state, env, parameters):
     for i in range(len(state["Hi"])):
         Hi = state["Hi"][i]
 
-        if WNS and Hi and Te == 0 and rand.uniform(0, 1) <= (p_infected * infected / susceptible): # rule 9
+        if WNS and Hi and Te == 0 and rand.uniform(0, 1) <= SIR_infection_rate: # rule 9
             In_next.append(1)
         elif not Te and Hi and rand.uniform(0, 1) <= p_awake: # rule 1
             NHi_NIn_next.append(1)

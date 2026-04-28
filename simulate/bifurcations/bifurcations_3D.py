@@ -36,6 +36,7 @@ food = 170              # OKAY # number of bats it would take to deplete food co
 time = 3650             # total days
 winter = 120            # CONFIDENT # length of winter season in Nebraska mines
 immunity_period = 130    # number of days spent in recovery before re-infection is possible
+contact_rate = 20       # population-dependent rate of contact btwn health bat and WNS infected bat or surface
 
 # last tested 60
 # ------------------
@@ -126,7 +127,8 @@ def main():
         "water": water,
         "food": food,
         "winter": winter,
-        "immunity_period": immunity_period
+        "immunity_period": immunity_period,
+        "contact_rate": contact_rate
     }
 
     for i in range(len(parameters_list[0])):

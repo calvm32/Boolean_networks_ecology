@@ -39,7 +39,8 @@ def sample_params():
         "water": rand.uniform(100,5000),
         "food": rand.uniform(100,5000),
         "winter": 120,
-        "immunity_period": immunity_period
+        "immunity_period": immunity_period,
+        "contact_rate": contact_rate
     }
 
 # ------------------------------------------
@@ -72,6 +73,7 @@ food = 5000             # number of bats it would take to deplete food completel
 time = 120              # total days
 winter = 120            # length of winter season
 immunity_period = 10    # number of days spent in recovery before re-infection is possible
+contact_rate = 20       # population-dependent rate of contact btwn health bat and WNS infected bat or surface
 
 # ----------
 # initialize
@@ -167,7 +169,8 @@ def main():
         "water": water,
         "food": food,
         "winter": winter,
-        "immunity_period": immunity_period
+        "immunity_period": immunity_period,
+        "contact_rate": contact_rate
     }
 
     best = None

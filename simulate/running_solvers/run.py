@@ -34,6 +34,7 @@ food = 350             # OKAY # number of bats it would take to deplete food com
 time = 3650              # total days
 winter = 120            # CONFIDENT # length of winter season in Nebraska mines
 immunity_period = 10    # number of days spent in recovery before re-infection is possible
+contact_rate = 20       # population-dependent rate of contact btwn health bat and WNS infected bat or surface
 
 # ----------
 # initialize
@@ -106,11 +107,12 @@ def main():
         "water": water,
         "food": food,
         "winter": winter,
-        "immunity_period": immunity_period
+        "immunity_period": immunity_period,
+        "contact_rate": contact_rate
     }
 
     history = simulate(make_initial_state(), steps=time, parameters=parameters)
-    plot_history(history)
+    plot_history_highlights(history, winter)
 
 if __name__ == "__main__":
     main()
