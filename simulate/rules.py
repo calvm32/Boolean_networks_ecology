@@ -23,7 +23,7 @@ def update_environment(state, agg, parameters):
     if Wa == 1 and Hu == 1: WNS_next = 0
     if In >= 1:
         WNS_next = 1
-    elif Te == 1: % WNS dies in summer
+    elif Te == 1: # WNS dies in summer
         WNS_next = 0
 
     return {
