@@ -21,7 +21,10 @@ def update_environment(state, agg, parameters):
     if Wa == 0: Fo_next = 0 # rule 5
     if Te == 1: Wa_next = 1; Fo_next = 1 # rule 7
     if Wa == 1 and Hu == 1: WNS_next = 0
-    if In >= 1: WNS_next = 1
+    if In >= 1:
+        WNS_next = 1
+    elif Te == 1: % WNS dies in summer
+        WNS_next = 0
 
     return {
         "Wa": int(Wa_next),
@@ -69,7 +72,7 @@ def update_individuals(state, env, parameters):
     for i in range(len(state["Hi"])):
         Hi = state["Hi"][i]
 
-        if WNS and Hi and Te == 0 and rand.uniform(0, 1) <= SIR_infection_rate: # rule 9
+        if WNS and Hi and Te == 0 and rand.uniform(0, 1) < SIR_infection_rate: # rule 9
             In_next.append(1)
         elif not Te and Hi and rand.uniform(0, 1) <= p_awake: # rule 1
             NHi_NIn_next.append(1)
@@ -134,6 +137,7 @@ def update_individuals(state, env, parameters):
     # --------------------
     # Influx (summer only)
     # --------------------
+    
     if Te == 1:
         n_influx = len(state["NHi_NIn"]) + len(state["Re"])
         n_influx = max(n_influx, 0) # active and NON-infected bats reproduce
