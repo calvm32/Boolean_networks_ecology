@@ -35,7 +35,7 @@ food = 170              # OKAY # number of bats it would take to deplete food co
 
 time = 3650             # total days
 winter = 120            # CONFIDENT # length of winter season in Nebraska mines
-recovery_period = 130    # number of days spent in recovery before re-infection is possible
+immunity_period = 130    # number of days spent in recovery before re-infection is possible
 
 # last tested 60
 # ------------------
@@ -48,7 +48,7 @@ times_list = [180, 365, 3*365, 10*365, 20*365, 40*365]
 
 param_change = ["p_dead", "p_infected"]
 num_params = 50
-parameters_list = [np.linspace(0.0001,0.01,num_params), np.linspace(0.001,0.01,num_params)]
+parameters_list = [np.linspace(0.0001,0.01,num_params), np.linspace(0.0001,0.01,num_params)]
 totals_list = np.empty((num_params,num_params), dtype=object)
 
 for i in range(num_params):
@@ -126,7 +126,7 @@ def main():
         "water": water,
         "food": food,
         "winter": winter,
-        "recovery_period": recovery_period
+        "immunity_period": immunity_period
     }
 
     for i in range(len(parameters_list[0])):
@@ -166,6 +166,8 @@ def main():
         ax.set_ylabel(f"{param_change[1]}")
         ax.set_zlabel(f"Population at day {time}")
         ax.set_title(f"Population at day {time}")
+    
+    fig.subplots_adjust(bottom=0.2)
 
     plt.savefig("3D_bifurcations.png", dpi=200)
     plt.show()

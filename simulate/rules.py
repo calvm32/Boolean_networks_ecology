@@ -34,7 +34,7 @@ def update_environment(state, agg, parameters):
 def update_individuals(state, env, parameters):
     Wa, Fo, Te, Hu, WNS = env["Wa"], env["Fo"], env["Te"], env["Hu"], env["WNS"]
     p_awake, p_dead, p_hibernate, p_infected, p_recover, p_netchange = parameters["p_awake"], parameters["p_dead"], parameters["p_hibernate"], parameters["p_infected"], parameters["p_recover"], parameters["p_netchange"]
-    food, water, recovery_period = parameters["food"], parameters["water"], parameters["recovery_period"]
+    food, water, immunity_period = parameters["food"], parameters["water"], parameters["immunity_period"]
 
     Hi_next  = []
     NHi_NIn_next = []
@@ -117,7 +117,7 @@ def update_individuals(state, env, parameters):
     for i in range(len(state["Re"])):
         age = state["Re"][i]
 
-        if age >= recovery_period:
+        if age >= immunity_period:
             Hi_next.append(1) # return to hibernation
         else:
             Re_next.append(age + 1)

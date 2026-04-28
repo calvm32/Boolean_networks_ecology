@@ -33,7 +33,7 @@ food = 350             # OKAY # number of bats it would take to deplete food com
 
 time = 3650              # total days
 winter = 120            # CONFIDENT # length of winter season in Nebraska mines
-recovery_period = 10    # number of days spent in recovery before re-infection is possible
+immunity_period = 10    # number of days spent in recovery before re-infection is possible
 
 # ----------
 # initialize
@@ -106,7 +106,7 @@ def main():
         "water": water,
         "food": food,
         "winter": winter,
-        "recovery_period": recovery_period
+        "immunity_period": immunity_period
     }
 
     history = simulate(make_initial_state(), steps=time, parameters=parameters)

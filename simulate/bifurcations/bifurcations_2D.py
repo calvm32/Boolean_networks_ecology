@@ -10,7 +10,7 @@ from simulate.rules import *
 # ------------------------------------------
 
 # probabilities
-p_infected = 0.01         # chance a hibernating bat gets infected (given that WNS is on) on any given day
+p_infected = 0.0         # chance a hibernating bat gets infected (given that WNS is on) on any given day
 p_dead = 0.005            # chance that an infected bat dies on any given day
 p_recover = 0.01          # chance of recovering and going back into hibernation on any given day
 p_awake = 0.08            # OKAY # chance of a waking bat arousing a hibernating bat from torpor on any given day
@@ -34,7 +34,7 @@ food = 170              # OKAY # number of bats it would take to deplete food co
 
 time = 3650             # total days
 winter = 120            # CONFIDENT # length of winter season in Nebraska mines
-recovery_period = 0    # number of days spent in recovery before re-infection is possible
+immunity_period = 0    # number of days spent in recovery before re-infection is possible
 
 # ------------------
 # bifurcation values
@@ -117,7 +117,7 @@ def main():
         "water": water,
         "food": food,
         "winter": winter,
-        "recovery_period": recovery_period
+        "immunity_period": immunity_period
     }
 
     for i in parameters_list:

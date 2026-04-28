@@ -71,7 +71,7 @@ food = 5000             # number of bats it would take to deplete food completel
 
 time = 120              # total days
 winter = 120            # length of winter season
-recovery_period = 10    # number of days spent in recovery before re-infection is possible
+immunity_period = 10    # number of days spent in recovery before re-infection is possible
 
 # ----------
 # initialize
@@ -170,7 +170,7 @@ def main():
         "water": water,
         "food": food,
         "winter": winter,
-        "recovery_period": recovery_period
+        "immunity_period": immunity_period
     }
 
     best = None
