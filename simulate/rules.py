@@ -53,6 +53,7 @@ def update_individuals(state, env, parameters):
 
     infected = len(state["In"])
     SIR_infection_rate = (p_infected * contact_rate * infected / total_inhabitants)
+    SIR_infection_rate = min(1, SIR_infection_rate)
 
     De_next  = state["De"][:]
     if len(De_next) < total_inhabitants:
