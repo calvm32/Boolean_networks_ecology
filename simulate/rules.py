@@ -24,7 +24,7 @@ def update_environment(state, agg, parameters):
     if Wa == 1 and Hu == 1: WNS_next = 0
     if In_sum >= 1:
         WNS_next = 1
-    elif Te == 1:
+    if Te == 1:
         WNS_next = 0 # WNS dies in summer 
         water = water0 # food levels are restored
         food = food0
