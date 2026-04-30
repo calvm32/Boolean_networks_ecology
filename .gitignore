@@ -2,3 +2,5 @@
 **/.venv
 
 **/simulate.egg-info
+
+README.md

@@ -13,3 +13,7 @@ To get everything you need, run
 pip install -e .
 pip install -r requirements.txt
 ```
+
+To actually start working, run
+```
+export PYTHONPATH=C:\Users\Me\Downloads\Boolean_networks_ecology:$PYTHONPATH
