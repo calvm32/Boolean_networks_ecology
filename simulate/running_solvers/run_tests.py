@@ -29,6 +29,8 @@ for d in data:
     obs_In.append(d["In"])
 
 def sample_params():
+    water = rand.uniform(100,5000)
+    food = rand.uniform(100,5000)
     return {
         "p_infected": 0, #rand.uniform(0.01, 0.8),
         "p_dead": 0, #rand.uniform(0.01, 0.8),
@@ -36,9 +38,10 @@ def sample_params():
         "p_recover": 0, #rand.uniform(0.01, 0.8),
         "p_hibernate": rand.uniform(0.01, 0.8),
         "p_netchange": rand.uniform(0.0001, 0.0003),
-        "water": rand.uniform(100,5000),
-        "food": rand.uniform(100,5000),
-        "winter": 120,
+        "water": water,
+        "food": water,
+        "water0": water,
+        "food0": food,
         "immunity_period": immunity_period,
         "contact_rate": contact_rate
     }
