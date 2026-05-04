@@ -23,7 +23,7 @@ p_netchange = 0.000215    # CONFIDENT # chance of new bat due to immigration/bir
 # population counts
 Hi_num = 100            # hibernating bats
 NHi_NIn_num = 0         # non-hibernating non-infected bats
-In_num = 0              # non-hibernating infected bats
+In_num = 1              # non-hibernating infected bats
 Ot_num = 0              # other bats
 Re_num = 0              # recovered bats
 

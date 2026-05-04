@@ -43,7 +43,8 @@ def sample_params():
         "water0": water,
         "food0": food,
         "immunity_period": immunity_period,
-        "contact_rate": contact_rate
+        "contact_rate": contact_rate,
+        "winter": winter
     }
 
 # ------------------------------------------
