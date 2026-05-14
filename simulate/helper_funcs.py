@@ -28,7 +28,7 @@ def count(state):
         "NHi_NIn": len(state["NHi_NIn"]),
         "Ot": len(state["Ot"]),
         "In": len(state["In"]),
-        "De": len(state["De"]),
+        "De": sum(bat[0] for bat in state["De"]),
         "Re": len(state["Re"])
     }
 

@@ -21,7 +21,7 @@ def update_environment(state, agg, parameters):
     if Wa == 1 and Te == 1: Hu_next = 1 # rule 4
     if Wa == 0: Fo_next = 0 # rule 5
     if Te == 1: Wa_next = 1; Fo_next = 1 # rule 7
-    if Wa == 1 and Hu == 1: WNS_next = 0
+    if Wa == 1 and Hu == 1: WNS_next = 1 # ????
     if In_sum >= 1:
         WNS_next = 1
     if Te == 1:
@@ -85,13 +85,14 @@ def update_individuals(state, env, parameters):
         res_num = state["Hi"][i][1]
 
         effective_rate = SIR_infection_rate * (1 - res_num)
-        r = rand.uniform(0, 1)
+        r_env = rand.uniform(0,1)
+        r_bat = rand.uniform(0,1)
 
-        if WNS and Hi and Te == 0 and r < effective_rate: # rule 9
+        if (Hi and Te == 0 and r_bat < effective_rate) or (WNS and Hi and Te == 0 and r_env < p_infected): # rule 9
             In_next.append([1, res_num])
-        elif not Te and Hi and r <= p_awake: # rule 1
+        elif not Te and Hi and r_bat <= p_awake: # rule 1
             NHi_NIn_next.append([1, res_num])
-        elif Te and Hi and r <= p_hibernate: # rules 6/7
+        elif Te and Hi and r_bat <= p_hibernate: # rules 6/7
             NHi_NIn_next.append([1, res_num]) 
         else:
             Hi_next.append([Hi, res_num]) # keep current Hi

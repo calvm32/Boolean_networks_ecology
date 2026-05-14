@@ -9,7 +9,7 @@ from simulate.rules import *
 # ------------------------------------------
 
 # probabilities
-p_infected = 0.1                            # chance a hibernating bat gets infected (given that WNS is on) on any given day
+p_infected = 0.01                            # chance a hibernating bat gets infected (given that WNS is on) on any given day
 p_dead = 0.01                               # chance that an infected bat dies on any given day
 p_recover = 1-(1-(1-p_dead)**30)**(1/30)    # CONFIDENT # chance of recovering and going back into hibernation on any given day
 p_awake = 0.08                              # OKAY # chance of a waking bat arousing a hibernating bat from torpor on any given day
@@ -43,12 +43,12 @@ contact_rate = 10       # population-dependent rate of contact btwn health bat a
 
 def make_initial_state():
     return {
-        "Hi": [[1, res_num]]*(Hi_num),
-        "NHi_NIn": [[1, res_num]]*NHi_NIn_num,
-        "Ot": [[1, res_num]]*Ot_num,
-        "In": [[1, res_num]]*In_num,
-        "De": [[0, res_num]]*(Hi_num + NHi_NIn_num + In_num),
-        "Re": [[0, res_num]]*Re_num,
+        "Hi": [[1, res_num] for _ in range(Hi_num)],
+        "NHi_NIn": [[1, res_num] for _ in range(NHi_NIn_num)],
+        "Ot": [[1, res_num] for _ in range(Ot_num)],
+        "In": [[1, res_num] for _ in range(In_num)],
+        "De": [[0, res_num] for _ in range(Hi_num + NHi_NIn_num + In_num)],
+        "Re": [[0, res_num] for _ in range(Re_num)],
         "Wa": 1,
         "Fo": 1,
         "Te": 0,
