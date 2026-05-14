@@ -12,23 +12,23 @@ def step(state, parameters):
     
 def aggregate(state):
     return {
-        "Hi_any": any(state["Hi"]),
-        "NHi_NIn_any": any(state["NHi_NIn"]),
-        "Ot_any": any(state["Ot"]),
-        "In_any": any(state["In"]),
-        "Hi_sum": sum(state["Hi"]),
-        "NHi_NIn_sum": sum(state["NHi_NIn"]),
-        "Ot_sum": sum(state["Ot"]),
-        "In_sum": sum(state["In"]),
+        "Hi_any": len(state["Hi"]) > 0,
+        "NHi_NIn_any": len(state["NHi_NIn"]) > 0,
+        "Ot_any": len(state["Ot"]) > 0,
+        "In_any": len(state["In"]) > 0,
+        "Hi_sum": len(state["Hi"]),
+        "NHi_NIn_sum": len(state["NHi_NIn"]),
+        "Ot_sum": len(state["Ot"]),
+        "In_sum": len(state["In"]),
     }
 
 def count(state):
     return {
-        "Hi": sum(state["Hi"]),
-        "NHi_NIn": sum(state["NHi_NIn"]),
-        "Ot": sum(state["Ot"]),
-        "In": sum(state["In"]),
-        "De": sum(state["De"]),
+        "Hi": len(state["Hi"]),
+        "NHi_NIn": len(state["NHi_NIn"]),
+        "Ot": len(state["Ot"]),
+        "In": len(state["In"]),
+        "De": len(state["De"]),
         "Re": len(state["Re"])
     }
 

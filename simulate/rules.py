@@ -25,7 +25,7 @@ def update_environment(state, agg, parameters):
     if In_sum >= 1:
         WNS_next = 1
     if Te == 1:
-        WNS_next = 0 # WNS dies in summer 
+        # WNS_next = 0 # WNS dies in summer 
         water = water0 # food levels are restored
         food = food0
 
@@ -73,7 +73,7 @@ def update_individuals(state, env, parameters):
 
     SIR_infection_rate = min(1, SIR_infection_rate)
 
-    De_next  = state["De"][:]
+    De_next = state["De"][:]
     if len(De_next) < total_inhabitants:
         De_next += [0]*(total_inhabitants - len(De_next))
 
@@ -81,85 +81,93 @@ def update_individuals(state, env, parameters):
     # Update Hi
     # ---------
     for i in range(len(Hi_old)):
-        Hi = state["Hi"][i]
+        Hi = state["Hi"][i][0]
+        res_num = state["Hi"][i][1]
+
+        effective_rate = SIR_infection_rate * (1 - res_num)
         r = rand.uniform(0, 1)
 
-        if WNS and Hi and Te == 0 and r < SIR_infection_rate: # rule 9
-            In_next.append(1)
+        if WNS and Hi and Te == 0 and r < effective_rate: # rule 9
+            In_next.append([1, res_num])
         elif not Te and Hi and r <= p_awake: # rule 1
-            NHi_NIn_next.append(1)
+            NHi_NIn_next.append([1, res_num])
         elif Te and Hi and r <= p_hibernate: # rules 6/7
-            NHi_NIn_next.append(1) 
+            NHi_NIn_next.append([1, res_num]) 
         else:
-            Hi_next.append(Hi) # keep current Hi
+            Hi_next.append([Hi, res_num]) # keep current Hi
 
     # --------------
     # Update NHi_NIn
     # --------------
     for i in range(len(NHi_NIn_old)):
-        NHi_NIn = state["NHi_NIn"][i]
+        NHi_NIn = state["NHi_NIn"][i][0]
+        res_num = state["NHi_NIn"][i][1]
         r = rand.uniform(0, 1)
 
         if not Te and not Wa and not Fo: # rule 3
-            De_next[len(state["Hi"]) + i] = 1
+            De_next[len(state["Hi"]) + i] = [1, res_num]
         elif not Te and NHi_NIn and r <= p_hibernate: # rules 6/7
-            Hi_next.append(1) 
+            Hi_next.append([1, res_num]) 
         else:
-            NHi_NIn_next.append(NHi_NIn)
+            NHi_NIn_next.append([NHi_NIn, res_num])
 
     # ---------
     # Update Ot
     # ---------
     for i in range(len(Ot_old)):
-        Ot = state["Ot"][i]
+        Ot = state["Ot"][i][0]
+        res_num = state["Ot"][i][1]
+
         idx = len(state["Hi"]) + len(state["NHi_NIn"]) + i
 
         if not Te and not Wa and not Fo: # rule 3
-            De_next[idx] = 1
+            De_next[idx] = [1, res_num]
         else:
-            Ot_next.append(Ot)
+            Ot_next.append([Ot, res_num])
 
     # ---------
     # Update In
     # ---------
-    for i in range(len(state["In"])):
-        In = state["In"][i]
+    for i in range(len(In_old)):
+        In = state["In"][i][0]
+        res_num = state["In"][i][1]
+
         idx = len(state["Hi"]) + len(state["NHi_NIn"]) + len(state["Ot"]) + i
         r = rand.uniform(0, 1)
 
         if (In and r <= p_dead) or (not Te and not Wa and not Fo): # rule 9 or 3
-            De_next[idx] = 1
+            De_next[idx] = [1, res_num]
         elif In and r <= p_recover: # rule 13
-            Re_next.append(0) # start recovery counter
+            Re_next.append([0, res_num]) # start recovery counter
         else:
-            In_next.append(In)
+            In_next.append([In, res_num])
 
     # ---------
     # Update Re
     # ---------
     for i in range(len(Re_old)):
-        age = state["Re"][i]
+        age = state["Re"][i][0]
+        res_num = state["Re"][i][1]
 
         if age >= immunity_period:
-            Hi_next.append(1) # return to hibernation
+            Hi_next.append([1, res_num]) # return to hibernation
         else:
-            Re_next.append(age + 1)
+            Re_next.append([age + 1, res_num])
 
     # --------------------
     # Influx (summer only)
     # --------------------
     if Te == 1:
-        n_influx = len(state["NHi_NIn"]) + len(state["Re"])
-        n_influx = max(n_influx, 0) # active and NON-infected bats reproduce
+        parents = state["NHi_NIn"] + state["Re"]
+        for parent in parents:
+            if rand.uniform(0,1) <= p_netchange:
+                parent_res_num = parent[1]
+                child_res_num = parent_res_num + rand.normalvariate(0, 0.02)
+                child_res_num = max(0, min(1, child_res_num))
+
+                NHi_NIn_next.append([1, child_res_num])
+                De_next.append([0, child_res_num]) # extend De so indexing doesn't break
         
-        births = 0
-        for _ in range(n_influx):
-            if rand.uniform(0, 1) <= p_netchange:
-                births += 1
-
-        NHi_NIn_next.extend([1]*births)
-        De_next.extend([0]*births) # extend De so indexing doesn't break
-
     return {
         "Hi": Hi_next,
         "NHi_NIn": NHi_NIn_next,
