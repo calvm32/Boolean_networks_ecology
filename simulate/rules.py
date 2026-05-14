@@ -18,7 +18,7 @@ def update_environment(state, agg, parameters):
         Wa_next = 0
     if Te == 0 and NHi_NIn_sum + In_sum + Ot_sum >= food: # rule 1 + 2
         Fo_next = 0
-    if Wa == 1 and Te == 1: Hu_next = 0 # rule 4
+    if Wa == 1 and Te == 1: Hu_next = 1 # rule 4
     if Wa == 0: Fo_next = 0 # rule 5
     if Te == 1: Wa_next = 1; Fo_next = 1 # rule 7
     if Wa == 1 and Hu == 1: WNS_next = 0
@@ -56,7 +56,7 @@ def update_individuals(state, env, parameters):
     In_next  = []
     Re_next = []
     
-    # Ensure De is long enough to cover all inhabitants
+    # ensure De is long enough to cover all inhabitants
     total_inhabitants = (
         len(state["Hi"]) +
         len(state["NHi_NIn"]) +

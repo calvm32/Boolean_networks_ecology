@@ -12,12 +12,13 @@ from simulate.rules import *
 # ------------------------------------------
 
 # probabilities
-p_infected = 0.01         # chance a hibernating bat gets infected (given that WNS is on) on any given day
-p_dead = 0.005            # chance that an infected bat dies on any given day
-p_recover = 0.01          # chance of recovering and going back into hibernation on any given day
-p_awake = 0.08            # OKAY # chance of a waking bat arousing a hibernating bat from torpor on any given day
-p_hibernate = 0.5         # CONFIDENT # chance of a bat switching between hibernating and not (given that Te switches) on any given day
-p_netchange = 0.000215    # CONFIDENT # chance of new bat due to immigration/birth per day
+p_infected = 0.0                            # chance a hibernating bat gets infected (given that WNS is on) on any given day
+p_dead = 0.005                              # chance that an infected bat dies on any given day
+p_recover = (1 - p_dead**30)**(1/30)        # CONFIDENT # chance of recovering and going back into hibernation on any given day
+p_awake = 0.08                              # OKAY # chance of a waking bat arousing a hibernating bat from torpor on any given day
+p_hibernate = 0.5                           # CONFIDENT # chance of a bat switching between hibernating and not (given that Te switches) on any given day
+p_netchange = 0.000215                      # CONFIDENT # chance of new bat due to immigration/birth per day
+res_num = 0                                 # CONFIDENT # starting resistance for bats in the hibernaculum
 
 # ----------------------------------------
 # hibernacula-DEPENDENT initial conditions
@@ -36,9 +37,8 @@ food = 170              # OKAY # number of bats it would take to deplete food co
 
 time = 3650             # total days
 winter = 120            # CONFIDENT # length of winter season in Nebraska mines
-immunity_period = 130    # number of days spent in recovery before re-infection is possible
+immunity_period = 0     # DEPRECATED DO NOT USE # number of days spent in recovery before re-infection is possible
 contact_rate = 20       # population-dependent rate of contact btwn health bat and WNS infected bat or surface
-
 
 # ------------------
 # bifurcation values
