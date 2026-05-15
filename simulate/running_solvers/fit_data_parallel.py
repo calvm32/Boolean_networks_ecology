@@ -48,14 +48,21 @@ def sample_params():
 # hibernacula-INDEPENDENT initial conditions
 # ------------------------------------------
 
+# ------------------------------------------
+# hibernacula-INDEPENDENT initial conditions
+# ------------------------------------------
+
 # probabilities
-p_infected = 0.0                            # chance a hibernating bat gets infected (given that WNS is on) on any given day
-p_dead = 0.005                              # chance that an infected bat dies on any given day
+p_infected = 0.01                           # chance a hibernating bat gets infected (given that WNS is on) on any given day
+p_dead = 0.01                               # chance that an infected bat dies on any given day
 p_recover = 1-(1-(1-p_dead)**30)**(1/30)    # CONFIDENT # chance of recovering and going back into hibernation on any given day
 p_awake = 0.08                              # OKAY # chance of a waking bat arousing a hibernating bat from torpor on any given day
 p_hibernate = 0.5                           # CONFIDENT # chance of a bat switching between hibernating and not (given that Te switches) on any given day
 p_netchange = 0.000215                      # CONFIDENT # chance of new bat due to immigration/birth per day
 res_num = 0                                 # CONFIDENT # starting resistance for bats in the hibernaculum
+
+immunity_period = 0     # DEPRECATED DO NOT USE # number of days spent in recovery before re-infection is possible
+contact_rate = 10       # population-dependent rate of contact btwn health bat and WNS infected bat or surface
 
 # ----------------------------------------
 # hibernacula-DEPENDENT initial conditions
@@ -69,13 +76,11 @@ Ot_num = data[0]["Ot"]              # other bats
 Re_num = 0                          # recovered bats
 
 # resource limits
-water = 5000            # number of bats it would take to deplete water completely
-food = 5000             # number of bats it would take to deplete food completely
+water = 1000            # OKAY # number of bats it would take to deplete water completely
+food = 1000             # OKAY # number of bats it would take to deplete food completely
 
-time = 120              # total days
+time = 3650             # total days
 winter = 120            # CONFIDENT # length of winter season in Nebraska mines
-immunity_period = 0     # DEPRECATED DO NOT USE # number of days spent in recovery before re-infection is possible
-contact_rate = 20       # population-dependent rate of contact btwn health bat and WNS infected bat or surface
 
 # ----------
 # initialize
@@ -83,17 +88,17 @@ contact_rate = 20       # population-dependent rate of contact btwn health bat a
 
 def make_initial_state():
     return {
-        "Hi": [1]*(Hi_num),
-        "NHi_NIn": [1]*NHi_NIn_num,
-        "Ot": [1]*Ot_num,
-        "In": [1]*In_num,
-        "De": [0]*(Hi_num + NHi_NIn_num + In_num),
-        "Re": [0]*Re_num,
+        "Hi": [[1, res_num] for _ in range(Hi_num)],
+        "NHi_NIn": [[1, res_num] for _ in range(NHi_NIn_num)],
+        "Ot": [[1, res_num] for _ in range(Ot_num)],
+        "In": [[1, res_num] for _ in range(In_num)],
+        "De": [[0, res_num] for _ in range(Hi_num + NHi_NIn_num + In_num)],
+        "Re": [[0, res_num] for _ in range(Re_num)],
         "Wa": 1,
         "Fo": 1,
         "Te": 0,
         "Hu": 0,
-        "WNS": 0, # MUST set = 1 IF EVER In = 1
+        "WNS": 0,
     }
     
 def loss(parameters, runs=2):
