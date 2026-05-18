@@ -12,20 +12,25 @@ from simulate.rules import *
 # ------------------------------------------
 
 # probabilities
-p_infected = 0.01                           # chance a hibernating bat gets infected (given that WNS is on) on any given day
-p_dead = 0.01                               # chance that an infected bat dies on any given day
+p_infected = 0.005                          # chance a hibernating bat gets infected (given that WNS is on) on any given day
+p_dead = 0.005                              # chance that an infected bat dies on any given day
 p_recover = 1-(1-(1-p_dead)**30)**(1/30)    # CONFIDENT # chance of recovering and going back into hibernation on any given day
 p_awake = 0.08                              # OKAY # chance of a waking bat arousing a hibernating bat from torpor on any given day
 p_hibernate = 0.5                           # CONFIDENT # chance of a bat switching between hibernating and not (given that Te switches) on any given day
 p_netchange = 0.000215                      # CONFIDENT # chance of new bat due to immigration/birth per day
-res_num = 0                                 # CONFIDENT # starting resistance for bats in the hibernaculum
 
-immunity_period = 0     # DEPRECATED DO NOT USE # number of days spent in recovery before re-infection is possible
-contact_rate = 10       # population-dependent rate of contact btwn health bat and WNS infected bat or surface
+# -----------------
+# types of immunity
+# -----------------
+
+immunity_period = 0                         # number of days spent in recovery before re-infection is possible
+birth_resistance_max = 0.02                 # corresp. w/ rand.normalvariate(0, X)
 
 # ----------------------------------------
 # hibernacula-DEPENDENT initial conditions
 # ----------------------------------------
+
+contact_rate = 10       # population-dependent rate of contact btwn healthy bat and WNS infected bat on any given day
 
 # population counts
 Hi_num = 100            # hibernating bats
@@ -57,16 +62,6 @@ param_change = ["p_dead", "p_infected"]
 parameters_list = [np.linspace(0.001,0.5,num_params), np.linspace(0.001,0.5,num_params)]
 title = "deadvinf"
 
-# dead vs rec
-# param_change = ["p_dead", "p_recover"]
-# parameters_list = [np.linspace(0.001,0.1,num_params), np.linspace(0.001,1.0,num_params)]
-# title = "deadvrec"
-
-# inf vs rec
-# param_change = ["p_infected", "p_recover"]
-# parameters_list = [np.linspace(0.001,0.1,num_params), np.linspace(0.001,1.0,num_params)]
-# title = "infvrec"
-
 # inf v immune
 # param_change = ["p_infected", "immunity_period"]
 # parameters_list = [np.linspace(0.001,0.1,num_params), np.linspace(0,130,num_params)]
@@ -90,6 +85,8 @@ for i in range(num_params):
 # ----------
 # initialize
 # ----------
+
+res_num = 0             # starting resistance for bats in the hibernaculum
 
 def make_initial_state():
     return {
@@ -166,7 +163,8 @@ def main():
         "food0": food,
         "winter": winter,
         "immunity_period": immunity_period,
-        "contact_rate": contact_rate
+        "contact_rate": contact_rate,
+        "birth_resistance_max": birth_resistance_max,
     }
     
 

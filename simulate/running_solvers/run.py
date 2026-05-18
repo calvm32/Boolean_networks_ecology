@@ -15,10 +15,14 @@ p_recover = 1-(1-(1-p_dead)**30)**(1/30)    # CONFIDENT # chance of recovering a
 p_awake = 0.08                              # OKAY # chance of a waking bat arousing a hibernating bat from torpor on any given day
 p_hibernate = 0.5                           # CONFIDENT # chance of a bat switching between hibernating and not (given that Te switches) on any given day
 p_netchange = 0.000215                      # CONFIDENT # chance of new bat due to immigration/birth per day
-res_num = 0                                 # CONFIDENT # starting resistance for bats in the hibernaculum
+contact_rate = 10                           # population-dependent rate of contact btwn health bat and WNS infected bat or surface
 
-immunity_period = 0     # DEPRECATED DO NOT USE # number of days spent in recovery before re-infection is possible
-contact_rate = 10       # population-dependent rate of contact btwn health bat and WNS infected bat or surface
+# -----------------
+# types of immunity
+# -----------------
+
+immunity_period = 0                         # number of days spent in recovery before re-infection is possible
+birth_resistance_max = 0.02                # corresp. w/ rand.normalvariate(0, X)
 
 # ----------------------------------------
 # hibernacula-DEPENDENT initial conditions
@@ -41,6 +45,8 @@ winter = 120            # CONFIDENT # length of winter season in Nebraska mines
 # ----------
 # initialize
 # ----------
+
+res_num = 0             # starting resistance for bats in the hibernaculum
 
 def make_initial_state():
     return {
@@ -112,7 +118,8 @@ def main():
         "food0": food,
         "winter": winter,
         "immunity_period": immunity_period,
-        "contact_rate": contact_rate
+        "contact_rate": contact_rate,
+        "birth_resistance_max": birth_resistance_max,
     }
 
     history = simulate(make_initial_state(), steps=time, parameters=parameters)
