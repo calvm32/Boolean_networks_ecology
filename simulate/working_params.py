@@ -22,10 +22,10 @@ contact_rate = 10       # population-dependent rate of contact btwn health bat a
 
 # population counts
 Hi_num = 100            # hibernating bats
-NHi_NIn_num = 0         # non-hibernating non-infected bats
+NHIR_num = 0         # non-hibernating non-infected bats
 In_num = 1              # non-hibernating infected bats
 Ot_num = 0              # other bats
-Re_num = 0              # recovered bats
+Im_num = 0              # recovered bats
 
 # resource limits
 water = 1000            # OKAY # number of bats it would take to deplete water completely

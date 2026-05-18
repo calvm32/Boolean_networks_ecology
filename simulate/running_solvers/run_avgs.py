@@ -4,6 +4,8 @@ import numpy as np
 from simulate.helper_funcs import *
 from simulate.rules import *
 
+avg_over = 20 # avg of X runs
+
 # ------------------------------------------
 # hibernacula-INDEPENDENT initial conditions
 # ------------------------------------------
@@ -62,6 +64,15 @@ def make_initial_state():
         "Hu": 0,
         "WNS": 0,
     }
+
+history_avg = {
+    "Hi":[],
+    "NHIR":[],
+    "Ot":[],
+    "In":[],
+    "De":[],
+    "Im":[],
+}
 
 def simulate(initial_state, steps, parameters):
     state = initial_state
@@ -122,8 +133,18 @@ def main():
         "birth_resistance_max": birth_resistance_max,
     }
 
-    history = simulate(make_initial_state(), steps=time, parameters=parameters)
-    plot_history_highlights(history, winter)
+    for i in range(avg_over):
+
+        history = simulate(make_initial_state(), steps=time, parameters=parameters)
+        
+        history_avg["Hi"].append(counts["Hi"])
+        history_avg["NHIR"].append(counts["NHIR"])
+        history_avg["Ot"].append(counts["Ot"])
+        history_avg["In"].append(counts["In"])
+        history_avg["De"].append(counts["De"])
+        history_avg["Im"].append(counts["Im"])
+    
+    plot_history_highlights(history_avg, winter)
 
 if __name__ == "__main__":
     main()
