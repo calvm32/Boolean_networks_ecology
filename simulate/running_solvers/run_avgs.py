@@ -25,7 +25,7 @@ contact_rate = 10                           # population-dependent rate of conta
 
 immunity_period = 0                         # number of days spent in recovery before re-infection is possible
 birth_resistance_max = 0.02                 # hereditary resistance of newborn, corresp. w/ rand.normalvariate(0, X)
-recover_resistance_max = 0.02               # resistance after recovery, corresp. w/ rand.normalvariate(0, X)
+recover_resistance_max = 0.3                # resistance after recovery, corresp. w/ rand.normalvariate(0, X)
 
 # ----------------------------------------
 # hibernacula-DEPENDENT initial conditions
@@ -42,7 +42,7 @@ Im_num = 0              # recovered bats
 water = 1000            # OKAY # number of bats it would take to deplete water completely
 food = 1000             # OKAY # number of bats it would take to deplete food completely
 
-time = 3650             # total days
+time = 2*3650             # total days
 winter = 120            # CONFIDENT # length of winter season in Nebraska mines
 
 # ----------
