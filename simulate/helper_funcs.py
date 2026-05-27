@@ -13,11 +13,11 @@ def step(state, parameters):
 def aggregate(state):
     return {
         "Hi_any": len(state["Hi"]) > 0,
-        "NHi_NIn_any": len(state["NHi_NIn"]) > 0,
+        "NHIR_any": len(state["NHIR"]) > 0,
         "Ot_any": len(state["Ot"]) > 0,
         "In_any": len(state["In"]) > 0,
         "Hi_sum": len(state["Hi"]),
-        "NHi_NIn_sum": len(state["NHi_NIn"]),
+        "NHIR_sum": len(state["NHIR"]),
         "Ot_sum": len(state["Ot"]),
         "In_sum": len(state["In"]),
     }
@@ -25,11 +25,11 @@ def aggregate(state):
 def count(state):
     return {
         "Hi": len(state["Hi"]),
-        "NHi_NIn": len(state["NHi_NIn"]),
+        "NHIR": len(state["NHIR"]),
         "Ot": len(state["Ot"]),
         "In": len(state["In"]),
         "De": sum(bat[0] for bat in state["De"]),
-        "Re": len(state["Re"])
+        "Im": len(state["Im"])
     }
 
 def perturb(params, keys, scale=0.15):
@@ -54,10 +54,10 @@ def plot_history(history, sample=[]):
     # -----------------
 
     ax1.plot(t, history["Hi"], label="Hibernating (Hi)")
-    ax1.plot(t, history["NHi_NIn"], label="Non-hibernating, non-infected (NHi_NIN)")
+    ax1.plot(t, history["NHIR"], label="Non-hibernating, non-infected, non-immune (NHIR)")
     ax1.plot(t, history["In"], label="Infected (In)")
     ax1.plot(t, history["De"], label="Deceased (De)")
-    ax1.plot(t, history["Re"], label="Recovered (Re)")
+    ax1.plot(t, history["Im"], label="Imcovered (Im)")
     ax1.plot(t, history["Ot"], label="Other species (Ot)") if np.any(history["Ot"]) else None
 
     ax1.set_xlabel("Time step")
@@ -70,15 +70,15 @@ def plot_history(history, sample=[]):
     # total counts
     # ------------
 
-    total = np.array(history["Hi"]) + np.array(history["NHi_NIn"]) + np.array(history["In"]) + np.array(history["Re"])
+    total = np.array(history["Hi"]) + np.array(history["NHIR"]) + np.array(history["In"]) + np.array(history["Im"])
 
     ax2.plot(t, total, label="Total tricolored bats")
     ax2.plot(t, history["Ot"], label="Other species (Ot)") if np.any(history["Ot"]) else None
 
     # if there's sample data, compare:
     if len(sample) != 0:
-        obs_times = sample[0]; obs_NHi_NIn = sample[1]
-        ax2.scatter(obs_times, obs_NHi_NIn, label="Observed total tricolored bats")
+        obs_times = sample[0]; obs_NHIR = sample[1]
+        ax2.scatter(obs_times, obs_NHIR, label="Observed total tricolored bats")
 
     ax2.set_xlabel("Time step")
     ax2.set_ylabel("Population count")
@@ -103,10 +103,10 @@ def plot_history_highlights(history, winter, sample=[]):
     # -----------------
 
     ax1.plot(t, history["Hi"], label="Hibernating (Hi)")
-    ax1.plot(t, history["NHi_NIn"], label="Non-hibernating, non-infected (NHi_NIN)")
+    ax1.plot(t, history["NHIR"], label="Non-hibernating, non-infected, non-immune (NHIR)")
     ax1.plot(t, history["In"], label="Infected (In)")
     ax1.plot(t, history["De"], label="Deceased (De)")
-    ax1.plot(t, history["Re"], label="Recovered (Re)")
+    ax1.plot(t, history["Im"], label="Imcovered (Im)")
     ax1.plot(t, history["Ot"], label="Other species (Ot)") if np.any(history["Ot"]) else None
 
     ax1.set_xlabel("Time step")
@@ -119,15 +119,15 @@ def plot_history_highlights(history, winter, sample=[]):
     # total counts
     # ------------
 
-    total = np.array(history["Hi"]) + np.array(history["NHi_NIn"]) + np.array(history["In"]) + np.array(history["Re"])
+    total = np.array(history["Hi"]) + np.array(history["NHIR"]) + np.array(history["In"]) + np.array(history["Im"])
 
     ax2.plot(t, total, label="Total tricolored bats")
     ax2.plot(t, history["Ot"], label="Other species (Ot)") if np.any(history["Ot"]) else None
 
     # if there's sample data, compare:
     if len(sample) != 0:
-        obs_times = sample[0]; obs_NHi_NIn = sample[1]
-        ax2.scatter(obs_times, obs_NHi_NIn, label="Observed total tricolored bats")
+        obs_times = sample[0]; obs_NHIR = sample[1]
+        ax2.scatter(obs_times, obs_NHIR, label="Observed total tricolored bats")
 
     ax2.set_xlabel("Time step")
     ax2.set_ylabel("Population count")
