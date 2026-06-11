@@ -2,15 +2,15 @@ import random as rand
 import numpy as np
 import matplotlib.pyplot as plt
 
-from simulate.helper_funcs import *
-from simulate.rules import *
+from simulate.simulate_rough_original.helper_funcs import *
+from simulate.simulate_rough_original.rules import *
 
 # ------------------------------------------
 # hibernacula-INDEPENDENT initial conditions
 # ------------------------------------------
 
 # probabilities
-p_infected = 0.005                          # chance a hibernating bat gets infected (given that WNS is on) on any given day
+p_infected = 0.005                          # chance a hibernating bat gets infected (given that PD is on) on any given day
 p_dead = 0.005                              # chance that an infected bat dies on any given day
 p_recover = 1-(1-(1-p_dead)**30)**(1/30)    # CONFIDENT # chance of recovering and going back into hibernation on any given day
 p_awake = 0.08                              # OKAY # chance of a waking bat arousing a hibernating bat from torpor on any given day
@@ -32,7 +32,7 @@ recover_resistance_max = 0.02               # resistance after recovery, corresp
 
 # population counts
 Hi_num = 100            # hibernating bats
-NHIR_num = 0         # non-hibernating non-infected bats
+NHO_num = 0         # non-hibernating non-infected bats
 In_num = 1              # non-hibernating infected bats
 Ot_num = 0              # other bats
 Im_num = 0              # recovered bats
@@ -42,7 +42,7 @@ water = 1000            # OKAY # number of bats it would take to deplete water c
 food = 1000             # OKAY # number of bats it would take to deplete food completely
 
 time = 3650             # total days
-winter = 120            # CONFIDENT # length of winter season in Nebraska mines
+T_win = 120            # CONFIDENT # length of winter season in Nebraska mines
 
 # ------------------
 # bifurcation values
@@ -65,25 +65,25 @@ res_num = 0             # starting resistance for bats in the hibernaculum
 def make_initial_state():
     return {
         "Hi": [[1, res_num] for _ in range(Hi_num)],
-        "NHIR": [[1, res_num] for _ in range(NHIR_num)],
+        "NHO": [[1, res_num] for _ in range(NHO_num)],
         "Ot": [[1, res_num] for _ in range(Ot_num)],
         "In": [[1, res_num] for _ in range(In_num)],
-        "De": [[0, res_num] for _ in range(Hi_num + NHIR_num + In_num)],
+        "De": [[0, res_num] for _ in range(Hi_num + NHO_num + In_num)],
         "Im": [[0, res_num] for _ in range(Im_num)],
         "Wa": 1,
         "Fo": 1,
         "Te": 0,
         "Hu": 0,
-        "WNS": 0,
+        "PD": 0,
     }
 
 def simulate(initial_state, steps, parameters):
     state = initial_state
-    winter = parameters["winter"]
+    T_win = parameters["T_win"]
 
     history = {
         "Hi":[],
-        "NHIR":[],
+        "NHO":[],
         "Ot":[],
         "In":[],
         "De":[],
@@ -93,14 +93,14 @@ def simulate(initial_state, steps, parameters):
     for t in range(steps):
 
         # Seasonal tempcycle
-        if (t % 365) <= winter: # winter
+        if (t % 365) <= T_win: # T_win
             state["Te"] = 0   
         else:
             state["Te"] = 1 # summer
         counts = count(state)
 
         history["Hi"].append(counts["Hi"])
-        history["NHIR"].append(counts["NHIR"])
+        history["NHO"].append(counts["NHO"])
         history["Ot"].append(counts["Ot"])
         history["In"].append(counts["In"])
         history["De"].append(counts["De"])
@@ -113,9 +113,9 @@ def simulate(initial_state, steps, parameters):
 
 def main():
 
-    inhabitant_nodes = ["Hi", "NHIR", "In", "Ot", "De", "Im"]
+    inhabitant_nodes = ["Hi", "NHO", "In", "Ot", "De", "Im"]
     resource_nodes = ["Wa", "Fo"]
-    environment_nodes = ["Te", "Hu", "El", "Po", "Su", "Ba", "WNS"]
+    environment_nodes = ["Te", "Hu", "El", "Po", "Su", "Ba", "PD"]
 
     nodes = inhabitant_nodes + resource_nodes + environment_nodes
 
@@ -130,7 +130,7 @@ def main():
         "food": food,
         "water0": water,
         "food0": food,
-        "winter": winter,
+        "T_win": T_win,
         "immunity_period": immunity_period,
         "contact_rate": contact_rate,
         "birth_resistance_max": birth_resistance_max,
@@ -141,7 +141,7 @@ def main():
         parameters[param_change] = parameters_list[i]
 
         history = simulate(make_initial_state(), steps=times_list[-1], parameters=parameters)
-        total = np.array(history["Hi"]) + np.array(history["NHIR"]) + np.array(history["In"]) + np.array(history["Im"])
+        total = np.array(history["Hi"]) + np.array(history["NHO"]) + np.array(history["In"]) + np.array(history["Im"])
         totals_list.append(total)
         print(f"{i}/{len(parameters_list)}")
 

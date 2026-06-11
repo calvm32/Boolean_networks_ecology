@@ -1,17 +1,15 @@
 import random as rand
 import numpy as np
 
-from simulate.helper_funcs import *
-from simulate.rules import *
-
-avg_over = 20 # avg of X runs
+from simulate.simulate_rough_original.helper_funcs import *
+from simulate.simulate_rough_original.rules import *
 
 # ------------------------------------------
 # hibernacula-INDEPENDENT initial conditions
 # ------------------------------------------
 
 # probabilities
-p_infected = 0.005                          # chance a hibernating bat gets infected (given that WNS is on) on any given day
+p_infected = 0.005                          # chance a hibernating bat gets infected (given that PD is on) on any given day
 p_dead = 0.005                              # chance that an infected bat dies on any given day
 p_recover = 1-(1-(1-p_dead)**30)**(1/30)    # CONFIDENT # chance of recovering and going back into hibernation on any given day
 p_awake = 0.08                              # OKAY # chance of a waking bat arousing a hibernating bat from torpor on any given day
@@ -23,9 +21,11 @@ contact_rate = 10                           # population-dependent rate of conta
 # types of immunity
 # -----------------
 
+# CHECK DISTRIBUTIONS USED IN biology LITERATURE (beta or gamma? exponential?)
+
 immunity_period = 0                         # number of days spent in recovery before re-infection is possible
-birth_resistance_max = 0.02                 # hereditary resistance of newborn, corresp. w/ rand.normalvariate(0, X)
-recover_resistance_max = 0.3                # resistance after recovery, corresp. w/ rand.normalvariate(0, X)
+birth_resistance_max = 0                   # hereditary resistance of newborn, corresp. w/ rand.normalvariate(0, X)
+recover_resistance_max = 0.02               # resistance after recovery, corresp. w/ rand.normalvariate(0, X)
 
 # ----------------------------------------
 # hibernacula-DEPENDENT initial conditions
@@ -33,7 +33,7 @@ recover_resistance_max = 0.3                # resistance after recovery, corresp
 
 # population counts
 Hi_num = 100            # hibernating bats
-NHIR_num = 0         # non-hibernating non-infected bats
+NHO_num = 0         # non-hibernating non-infected bats
 In_num = 1              # non-hibernating infected bats
 Ot_num = 0              # other bats
 Im_num = 0              # recovered bats
@@ -42,8 +42,8 @@ Im_num = 0              # recovered bats
 water = 1000            # OKAY # number of bats it would take to deplete water completely
 food = 1000             # OKAY # number of bats it would take to deplete food completely
 
-time = 2*3650             # total days
-winter = 120            # CONFIDENT # length of winter season in Nebraska mines
+time = 3650             # total days
+T_win = 120            # CONFIDENT # length of winter season in Nebraska mines
 
 # ----------
 # initialize
@@ -54,37 +54,25 @@ res_num = 0             # starting resistance for bats in the hibernaculum
 def make_initial_state():
     return {
         "Hi": [[1, res_num] for _ in range(Hi_num)],
-        "NHIR": [[1, res_num] for _ in range(NHIR_num)],
+        "NHO": [[1, res_num] for _ in range(NHO_num)],
         "Ot": [[1, res_num] for _ in range(Ot_num)],
         "In": [[1, res_num] for _ in range(In_num)],
-        "De": [[0, res_num] for _ in range(Hi_num + NHIR_num + In_num)],
+        "De": [[0, res_num] for _ in range(Hi_num + NHO_num + In_num)],
         "Im": [[0, res_num] for _ in range(Im_num)],
         "Wa": 1,
         "Fo": 1,
         "Te": 0,
         "Hu": 0,
-        "WNS": 0,
+        "PD": 0,
     }
-
-
-# initialize accumulators
-history_avg = {
-    "Hi": np.zeros(time),
-    "NHIR": np.zeros(time),
-    "Ot": np.zeros(time),
-    "In": np.zeros(time),
-    "De": np.zeros(time),
-    "Im": np.zeros(time),
-}
-
 
 def simulate(initial_state, steps, parameters):
     state = initial_state
-    winter = parameters["winter"]
+    T_win = parameters["T_win"]
 
     history = {
         "Hi":[],
-        "NHIR":[],
+        "NHO":[],
         "Ot":[],
         "In":[],
         "De":[],
@@ -94,14 +82,14 @@ def simulate(initial_state, steps, parameters):
     for t in range(steps):
 
         # Seasonal tempcycle
-        if (t % 365) <= winter: # winter
+        if (t % 365) <= T_win: # T_win
             state["Te"] = 0   
         else:
             state["Te"] = 1 # summer
         counts = count(state)
 
         history["Hi"].append(counts["Hi"])
-        history["NHIR"].append(counts["NHIR"])
+        history["NHO"].append(counts["NHO"])
         history["Ot"].append(counts["Ot"])
         history["In"].append(counts["In"])
         history["De"].append(counts["De"])
@@ -114,9 +102,9 @@ def simulate(initial_state, steps, parameters):
 
 def main():
 
-    inhabitant_nodes = ["Hi", "NHIR", "In", "Ot", "De", "Im"]
+    inhabitant_nodes = ["Hi", "NHO", "In", "Ot", "De", "Im"]
     resource_nodes = ["Wa", "Fo"]
-    environment_nodes = ["Te", "Hu", "El", "Po", "Su", "Ba", "WNS"]
+    environment_nodes = ["Te", "Hu", "El", "Po", "Su", "Ba", "PD"]
 
     nodes = inhabitant_nodes + resource_nodes + environment_nodes
 
@@ -131,29 +119,15 @@ def main():
         "food": food,
         "water0": water,
         "food0": food,
-        "winter": winter,
+        "T_win": T_win,
         "immunity_period": immunity_period,
         "contact_rate": contact_rate,
         "birth_resistance_max": birth_resistance_max,
-        "recover_resistance_max": recover_resistance_max
+        "recover_resistance_max": recover_resistance_max,
     }
 
-    for i in range(avg_over):
-
-        history = simulate(
-            make_initial_state(),
-            steps=time,
-            parameters=parameters
-        )
-
-        for key in history_avg:
-            history_avg[key] += np.array(history[key])
-
-    # divide by number of runs for avg
-    for key in history_avg:
-        history_avg[key] /= avg_over    
-
-    plot_history_highlights(history_avg, winter)
+    history = simulate(make_initial_state(), steps=time, parameters=parameters)
+    plot_history_highlights(history, T_win)
 
 if __name__ == "__main__":
     main()

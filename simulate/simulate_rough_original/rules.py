@@ -1,31 +1,31 @@
 import random as rand
 
 def update_environment(state, agg, parameters):
-    Wa, Fo, Te, Hu, WNS = state["Wa"], state["Fo"], state["Te"], state["Hu"], state["WNS"]
-    NHIR_any, Ot_any, Hi_any, In_any = agg["NHIR_any"], agg["Ot_any"], agg["Hi_any"], agg["In_any"]
-    NHIR_sum, Ot_sum, Hi_sum, In_sum = agg["NHIR_sum"], agg["Ot_sum"], agg["Hi_sum"], agg["In_sum"]
+    Wa, Fo, Te, Hu, PD = state["Wa"], state["Fo"], state["Te"], state["Hu"], state["PD"]
+    NHO_any, Ot_any, Hi_any, In_any = agg["NHO_any"], agg["Ot_any"], agg["Hi_any"], agg["In_any"]
+    NHO_sum, Ot_sum, Hi_sum, In_sum = agg["NHO_sum"], agg["Ot_sum"], agg["Hi_sum"], agg["In_sum"]
     water, food, water0, food0 = parameters["water"], parameters["food"], parameters["water0"], parameters["food0"]
 
     Wa_next = Wa
     Fo_next = Fo
     Hu_next = Hu
-    WNS_next = WNS
+    PD_next = PD
 
     # -----------
     # apply rules
     # -----------
-    if Te == 0 and NHIR_sum + In_sum + Ot_sum >= water: # rule 1 + 2
+    if Te == 0 and NHO_sum + In_sum + Ot_sum >= water: # rule 1 + 2
         Wa_next = 0
-    if Te == 0 and NHIR_sum + In_sum + Ot_sum >= food: # rule 1 + 2
+    if Te == 0 and NHO_sum + In_sum + Ot_sum >= food: # rule 1 + 2
         Fo_next = 0
     if Wa == 1 and Te == 1: Hu_next = 1 # rule 4
     if Wa == 0: Fo_next = 0 # rule 5
     if Te == 1: Wa_next = 1; Fo_next = 1 # rule 7
-    if Wa == 1 and Hu == 1: WNS_next = 1 # ????
+    if Wa == 1 and Hu == 1: PD_next = 1 # ????
     if In_sum >= 1:
-        WNS_next = 1
+        PD_next = 1
     if Te == 1:
-        # WNS_next = 0 # WNS dies in summer 
+        # PD_next = 0 # PD dies in summer 
         water = water0 # food levels are restored
         food = food0
 
@@ -33,25 +33,25 @@ def update_environment(state, agg, parameters):
         "Wa": int(Wa_next),
         "Fo": int(Fo_next),
         "Hu": int(Hu_next),
-        "WNS": int(WNS_next),
+        "PD": int(PD_next),
         "Te": int(Te)
     }
 
 def update_individuals(state, env, parameters):
-    Wa, Fo, Te, Hu, WNS = env["Wa"], env["Fo"], env["Te"], env["Hu"], env["WNS"]
+    Wa, Fo, Te, Hu, PD = env["Wa"], env["Fo"], env["Te"], env["Hu"], env["PD"]
     p_awake, p_dead, p_hibernate, p_infected, p_recover, p_netchange = parameters["p_awake"], parameters["p_dead"], parameters["p_hibernate"], parameters["p_infected"], parameters["p_recover"], parameters["p_netchange"]
     food, water, immunity_period, contact_rate, birth_res_max, recover_res_max = parameters["food"], parameters["water"], parameters["immunity_period"], parameters["contact_rate"], parameters["birth_resistance_max"], parameters["recover_resistance_max"]
 
     # go over OLD STATE
     Hi_old = state["Hi"]
-    NHIR_old = state["NHIR"]
+    NHO_old = state["NHO"]
     Ot_old = state["Ot"]
     In_old = state["In"]
     Im_old = state["Im"]
 
     # readd everyone who stays the same
     Hi_next  = []
-    NHIR_next = []
+    NHO_next = []
     Ot_next  = []
     In_next  = []
     Im_next = []
@@ -59,7 +59,7 @@ def update_individuals(state, env, parameters):
     # ensure De is long enough to cover all inhabitants
     total_inhabitants = (
         len(state["Hi"]) +
-        len(state["NHIR"]) +
+        len(state["NHO"]) +
         len(state["Ot"]) +
         len(state["In"]) +
         len(state["Im"])
@@ -88,29 +88,29 @@ def update_individuals(state, env, parameters):
         r_env = rand.uniform(0,1)
         r_bat = rand.uniform(0,1)
 
-        if (Hi and Te == 0 and r_bat < effective_rate) or (WNS and Hi and Te == 0 and r_env < p_infected): # rule 9
+        if (Hi and Te == 0 and r_bat < effective_rate) or (PD and Hi and Te == 0 and r_env < p_infected): # rule 9
             In_next.append([1, res_num])
         elif not Te and Hi and r_bat <= p_awake: # rule 1
-            NHIR_next.append([1, res_num])
+            NHO_next.append([1, res_num])
         elif Te and Hi and r_bat <= p_hibernate: # rules 6/7
-            NHIR_next.append([1, res_num]) 
+            NHO_next.append([1, res_num]) 
         else:
             Hi_next.append([Hi, res_num]) # keep current Hi
 
-    # --------------
-    # Update NHIR
-    # --------------
-    for i in range(len(NHIR_old)):
-        NHIR = state["NHIR"][i][0]
-        res_num = state["NHIR"][i][1]
+    # ----------
+    # Update NHO
+    # ----------
+    for i in range(len(NHO_old)):
+        NHO = state["NHO"][i][0]
+        res_num = state["NHO"][i][1]
         r = rand.uniform(0, 1)
 
         if not Te and not Wa and not Fo: # rule 3
             De_next[len(state["Hi"]) + i] = [1, res_num]
-        elif not Te and NHIR and r <= p_hibernate: # rules 6/7
+        elif not Te and NHO and r <= p_hibernate: # rules 6/7
             Hi_next.append([1, res_num]) 
         else:
-            NHIR_next.append([NHIR, res_num])
+            NHO_next.append([NHO, res_num])
 
     # ---------
     # Update Ot
@@ -119,7 +119,7 @@ def update_individuals(state, env, parameters):
         Ot = state["Ot"][i][0]
         res_num = state["Ot"][i][1]
 
-        idx = len(state["Hi"]) + len(state["NHIR"]) + i
+        idx = len(state["Hi"]) + len(state["NHO"]) + i
 
         if not Te and not Wa and not Fo: # rule 3
             De_next[idx] = [1, res_num]
@@ -133,7 +133,7 @@ def update_individuals(state, env, parameters):
         In = state["In"][i][0]
         res_num = state["In"][i][1]
 
-        idx = len(state["Hi"]) + len(state["NHIR"]) + len(state["Ot"]) + i
+        idx = len(state["Hi"]) + len(state["NHO"]) + len(state["Ot"]) + i
         r = rand.uniform(0, 1)
 
         if (In and r <= p_dead) or (not Te and not Wa and not Fo): # rule 9 or 3
@@ -162,19 +162,19 @@ def update_individuals(state, env, parameters):
     # Influx (summer only)
     # --------------------
     if Te == 1:
-        parents = state["NHIR"] + state["Im"]
+        parents = state["NHO"] + state["Im"]
         for parent in parents:
             if rand.uniform(0,1) <= p_netchange:
                 parent_res_num = parent[1]
                 child_res_num = parent_res_num + rand.normalvariate(0, birth_res_max)
                 child_res_num = max(0, min(1, child_res_num))
 
-                NHIR_next.append([1, child_res_num])
+                NHO_next.append([1, child_res_num])
                 De_next.append([0, child_res_num]) # extend De so indexing doesn't break
         
     return {
         "Hi": Hi_next,
-        "NHIR": NHIR_next,
+        "NHO": NHO_next,
         "Ot": Ot_next,
         "In": In_next,
         "De": De_next,

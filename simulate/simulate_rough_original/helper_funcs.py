@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from simulate.rules import *
+from simulate.simulate_rough_original.rules import *
 
 def step(state, parameters):
     agg = aggregate(state)
@@ -13,11 +13,11 @@ def step(state, parameters):
 def aggregate(state):
     return {
         "Hi_any": len(state["Hi"]) > 0,
-        "NHIR_any": len(state["NHIR"]) > 0,
+        "NHO_any": len(state["NHO"]) > 0,
         "Ot_any": len(state["Ot"]) > 0,
         "In_any": len(state["In"]) > 0,
         "Hi_sum": len(state["Hi"]),
-        "NHIR_sum": len(state["NHIR"]),
+        "NHO_sum": len(state["NHO"]),
         "Ot_sum": len(state["Ot"]),
         "In_sum": len(state["In"]),
     }
@@ -25,7 +25,7 @@ def aggregate(state):
 def count(state):
     return {
         "Hi": len(state["Hi"]),
-        "NHIR": len(state["NHIR"]),
+        "NHO": len(state["NHO"]),
         "Ot": len(state["Ot"]),
         "In": len(state["In"]),
         "De": sum(bat[0] for bat in state["De"]),
@@ -54,7 +54,7 @@ def plot_history(history, sample=[]):
     # -----------------
 
     ax1.plot(t, history["Hi"], label="Hibernating (Hi)")
-    ax1.plot(t, history["NHIR"], label="Non-hibernating, non-infected, non-immune (NHIR)")
+    ax1.plot(t, history["NHO"], label="Non-hibernating, non-infected, non-immune (NHO)")
     ax1.plot(t, history["In"], label="Infected (In)")
     ax1.plot(t, history["De"], label="Deceased (De)")
     ax1.plot(t, history["Im"], label="Imcovered (Im)")
@@ -70,15 +70,15 @@ def plot_history(history, sample=[]):
     # total counts
     # ------------
 
-    total = np.array(history["Hi"]) + np.array(history["NHIR"]) + np.array(history["In"]) + np.array(history["Im"])
+    total = np.array(history["Hi"]) + np.array(history["NHO"]) + np.array(history["In"]) + np.array(history["Im"])
 
     ax2.plot(t, total, label="Total tricolored bats")
     ax2.plot(t, history["Ot"], label="Other species (Ot)") if np.any(history["Ot"]) else None
 
     # if there's sample data, compare:
     if len(sample) != 0:
-        obs_times = sample[0]; obs_NHIR = sample[1]
-        ax2.scatter(obs_times, obs_NHIR, label="Observed total tricolored bats")
+        obs_times = sample[0]; obs_NHO = sample[1]
+        ax2.scatter(obs_times, obs_NHO, label="Observed total tricolored bats")
 
     ax2.set_xlabel("Time step")
     ax2.set_ylabel("Population count")
@@ -89,7 +89,7 @@ def plot_history(history, sample=[]):
     plt.tight_layout()
     plt.show()
 
-def plot_history_highlights(history, winter, sample=[]):
+def plot_history_highlights(history, T_win, sample=[]):
     t = range(len(history["Hi"]))
 
     fig, (ax1, ax2) = plt.subplots(
@@ -103,7 +103,7 @@ def plot_history_highlights(history, winter, sample=[]):
     # -----------------
 
     ax1.plot(t, history["Hi"], label="Hibernating (Hi)")
-    ax1.plot(t, history["NHIR"], label="Non-hibernating, non-infected, non-immune (NHIR)")
+    ax1.plot(t, history["NHO"], label="Non-hibernating, non-infected, non-immune (NHO)")
     ax1.plot(t, history["In"], label="Infected (In)")
     ax1.plot(t, history["De"], label="Deceased (De)")
     ax1.plot(t, history["Im"], label="Imcovered (Im)")
@@ -119,15 +119,15 @@ def plot_history_highlights(history, winter, sample=[]):
     # total counts
     # ------------
 
-    total = np.array(history["Hi"]) + np.array(history["NHIR"]) + np.array(history["In"]) + np.array(history["Im"])
+    total = np.array(history["Hi"]) + np.array(history["NHO"]) + np.array(history["In"]) + np.array(history["Im"])
 
     ax2.plot(t, total, label="Total tricolored bats")
     ax2.plot(t, history["Ot"], label="Other species (Ot)") if np.any(history["Ot"]) else None
 
     # if there's sample data, compare:
     if len(sample) != 0:
-        obs_times = sample[0]; obs_NHIR = sample[1]
-        ax2.scatter(obs_times, obs_NHIR, label="Observed total tricolored bats")
+        obs_times = sample[0]; obs_NHO = sample[1]
+        ax2.scatter(obs_times, obs_NHO, label="Observed total tricolored bats")
 
     ax2.set_xlabel("Time step")
     ax2.set_ylabel("Population count")
@@ -135,15 +135,15 @@ def plot_history_highlights(history, winter, sample=[]):
     ax2.legend()
     ax2.grid()
 
-    # highlight the winter data
+    # highlight the T_win data
     for time in t:
         
-        if time % 365 == winter and time <= 365:
-            ax1.axvspan(time - winter, time, facecolor='blue', alpha=0.1)
-            ax2.axvspan(time - winter, time, facecolor='blue', alpha=0.1)
-        if time % 365 == winter:
-            ax1.axvspan(time - winter + 365, time + 365, facecolor='blue', alpha=0.1)
-            ax2.axvspan(time - winter + 365, time + 365, facecolor='blue', alpha=0.1)
+        if time % 365 == T_win and time <= 365:
+            ax1.axvspan(time - T_win, time, facecolor='blue', alpha=0.1)
+            ax2.axvspan(time - T_win, time, facecolor='blue', alpha=0.1)
+        if time % 365 == T_win:
+            ax1.axvspan(time - T_win + 365, time + 365, facecolor='blue', alpha=0.1)
+            ax2.axvspan(time - T_win + 365, time + 365, facecolor='blue', alpha=0.1)
 
     plt.tight_layout()
     plt.show()
