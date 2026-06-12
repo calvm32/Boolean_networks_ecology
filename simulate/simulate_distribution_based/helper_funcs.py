@@ -28,8 +28,8 @@ def count(state):
         "Ot": len(state["Ot"]),
         "In": len(state["In"]),
         "Im": len(state["Im"]),
-        "De": sum(bat[0] for bat in state["De"]),
-        "Im": len(state["Im"])
+        "Im": len(state["Im"]),
+        "De": state["De"],
     }
 
 def perturb(params, keys, scale=0.15):
@@ -56,8 +56,8 @@ def plot_history(history, sample=[]):
     ax1.plot(t, history["Hi"], label="Hibernating (Hi)")
     ax1.plot(t, history["Ot"], label="Non-hibernating, non-infected, non-immune (Ot)")
     ax1.plot(t, history["In"], label="Infected (In)")
-    ax1.plot(t, history["De"], label="Deceased (De)")
     ax1.plot(t, history["Im"], label="Imcovered (Im)")
+    ax1.plot(t, history["De"], label="Deceased (De)")
 
     ax1.set_xlabel("Time step")
     ax1.set_ylabel("Population count")
@@ -103,8 +103,8 @@ def plot_history_highlights(history, T_win, sample=[]):
     ax1.plot(t, history["Hi"], label="Hibernating (Hi)")
     ax1.plot(t, history["Ot"], label="Non-hibernating, non-infected, non-immune (Ot)")
     ax1.plot(t, history["In"], label="Infected (In)")
-    ax1.plot(t, history["De"], label="Deceased (De)")
     ax1.plot(t, history["Im"], label="Imcovered (Im)")
+    ax1.plot(t, history["De"], label="Deceased (De)")
 
     ax1.set_xlabel("Time step")
     ax1.set_ylabel("Population count")

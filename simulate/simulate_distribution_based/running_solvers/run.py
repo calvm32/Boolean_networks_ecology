@@ -73,15 +73,11 @@ immunity_period = 0                         # number of days spent in recovery b
 birth_resistance_max = 0                   # hereditary resistance of newborn, corresp. w/ rand.normalvariate(0, X)
 recover_resistance_max = 0.02               # resistance after recovery, corresp. w/ rand.normalvariate(0, X)
 
-# ----------------------------------------
-# hibernacula-DEPENDENT initial conditions
-# ----------------------------------------
-
-time = 3650             # total days
-
 # ----------
 # initialize
 # ----------
+
+time = 3650             # total days
 
 def make_initial_state():
     # NOTICE : each inhabitant node contains the following information:
@@ -95,8 +91,8 @@ def make_initial_state():
         "Hi": [[1, 0, rand.uniform(Hi_list[i][1], Hi_list[i][2]), 0, 0] for i in range(len(Hi_list)) for _ in range(Hi_list[i][0])],
         "Ot": [],
         "In": [],
-        "De": [[0, 0, rand.uniform(Hi_list[i][1], Hi_list[i][2]), 0, 0] for i in range(len(Hi_list)) for _ in range(Hi_list[i][0])],
         "Im": [],
+        "De": 0, # only need total numbers of dead
         "Re": 1,
         "Te": 0,
         "Hu": 0,
@@ -111,8 +107,8 @@ def simulate(initial_state, steps, parameters):
         "Hi":[],
         "Ot":[],
         "In":[],
-        "De":[],
         "Im":[],
+        "De":0,
     }
 
     for t in range(steps):
@@ -127,10 +123,12 @@ def simulate(initial_state, steps, parameters):
         history["Hi"].append(counts["Hi"])
         history["Ot"].append(counts["Ot"])
         history["In"].append(counts["In"])
-        history["De"].append(counts["De"])
         history["Im"].append(counts["Im"])
+        history["De"] = (counts["De"])
 
         state = step(state, parameters)
+
+        print(f"done{t}")
 
     return history
 

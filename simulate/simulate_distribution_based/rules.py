@@ -38,24 +38,21 @@ def update_individuals(state, env, parameters):
     Ot_old = state["Ot"]
     In_old = state["In"]
     Im_old = state["Im"]
+    De = state["De"]
 
-    # readd everyone who stays the same
+    # re-add everyone who stays the same
     Hi_next  = []
     Ot_next = []
     In_next  = []
     Im_next = []
     
-    # ensure De is long enough to cover all inhabitants
+    # configure totals for weighting parameters
     total_inhabitants = (
         len(state["Hi"]) +
         len(state["Ot"]) +
         len(state["In"]) +
         len(state["Im"])
     )
-
-    De_next = state["De"][:]
-    if len(De_next) < total_inhabitants:
-        De_next += [0]*(total_inhabitants - len(De_next))
 
     weight = len(state["In"]) / total_inhabitants
 
@@ -117,7 +114,7 @@ def update_individuals(state, env, parameters):
         p_bouts = 1/T_AD
 
         if not Te and not Re: # rule 3
-            De_next[len(state["Hi"]) + i] = [1, res_num, cluster_num, 0, 0]
+            De += 1
         elif Te and Ot and r and check <= p_bouts: # rule 1
             Ot_next.append([1, res_num, cluster_num, 0, 0]) 
         elif not Te and Ot and r <= p_seasonal: # rules 6/7
@@ -142,7 +139,7 @@ def update_individuals(state, env, parameters):
         p_recover =  1/T_inf
 
         if (In and r <= p_dead) or (not Te and not Re): # rule 9 or 3
-            De_next[idx] = [1, res_num, cluster_num, 0, 0]
+            De += 1
         elif In and r <= p_recover: # rule 13
             Im_next.append([0, res_num, cluster_num, 0, 0]) # start recovery counter
         else:
@@ -179,7 +176,6 @@ def update_individuals(state, env, parameters):
                 child_res_num = max(0, min(1, child_res_num))
 
                 Ot_next.append([1, child_res_num, cluster_num, 0, 0])
-                De_next.append([0, child_res_num, cluster_num, 0, 0]) # extend De so indexing doesn't break
         elif not Te:
             p_netchange = 1 - np.exp(- lambda_win)
             if r <= p_netchange:
@@ -189,12 +185,11 @@ def update_individuals(state, env, parameters):
                 child_res_num = max(0, min(1, child_res_num))
 
                 Ot_next.append([1, child_res_num, cluster_num, 0, 0])
-                De_next.append([0, child_res_num, cluster_num, 0, 0]) # extend De so indexing doesn't break
         
     return {
         "Hi": Hi_next,
         "Ot": Ot_next,
         "In": In_next,
-        "De": De_next,
-        "Im": Im_next
+        "Im": Im_next,
+        "De": De,
     }
