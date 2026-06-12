@@ -90,62 +90,15 @@ time = 3650             # total days
 # ==========================================================================================================================
 # ==========================================================================================================================
 
-
-# initialize accumulators
-history_avg = {
-    "Hi": np.zeros(time),
-    "Ot": np.zeros(time),
-    "In": np.zeros(time),
-    "Im": np.zeros(time),
-    "De": np.zeros(time),
-}
-
-def simulate(initial_state, steps, parameters):
-    state = initial_state
-    T_win = parameters["T_win"]
-
-    history = {
-        "Hi": np.empty(steps,dtype=np.int32),
-        "Ot": np.empty(steps,dtype=np.int32),
-        "In": np.empty(steps,dtype=np.int32),
-        "Im": np.empty(steps,dtype=np.int32),
-        "De": np.empty(steps,dtype=np.int32),
-    }
-
-    for t in range(steps):
-
-        # Seasonal tempcycle
-        if (t % 365) <= T_win: # T_win
-            state["Te"] = 0   
-        else:
-            state["Te"] = 1 # summer
-        counts = count(state)
-
-        history["Hi"][t] = (counts["Hi"])
-        history["Ot"][t] = (counts["Ot"])
-        history["In"][t] = (counts["In"])
-        history["Im"][t] = (counts["Im"])
-        history["De"][t] = (counts["De"])
-
-        state = step(state, parameters)
-
-        if t % 50 == 0:
-            print(f"done w/ simulation at step {t}")
-
-    return history
-
-
 def main():
     parameters = {
         "inf_alpha": inf_alpha,
         "inf_beta": inf_beta,
         "delta": delta,
-        "awake_a": awake_a,
-        "awake_b": awake_b,
         "T_inf": T_inf,
-        "T_TBD": T_inf,
-        "T_AD": T_inf,
-        "T_seasonal": T_inf,
+        "T_TBD": T_TBD,
+        "T_AD": T_AD,
+        "T_seasonal": T_seasonal,
         "T_win": T_win,
         "lambda_win": lambda_win,
         "lambda_sum": lambda_sum,
@@ -154,22 +107,8 @@ def main():
         "recover_resistance_max": recover_resistance_max,
     }
 
-    for i in range(avg_over):
-
-        history = simulate(
-            make_initial_state(Hi_list, fraction_infected),
-            steps=time,
-            parameters=parameters
-        )
-
-        for key in history_avg:
-            history_avg[key] += np.array(history[key])
-
-    # divide by number of runs for avg
-    for key in history_avg:
-        history_avg[key] /= avg_over    
-
-    plot_history_highlights(history_avg, T_win)
+    history = simulate(make_initial_state(Hi_list, fraction_infected), steps=time, parameters=parameters)
+    plot_history_highlights(history, T_win)
 
 if __name__ == "__main__":
     main()

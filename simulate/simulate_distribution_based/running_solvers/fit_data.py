@@ -4,6 +4,7 @@ import copy
 
 from simulate.simulate_distribution_based.helper_funcs import *
 from simulate.simulate_distribution_based.rules import *
+from simulate.simulate_distribution_based.simulate import *
 from simulate.data import *
 
 # --------------------
