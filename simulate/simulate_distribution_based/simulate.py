@@ -33,7 +33,7 @@ def simulate(initial_state, steps, parameters):
 
         state = step(state, parameters)
 
-        if t % 50 == 0:
+        if t % 100 == 0:
             print(f"done w/ simulation at step {t}")
 
     return history

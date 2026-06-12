@@ -1,5 +1,7 @@
 import random as rand
 import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 
 from simulate.simulate_distribution_based.helper_funcs import *
 from simulate.simulate_distribution_based.rules import *
@@ -26,7 +28,7 @@ bigbrown_cluster_sizeMAX = 9
 Hi_list = [[tricolor_num, tricolor_cluster_sizeMIN, tricolor_cluster_sizeMAX], 
            [bigbrown_num, bigbrown_cluster_sizeMIN, bigbrown_cluster_sizeMAX]] 
 
-fraction_infected = 0   # choose in [0, 1]
+fraction_infected = 0.01 # in [0, 1]
 
 # NOTICE : the remaining populations (Ot, Im) all start with 0 inhabitants
 # NOTICE : resistance starts at 0 for every bat
@@ -78,11 +80,55 @@ recover_resistance_max = 0.02               # resistance after recovery, corresp
 # initialize
 # ----------
 
-time = 3650             # total days
+init_fractions = [0.01, 0.03, 0.05, 0.10]
+
+# ----------------------------------
+# phase diagram comparison variables
+# ----------------------------------
+
+times_list = [180, 365, 3*365, 10*365, 20*365, 40*365]
+num_params = 10
+
+# dead vs inf
+param_change = ["p_dead", "p_infected"]
+parameters_list = [np.linspace(0.001,0.1,num_params), np.linspace(0.01,1.0,num_params)]
+title = "deadvinf"
+
+# dead vs rec
+# param_change = ["p_dead", "p_recover"]
+# parameters_list = [np.linspace(0.001,0.1,num_params), np.linspace(0.001,1.0,num_params)]
+# title = "deadvrec"
+
+# inf vs rec
+# param_change = ["p_infected", "p_recover"]
+# parameters_list = [np.linspace(0.001,0.1,num_params), np.linspace(0.001,1.0,num_params)]
+# title = "infvrec"
+
+# inf v immune
+# param_change = ["p_infected", "immunity_period"]
+# parameters_list = [np.linspace(0.001,0.1,num_params), np.linspace(0,130,num_params)]
+# title = "infvimm"
+
+# inf v contact rate
+# param_change = ["p_infected", "contact_rate"]
+# parameters_list = [np.linspace(0.001,0.1,num_params), np.linspace(0,130,num_params)]
+# title = "infvcon"
+
+# --------------
+# actual testing
+# --------------
+
+totals_list = np.empty((num_params,num_params), dtype=object)
+
+for i in range(num_params):
+    for j in range(num_params):
+        totals_list[i, j] = []
+
 
 # ==========================================================================================================================
 # ==========================================================================================================================
 # ==========================================================================================================================
+
 
 def main():
     parameters = {
@@ -101,8 +147,58 @@ def main():
         "recover_resistance_max": recover_resistance_max,
     }
 
-    history = simulate(make_initial_state(Hi_list, fraction_infected, T_inf), steps=time, parameters=parameters)
-    plot_history_highlights(history, T_win)
+    for i in range(len(parameters_list[0])):
+        parameters[param_change[0]] = parameters_list[0][i]
 
+        for j in range(len(parameters_list[1])):
+            parameters[param_change[1]] = parameters_list[1][j]
+
+            history = simulate(make_initial_state(Hi_list, fraction_infected, T_inf), steps=times_list[-1], parameters=parameters)
+            total = np.array(history["Hi"]) + np.array(history["Ot"]) + np.array(history["In"]) + np.array(history["Im"])
+
+            totals_list[i][j] = total
+            if (i % 10 == 0) and (j % 10 == 0): # save some time
+                print(f"list ({i},{j})")
+
+    rows = 2
+    cols = len(times_list)// rows
+    fig, axes = plt.subplots(nrows=rows, ncols=cols, figsize=(14, 10), subplot_kw={'projection': '3d'}, constrained_layout=True)
+    axes = axes.ravel()
+
+    # for 3d plotting
+    X, Y = np.meshgrid(np.ravel(parameters_list[0]), np.ravel(parameters_list[1])) # create meshgrid for X and Y
+    Z = np.zeros(X.shape) # initialize Z values (total population) for the 3D plot
+
+    for i, time in enumerate(times_list):
+        Z.fill(0) # clear Z before updating with new values
+
+        for j in range(totals_list.shape[0]):
+            for k in range(totals_list.shape[1]):
+                Z[j, k] = totals_list[j][k][time - 1]
+
+        # plot the surface for the current time slice
+        ax = axes[i]
+        ax.plot_surface(X, Y, Z, cmap='viridis')
+
+        ax.set_xlabel(f"{param_change[0]}")
+        ax.set_ylabel(f"{param_change[1]}")
+        ax.set_zlabel(f"Population at day {time}")
+        ax.set_title(f"Population at day {time}", pad=15)
+
+    for ax in axes:
+        ax.zaxis.labelpad = 10
+        ax.xaxis.labelpad = 10
+        ax.yaxis.labelpad = 10
+    
+    fig.set_constrained_layout_pads(
+        w_pad=0.05,   # width padding
+        h_pad=0.1,    # height padding
+        hspace=0.2,
+        wspace=0.2
+    )
+
+    plt.savefig(f"3D_bifurcations_{title}.png", dpi=200)
+    plt.show()
+    
 if __name__ == "__main__":
     main()

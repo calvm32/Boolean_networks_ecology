@@ -17,7 +17,9 @@ def update_environment(state, agg, parameters):
     if Re == 1 and Te == 1: Hu_next = 1 # rule 4
     if Te == 1: Re_next = 1  # rule 7
 
-    PD_next = (1-delta)*PD + (In_sum)/(Ot_sum + Hi_sum + In_sum + Im_sum)
+    total = Ot_sum + Hi_sum + In_sum + Im_sum
+
+    PD_next = (1-delta)*PD + In_sum / total if total else (1-delta)*PD
 
     return {
         "Hu": Hu_next,
@@ -54,7 +56,7 @@ def update_individuals(state, env, parameters):
         len(state["Im"])
     )
 
-    weight = len(state["In"]) / total_inhabitants
+    weight = len(state["In"]) / total_inhabitants if total_inhabitants else 0
 
     # environmental PD exposure
     p_env = PD/(1+PD)

@@ -34,8 +34,6 @@ def sample_params():
         "inf_alpha": inf_alpha,
         "inf_beta": inf_beta,
         "delta": delta,
-        "awake_a": awake_a,
-        "awake_b": awake_b,
         "T_inf": T_inf,
         "T_TBD": T_inf,
         "T_AD": T_inf,
@@ -87,12 +85,6 @@ inf_alpha, inf_beta = 5, 2                  # infected variables for beta distri
 
 delta = 0.05                                # P. destructans decay rate, considered in [0.005, 0.03]
 
-# WINTER AWAKENING PATHWAY
-awake_a = -3                                # represents a baseline arousal tendency, 
-                                            # considered in a [-4,-2]
-awake_b = 0.7                               # represents a social coupling strength, 
-                                            # considered in [0.3, 1]
-
 # DEATH OR RECOVERY PATHWAYS
 T_inf = 30                                  # approximate time in dayseach bat spends infirm before recovering or dying, 
                                             # considered in [10, 40]
@@ -137,7 +129,7 @@ def loss(parameters, runs=2):
     losses = []
 
     for _ in range(runs):
-        sim = simulate(make_initial_state(), steps=max(obs_times)+1, parameters=parameters)
+        sim = simulate(make_initial_state(Hi_list, fraction_infected, T_inf), steps=max(obs_times)+1, parameters=parameters)
 
         error = 0.0
         for i, t in enumerate(obs_times):
@@ -209,7 +201,7 @@ def main():
         
         print(f"checked {i}")
 
-    best_sim = simulate(make_initial_state(Hi_list, fraction_infected), steps = 4500, parameters=best)
+    best_sim = simulate(make_initial_state(Hi_list, fraction_infected, T_inf), steps = 4500, parameters=best)
     plot_history_highlights(best_sim, T_win, sample=[obs_times, obs_Ot])
 
 

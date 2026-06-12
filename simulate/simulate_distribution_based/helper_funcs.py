@@ -6,7 +6,7 @@ from simulate.simulate_distribution_based.rules import *
 # setup before each run
 # ---------------------
 
-def make_initial_state(Hi_list, fraction_infected):
+def make_initial_state(Hi_list, fraction_infected, T_inf):
     # NOTICE : each inhabitant node contains the following information:
     # [ ON/OFF, 
     #   resistance number AKA res_num, 
@@ -79,12 +79,12 @@ def perturb(params, keys, scale=0.15):
             new[k] = max(0, val + np.random.normal(0, scale * val))
     return new
 
-def compute_metrics(history, N0):
-    """
-    history : dict with keys Hi, Ot, In, Im, De — each a 1-D numpy array of length T
-    N0      : int, initial total population (scalar)
-    Returns : dict of scalar metrics
-    """
+def compute_metrics(history, Hi_list):
+    
+    N0 = 0 # total pop
+    for i in range(len(Hi_list)):
+        N0 += Hi_list[i][0] 
+
     T = len(history["Hi"])
     alive = (np.array(history["Hi"])
            + np.array(history["Ot"])

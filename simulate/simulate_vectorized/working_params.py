@@ -27,12 +27,6 @@ inf_alpha, inf_beta = 5, 2                  # infected variables for beta distri
 
 delta = 0.05                                # P. destructans decay rate, considered in [0.005, 0.03]
 
-# WINTER AWAKENING PATHWAY
-awake_a = -3                                # represents a baseline arousal tendency, 
-                                            # considered in a [-4,-2]
-awake_b = 0.7                               # represents a social coupling strength, 
-                                            # considered in [0.3, 1]
-
 # DEATH OR RECOVERY PATHWAYS
 T_inf = 30                                  # approximate time in dayseach bat spends infirm before recovering or dying, 
                                             # considered in [10, 40]

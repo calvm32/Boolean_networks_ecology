@@ -39,7 +39,7 @@ def update_individuals(state, env, parameters):
     # ---------------------------
 
     Te, Hu, PD, Re = state["Te"], state["Hu"], state["PD"], state["Re"]
-    inf_alpha, inf_beta, delta, awake_a, awake_b = parameters["inf_alpha"], parameters["inf_beta"], parameters["delta"], parameters["awake_a"], parameters["awake_b"]
+    inf_alpha, inf_beta, delta = parameters["inf_alpha"], parameters["inf_beta"], parameters["delta"]
     T_inf, T_TBD, T_AD, T_seasonal, T_win = parameters["T_inf"], parameters["T_TBD"], parameters["T_AD"], parameters["T_seasonal"], parameters["T_win"]
     lambda_win, lambda_sum = parameters["lambda_win"], parameters["lambda_sum"]
     immunity_period, birth_res_max, recover_res_max = parameters["immunity_period"], parameters["birth_resistance_max"], parameters["recover_resistance_max"]
