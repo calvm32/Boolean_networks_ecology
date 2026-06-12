@@ -2,7 +2,7 @@ import random as rand
 import numpy as np
 
 from simulate.simulate_distribution_based.helper_funcs import *
-from simulate.simulate_rough_original.rules_vectorized import *
+from simulate.simulate_distribution_based.rules import *
 
 # -------------------------
 # set up initial population

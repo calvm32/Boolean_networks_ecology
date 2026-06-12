@@ -46,8 +46,11 @@ def sample_params():
         "birth_resistance_max": birth_resistance_max,
         "recover_resistance_max": recover_resistance_max,
     }
-    
-    
+
+# ==========================================================================================================================
+# ==========================================================================================================================
+# ==========================================================================================================================
+
 # -------------------------
 # set up initial population
 # -------------------------
@@ -65,7 +68,9 @@ bigbrown_cluster_sizeMAX = 9
 Hi_list = [[tricolor_num, tricolor_cluster_sizeMIN, tricolor_cluster_sizeMAX], 
            [bigbrown_num, bigbrown_cluster_sizeMIN, bigbrown_cluster_sizeMAX]] 
 
-# NOTICE : the remaining populations (Ot, Im, In) all start with 0 inhabitants
+fraction_infected = 0   # choose in [0, 1]
+
+# NOTICE : the remaining populations (Ot, Im) all start with 0 inhabitants
 # NOTICE : resistance starts at 0 for every bat
 
 # ---------------------------
@@ -102,7 +107,7 @@ T_win = 210                                 # length of winter season in days in
                                             # considered in 5-7 months, depending on transition period T_seasonal
 
 # BAT IN/OUT FLUX
-lambda_win = 0.0                            # population growth value during winter, 
+lambda_win = 0                              # population growth value during winter, 
                                             # considered in [0, 0.01] 
 lambda_sum = 0.001                           # population growth value during summer,
                                             # considered in [0.01, 0.1] 
@@ -121,25 +126,11 @@ recover_resistance_max = 0.02               # resistance after recovery, corresp
 # initialize
 # ----------
 
-def make_initial_state():
-    # NOTICE : each inhabitant node contains the following information:
-    # [ON/OFF, 
-    #  resistance number, 
-    #  clustering number, 
-    #  infection number MINUS days spent infected (i.e. days left infirm), 
-    #  0 for just entered hibernation OR 1 for exited hibernation at least once (to track arousal periods)
-    # ]
-    return {
-        "Hi": [[1, 0, rand.uniform(Hi_list[i][1], Hi_list[i][2]), 0, 0] for i in range(len(Hi_list)) for _ in range(Hi_list[i][0])],
-        "Ot": [],
-        "In": [],
-        "Im": [],
-        "De": 0, # only need total numbers of dead
-        "Re": 1,
-        "Te": 0,
-        "Hu": 0,
-        "PD": 0,
-    }
+time = 3650             # total days
+
+# ==========================================================================================================================
+# ==========================================================================================================================
+# ==========================================================================================================================
     
 def loss(parameters, runs=2):
     losses = []
@@ -170,11 +161,11 @@ def simulate(initial_state, steps, parameters):
     T_win = parameters["T_win"]
 
     history = {
-        "Hi":[],
-        "Ot":[],
-        "In":[],
-        "Im":[],
-        "De":[],
+        "Hi": np.empty(steps,dtype=np.int32),
+        "Ot": np.empty(steps,dtype=np.int32),
+        "In": np.empty(steps,dtype=np.int32),
+        "Im": np.empty(steps,dtype=np.int32),
+        "De": np.empty(steps,dtype=np.int32),
     }
 
     for t in range(steps):
@@ -186,11 +177,11 @@ def simulate(initial_state, steps, parameters):
             state["Te"] = 1 # summer
         counts = count(state)
 
-        history["Hi"].append(counts["Hi"])
-        history["Ot"].append(counts["Ot"])
-        history["In"].append(counts["In"])
-        history["Im"].append(counts["Im"])
-        history["De"].append(counts["De"])
+        history["Hi"][t] = (counts["Hi"])
+        history["Ot"][t] = (counts["Ot"])
+        history["In"][t] = (counts["In"])
+        history["Im"][t] = (counts["Im"])
+        history["De"][t] = (counts["De"])
 
         state = step(state, parameters)
 
@@ -201,24 +192,7 @@ def simulate(initial_state, steps, parameters):
 
 
 def main():
-    parameters = {
-        "inf_alpha": inf_alpha,
-        "inf_beta": inf_beta,
-        "delta": delta,
-        "awake_a": awake_a,
-        "awake_b": awake_b,
-        "T_inf": T_inf,
-        "T_TBD": T_inf,
-        "T_AD": T_inf,
-        "T_seasonal": T_inf,
-        "T_win": T_win,
-        "lambda_win": lambda_win,
-        "lambda_sum": lambda_sum,
-        "immunity_period": immunity_period,
-        "birth_resistance_max": birth_resistance_max,
-        "recover_resistance_max": recover_resistance_max,
-    }
-
+    parameters = sample_params()
     best = None
     best_loss = float("inf")
     n_iter = 20
@@ -234,7 +208,7 @@ def main():
         
         print(f"checked {i}")
 
-    best_sim = simulate(make_initial_state(), steps = 4500, parameters=best)
+    best_sim = simulate(make_initial_state(Hi_list, fraction_infected), steps = 4500, parameters=best)
     plot_history_highlights(best_sim, T_win, sample=[obs_times, obs_Ot])
 
 

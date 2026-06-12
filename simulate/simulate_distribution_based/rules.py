@@ -20,15 +20,15 @@ def update_environment(state, agg, parameters):
     PD_next = (1-delta)*PD + (In_sum)/(Ot_sum + Hi_sum + In_sum + Im_sum)
 
     return {
-        "Hu": int(Hu_next),
-        "PD": int(PD_next),
-        "Re": int(Re_next),
-        "Te": int(Te)
+        "Hu": Hu_next,
+        "PD": PD_next,
+        "Re": Re_next,
+        "Te": Te
     }
 
 def update_individuals(state, env, parameters):
     Te, Hu, PD, Re = state["Te"], state["Hu"], state["PD"], state["Re"]
-    inf_alpha, inf_beta, delta, awake_a, awake_b = parameters["inf_alpha"], parameters["inf_beta"], parameters["delta"], parameters["awake_a"], parameters["awake_b"]
+    inf_alpha, inf_beta, delta = parameters["inf_alpha"], parameters["inf_beta"], parameters["delta"]
     T_inf, T_TBD, T_AD, T_seasonal, T_win = parameters["T_inf"], parameters["T_TBD"], parameters["T_AD"], parameters["T_seasonal"], parameters["T_win"]
     lambda_win, lambda_sum = parameters["lambda_win"], parameters["lambda_sum"]
     immunity_period, birth_res_max, recover_res_max = parameters["immunity_period"], parameters["birth_resistance_max"], parameters["recover_resistance_max"]
@@ -41,9 +41,9 @@ def update_individuals(state, env, parameters):
     De = state["De"]
 
     # re-add everyone who stays the same
-    Hi_next  = []
+    Hi_next = []
     Ot_next = []
-    In_next  = []
+    In_next = []
     Im_next = []
     
     # configure totals for weighting parameters
@@ -62,16 +62,20 @@ def update_individuals(state, env, parameters):
     # seasonal hibernation
     p_seasonal = 1/T_seasonal
 
+    # net change
+    if Te:
+        p_netchange = 1 - np.exp(- lambda_sum)
+    else:
+        p_netchange = 1 - np.exp(- lambda_win)
+
     # ---------
     # Update Hi
     # ---------
     for i in range(len(Hi_old)):
-        Hi = state["Hi"][i][0]
-        res_num = state["Hi"][i][1]
-        cluster_num = state["Hi"][i][2]
+        Hi, res_num, cluster_num, _, _ = state["Hi"][i]
+        r = rand.uniform(0,1)
 
         # bat-to-bat contact WNS exposure
-        r = rand.uniform(0,1)
         lambda_i = weight*cluster_num
         K_i = np.random.poisson(lambda_i)
 
@@ -89,7 +93,7 @@ def update_individuals(state, env, parameters):
         mu_i = np.random.gamma(shape=k, scale=theta)
 
         # bout hibernation
-        p_bouts = 1/T_TBD
+        p_bouts = 1/T_TBD if T_AD >= 1 else 0
 
         if (Hi and Te == 0 and r < p_infected): # rule 9
             In_next.append([1, res_num, cluster_num, mu_i, 0])
@@ -104,21 +108,19 @@ def update_individuals(state, env, parameters):
     # Update Ot
     # ----------
     for i in range(len(Ot_old)):
-        Ot = state["Ot"][i][0]
-        res_num = state["Ot"][i][1]
-        cluster_num = state["Ot"][i][2]
+        Ot, res_num, cluster_num, _, check = state["Ot"][i]
         r = rand.uniform(0, 1)
 
         # bout hibernation
-        check = state["Ot"][i][4] # check if hibernated before, i.e. if the next hibernating rule is p_bouts and not p_seasonal
+        # check if hibernated before, i.e. if the next hibernating rule is p_bouts and not p_seasonal
         p_bouts = 1/T_AD
 
-        if not Te and not Re: # rule 3
-            De += 1
-        elif Te and Ot and r and check <= p_bouts: # rule 1
-            Ot_next.append([1, res_num, cluster_num, 0, 0]) 
+        if Te and Ot and check and r <= p_bouts: # rule 1
+            Hi_next.append([1, res_num, cluster_num, 0, 0]) 
         elif not Te and Ot and r <= p_seasonal: # rules 6/7
-            Ot_next.append([1, res_num, cluster_num, 0, 0]) 
+            Hi_next.append([1, res_num, cluster_num, 0, 0]) 
+        elif not Te and not Re: # rule 3
+            De += 1
         else:
             Ot_next.append([Ot, res_num, cluster_num, 0, 0])
 
@@ -126,12 +128,7 @@ def update_individuals(state, env, parameters):
     # Update In
     # ---------
     for i in range(len(In_old)):
-        In = state["In"][i][0]
-        res_num = state["In"][i][1]
-        cluster_num = state["In"][i][2]
-        mu_i = state["In"][i][3]
-
-        idx = len(state["Hi"]) + len(state["Ot"]) + i
+        In, res_num, cluster_num, mu_i, _ = state["In"][i]
         r = rand.uniform(0, 1)
 
         # probability of death
@@ -149,14 +146,13 @@ def update_individuals(state, env, parameters):
     # Update Im
     # ---------
     for i in range(len(Im_old)):
-        age = state["Im"][i][0]
-        res_num = state["Im"][i][1]
-        cluster_num = state["Im"][i][2]
-
-        new_res_num = res_num + rand.normalvariate(0, recover_res_max)
-        new_res_num = max(0, min(1, new_res_num))
+        age, res_num, cluster_num, _, _ = state["Im"][i]
 
         if age >= immunity_period:
+            # immunity improves with infection
+            new_res_num = res_num + rand.normalvariate(0, recover_res_max)
+            new_res_num = max(0, min(1, new_res_num))
+
             Hi_next.append([1, new_res_num, cluster_num, 0, 0]) # return to hibernation
         else:
             Im_next.append([age + 1, res_num, cluster_num, 0, 0])
@@ -167,24 +163,18 @@ def update_individuals(state, env, parameters):
     parents = state["Ot"] + state["Im"]
     for parent in parents:
         r = rand.uniform(0,1)
-        if Te:
-            p_netchange = 1 - np.exp(- lambda_sum)
-            if r <= p_netchange:
-                parent_res_num = parent[1]
-                cluster_num = parent[2]
-                child_res_num = parent_res_num + rand.normalvariate(0, birth_res_max)
-                child_res_num = max(0, min(1, child_res_num))
+        _, parent_res_num, cluster_num, _, _ = parent
 
-                Ot_next.append([1, child_res_num, cluster_num, 0, 0])
-        elif not Te:
-            p_netchange = 1 - np.exp(- lambda_win)
-            if r <= p_netchange:
-                parent_res_num = parent[1]
-                cluster_num = parent[2]
-                child_res_num = parent_res_num + rand.normalvariate(0, birth_res_max)
-                child_res_num = max(0, min(1, child_res_num))
+        if Te and r <= p_netchange:
+            child_res_num = parent_res_num + rand.normalvariate(0, birth_res_max)
+            child_res_num = max(0, min(1, child_res_num))
 
-                Ot_next.append([1, child_res_num, cluster_num, 0, 0])
+            Ot_next.append([1, child_res_num, cluster_num, 0, 0])
+        elif not Te and r <= p_netchange:
+            child_res_num = parent_res_num + rand.normalvariate(0, birth_res_max)
+            child_res_num = max(0, min(1, child_res_num))
+
+            Ot_next.append([1, child_res_num, cluster_num, 0, 0])
         
     return {
         "Hi": Hi_next,

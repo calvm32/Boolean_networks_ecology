@@ -2,11 +2,14 @@ import random as rand
 import numpy as np
 
 from simulate.simulate_distribution_based.helper_funcs import *
-from simulate.simulate_distribution_based.rules import *
+from simulate.simulate_rough_original.rules import *
 
-# ==========================================================================================================================
-# ==========================================================================================================================
-# ==========================================================================================================================
+
+"""
+Vary the fraction of N0 that begins as In (infected) at t=0.
+Requires your make_initial_state to accept an infected_frac argument,
+or you manually move bats from Hi to In after construction.
+"""
 
 # -------------------------
 # set up initial population
@@ -25,9 +28,7 @@ bigbrown_cluster_sizeMAX = 9
 Hi_list = [[tricolor_num, tricolor_cluster_sizeMIN, tricolor_cluster_sizeMAX], 
            [bigbrown_num, bigbrown_cluster_sizeMIN, bigbrown_cluster_sizeMAX]] 
 
-fraction_infected = 0   # choose in [0, 1]
-
-# NOTICE : the remaining populations (Ot, Im) all start with 0 inhabitants
+# NOTICE : the remaining populations (Ot, Im, In) all start with 0 inhabitants
 # NOTICE : resistance starts at 0 for every bat
 
 # ---------------------------
@@ -43,12 +44,6 @@ inf_alpha, inf_beta = 5, 2                  # infected variables for beta distri
 
 delta = 0.05                                # P. destructans decay rate, considered in [0.005, 0.03]
 
-# WINTER AWAKENING PATHWAY
-awake_a = -3                                # represents a baseline arousal tendency, 
-                                            # considered in a [-4,-2]
-awake_b = 0.7                               # represents a social coupling strength, 
-                                            # considered in [0.3, 1]
-
 # DEATH OR RECOVERY PATHWAYS
 T_inf = 30                                  # approximate time in dayseach bat spends infirm before recovering or dying, 
                                             # considered in [10, 40]
@@ -58,15 +53,15 @@ T_TBD = 4.1                                 # length of torpor bout in days,
                                             # considered in [3.9, 4.3] for tricolored bats
 T_AD = 88.5/1440                            # length of arousal bout in days, 
                                             # considered in [1.74166, 5.63333] for tricolored bats
-T_seasonal = 40                             # approx. transition time in days between hibernating and not
+T_seasonal = 20                             # approx. transition time in days between hibernating and not
                                             # considered in 10-40 maybe?
-T_win = 210                                 # length of winter season in days in Nebraska mines
+T_win = 30*5                                # length of winter season in days in Nebraska mines
                                             # considered in 5-7 months, depending on transition period T_seasonal
 
 # BAT IN/OUT FLUX
 lambda_win = 0                              # population growth value during winter, 
                                             # considered in [0, 0.01] 
-lambda_sum = 0.001                           # population growth value during summer,
+lambda_sum = 0.001                          # population growth value during summer,
                                             # considered in [0.01, 0.1] 
 
 # -----------------
@@ -83,11 +78,43 @@ recover_resistance_max = 0.02               # resistance after recovery, corresp
 # initialize
 # ----------
 
-time = 3650             # total days
+time = 3650 # total days
+empty_pop = np.empty((0,5), dtype=float)
 
-# ==========================================================================================================================
-# ==========================================================================================================================
-# ==========================================================================================================================
+def simulate(initial_state, steps, parameters):
+    state = initial_state
+    T_win = parameters["T_win"]
+
+    history = {
+        "Hi": np.empty(steps,dtype=np.int32),
+        "Ot": np.empty(steps,dtype=np.int32),
+        "In": np.empty(steps,dtype=np.int32),
+        "Im": np.empty(steps,dtype=np.int32),
+        "De": np.empty(steps,dtype=np.int32),
+    }
+
+    for t in range(steps):
+
+        # Seasonal tempcycle
+        if (t % 365) <= T_win: # T_win
+            state["Te"] = 0   
+        else:
+            state["Te"] = 1 # summer
+        counts = count(state)
+
+        history["Hi"][t] = (counts["Hi"])
+        history["Ot"][t] = (counts["Ot"])
+        history["In"][t] = (counts["In"])
+        history["Im"][t] = (counts["Im"])
+        history["De"][t] = (counts["De"])
+
+        state = step(state, parameters)
+
+        if t % 50 == 0:
+            print(f"done w/ simulation at step {t}")
+
+    return history
+
 
 def main():
     parameters = {
@@ -106,8 +133,46 @@ def main():
         "recover_resistance_max": recover_resistance_max,
     }
 
-    history = simulate(make_initial_state(Hi_list, fraction_infected), steps=time, parameters=parameters)
+    history = simulate(make_initial_state(), steps=time, parameters=parameters)
     plot_history_highlights(history, T_win)
+    
+
+def invasion_scenarios(base_params, init_fractions=[0.01, 0.03, 0.05, 0.10],
+                       N0=100, steps=400):
+    fig, axes = plt.subplots(1, 2, figsize=(12, 4.5))
+    cmap = plt.cm.get_cmap("YlOrRd", len(init_fractions))
+
+    for idx, frac in enumerate(init_fractions):
+        # --- adjust initial state ---
+        state = make_initial_state()
+        n_infected = max(1, int(frac * N0))
+        new_In = state["Hi"][:n_infected]          # move first n bats to In
+        state["Hi"] = state["Hi"][n_infected:]
+        # give them infection days remaining = T_inf
+        for bat in new_In:
+            bat[3] = base_params["T_inf"]
+        import numpy as np
+        state["In"] = np.array(new_In)
+
+        hist = simulate(state, steps=steps, parameters=base_params)
+        m    = compute_metrics(hist, N0)
+        t    = np.arange(steps)
+        color = cmap(idx)
+
+        axes[0].plot(t, m["_P"], color=color,
+                     label=f"{int(frac*100)}% initially infected")
+        axes[1].plot(t, m["_S"], color=color,
+                     label=f"{int(frac*100)}% initially infected")
+
+    for ax, ylabel in zip(axes, ["Prevalence P(t)", "Persistence S(t)"]):
+        ax.set_xlabel("Day"); ax.set_ylabel(ylabel)
+        ax.legend(fontsize=8); ax.grid(alpha=0.3)
+
+    fig.suptitle("Invasion Scenarios: Effect of Initial Infection Size")
+    fig.tight_layout()
+    plt.savefig("figures/invasion_scenarios.pdf", bbox_inches="tight", dpi=300)
+    plt.show()
 
 if __name__ == "__main__":
     main()
+    

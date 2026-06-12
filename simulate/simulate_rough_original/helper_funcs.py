@@ -57,7 +57,7 @@ def plot_history(history, sample=[]):
     ax1.plot(t, history["NHO"], label="Non-hibernating, non-infected, non-immune (NHO)")
     ax1.plot(t, history["In"], label="Infected (In)")
     ax1.plot(t, history["De"], label="Deceased (De)")
-    ax1.plot(t, history["Im"], label="Imcovered (Im)")
+    ax1.plot(t, history["Im"], label="Immune (Im)")
     ax1.plot(t, history["Ot"], label="Other species (Ot)") if np.any(history["Ot"]) else None
 
     ax1.set_xlabel("Time step")
@@ -106,7 +106,7 @@ def plot_history_highlights(history, T_win, sample=[]):
     ax1.plot(t, history["NHO"], label="Non-hibernating, non-infected, non-immune (NHO)")
     ax1.plot(t, history["In"], label="Infected (In)")
     ax1.plot(t, history["De"], label="Deceased (De)")
-    ax1.plot(t, history["Im"], label="Imcovered (Im)")
+    ax1.plot(t, history["Im"], label="Immune (Im)")
     ax1.plot(t, history["Ot"], label="Other species (Ot)") if np.any(history["Ot"]) else None
 
     ax1.set_xlabel("Time step")
