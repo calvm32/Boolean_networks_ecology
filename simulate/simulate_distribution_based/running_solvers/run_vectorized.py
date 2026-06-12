@@ -2,7 +2,7 @@ import random as rand
 import numpy as np
 
 from simulate.simulate_distribution_based.helper_funcs import *
-from simulate.simulate_rough_original.rules import *
+from simulate.simulate_rough_original.rules_vectorized import *
 
 # -------------------------
 # set up initial population
@@ -58,9 +58,9 @@ T_win = 210                                 # length of winter season in days in
                                             # considered in 5-7 months, depending on transition period T_seasonal
 
 # BAT IN/OUT FLUX
-lambda_win = 0                              # population growth value during winter, 
+lambda_win = 0.0                         # population growth value during winter, 
                                             # considered in [0, 0.01] 
-lambda_sum = 0.001                           # population growth value during summer,
+lambda_sum = 0.05                           # population growth value during summer,
                                             # considered in [0.01, 0.1] 
 
 # -----------------
@@ -77,7 +77,7 @@ recover_resistance_max = 0.02               # resistance after recovery, corresp
 # initialize
 # ----------
 
-time = 400 # total days
+time = 3650 # total days
 empty_pop = np.empty((0,5), dtype=float)
 
 def make_initial_state():
@@ -89,11 +89,11 @@ def make_initial_state():
     #   0 for just entered hibernation OR 1 for exited hibernation at least once (to track arousal periods)
     # ]
     return {
-        "Hi": [
+        "Hi": np.array([
                 [1, 0, rand.uniform(Hi_list[i][1], Hi_list[i][2]), 0, 0]
                 for i in range(len(Hi_list))
                 for _ in range(Hi_list[i][0])
-              ],
+              ], dtype=float),
         "Ot": empty_pop.copy(),
         "In": empty_pop.copy(),
         "Im": empty_pop.copy(),
@@ -113,7 +113,7 @@ def simulate(initial_state, steps, parameters):
         "Ot": np.empty(steps,dtype=np.int32),
         "In": np.empty(steps,dtype=np.int32),
         "Im": np.empty(steps,dtype=np.int32),
-        "De": np.empty(steps,dtype=np.int32),
+        "De": 0,
     }
 
     for t in range(steps):
@@ -129,12 +129,11 @@ def simulate(initial_state, steps, parameters):
         history["Ot"][t] = (counts["Ot"])
         history["In"][t] = (counts["In"])
         history["Im"][t] = (counts["Im"])
-        history["De"][t] = (counts["De"])
+        history["De"] = (counts["De"])
 
         state = step(state, parameters)
 
-        if t % 50 == 0:
-            print(f"done w/ simulation at step {t}")
+        print(f"done{t}")
 
     return history
 
