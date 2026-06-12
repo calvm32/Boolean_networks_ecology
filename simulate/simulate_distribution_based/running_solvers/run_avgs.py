@@ -4,6 +4,8 @@ import numpy as np
 from simulate.simulate_distribution_based.helper_funcs import *
 from simulate.simulate_rough_original.rules import *
 
+avg_over = 20 # avg of X runs
+
 # -------------------------
 # set up initial population
 # -------------------------
@@ -60,7 +62,7 @@ T_win = 210                                 # length of winter season in days in
 # BAT IN/OUT FLUX
 lambda_win = 0                              # population growth value during winter, 
                                             # considered in [0, 0.01] 
-lambda_sum = 0.001                           # population growth value during summer,
+lambda_sum = 0.01                           # population growth value during summer,
                                             # considered in [0.01, 0.1] 
 
 # -----------------
@@ -128,8 +130,7 @@ def simulate(initial_state, steps, parameters):
 
         state = step(state, parameters)
 
-        if t % 50 == 0:
-            print(f"done w/ simulation at step {t}")
+        print(f"done{t}")
 
     return history
 
@@ -153,8 +154,22 @@ def main():
         "recover_resistance_max": recover_resistance_max,
     }
 
-    history = simulate(make_initial_state(), steps=time, parameters=parameters)
-    plot_history_highlights(history, T_win)
+    for i in range(avg_over):
+
+        history = simulate(
+            make_initial_state(),
+            steps=time,
+            parameters=parameters
+        )
+
+        for key in history_avg:
+            history_avg[key] += np.array(history[key])
+
+    # divide by number of runs for avg
+    for key in history_avg:
+        history_avg[key] /= avg_over    
+
+    plot_history_highlights(history_avg, T_win)
 
 if __name__ == "__main__":
     main()

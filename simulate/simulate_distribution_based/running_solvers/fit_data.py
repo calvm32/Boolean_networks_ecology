@@ -1,10 +1,9 @@
 import random as rand
 import numpy as np
 import copy
-from mpi4py import MPI
 
-from simulate.simulate_rough_original.helper_funcs import *
-from simulate.simulate_rough_original.rules import *
+from simulate.simulate_distribution_based.helper_funcs import *
+from simulate.simulate_distribution_based.rules import *
 from simulate.data import *
 
 # --------------------
@@ -17,7 +16,7 @@ START_YEAR = data[0]["year"]
 SAMPLE_DAY = 140
 
 obs_times = []
-obs_NHO = []
+obs_Ot = []
 obs_Ot = []
 obs_In = []
 
@@ -25,86 +24,118 @@ for d in data:
     t = SAMPLE_DAY + 365 * (d["year"] - START_YEAR)
     
     obs_times.append(t)
-    obs_NHO.append(d["NHO"])
+    obs_Ot.append(d["Ot"])
     obs_Ot.append(d["Ot"])
     obs_In.append(d["In"])
 
 def sample_params():
-    water = rand.uniform(100,5000)
-    food = rand.uniform(100,5000)
     return {
-        "p_infected": 0, #rand.uniform(0.01, 0.8),
-        "p_dead": 0, #rand.uniform(0.01, 0.8),
-        "p_awake": rand.uniform(0.01, 0.2),
-        "p_recover": 0, #rand.uniform(0.01, 0.8),
-        "p_hibernate": rand.uniform(0.01, 0.8),
-        "p_netchange": rand.uniform(0.0001, 0.0003),
-        "water": water,
-        "food": water,
-        "water0": water,
-        "food0": food,
+        "inf_alpha": inf_alpha,
+        "inf_beta": inf_beta,
+        "delta": delta,
+        "awake_a": awake_a,
+        "awake_b": awake_b,
+        "T_inf": T_inf,
+        "T_TBD": T_inf,
+        "T_AD": T_inf,
+        "T_seasonal": T_inf,
         "T_win": T_win,
+        "lambda_win": lambda_win,
+        "lambda_sum": lambda_sum,
         "immunity_period": immunity_period,
-        "contact_rate": contact_rate,
         "birth_resistance_max": birth_resistance_max,
         "recover_resistance_max": recover_resistance_max,
     }
+    
+    
+# -------------------------
+# set up initial population
+# -------------------------
 
-# ------------------------------------------
-# hibernacula-INDEPENDENT initial conditions
-# ------------------------------------------
+# first select number of bats belonging to each species
+tricolor_num = 100
+tricolor_cluster_sizeMIN = 1
+tricolor_cluster_sizeMAX = 2
 
-# probabilities
-p_infected = 0.005                          # chance a hibernating bat gets infected (given that PD is on) on any given day
-p_dead = 0.005                              # chance that an infected bat dies on any given day
-p_recover = 1-(1-(1-p_dead)**30)**(1/30)    # CONFIDENT # chance of recovering and going back into hibernation on any given day
-p_awake = 0.08                              # OKAY # chance of a waking bat arousing a hibernating bat from torpor on any given day
-p_hibernate = 0.5                           # CONFIDENT # chance of a bat switching between hibernating and not (given that Te switches) on any given day
-p_netchange = 0.000215                      # CONFIDENT # chance of new bat due to immigration/birth per day
-contact_rate = 10                           # population-dependent rate of contact btwn health bat and WNS infected bat or surface
+bigbrown_num = 0
+bigbrown_cluster_sizeMIN = 1
+bigbrown_cluster_sizeMAX = 9
+
+# hibernating non-infected bats of each species
+Hi_list = [[tricolor_num, tricolor_cluster_sizeMIN, tricolor_cluster_sizeMAX], 
+           [bigbrown_num, bigbrown_cluster_sizeMIN, bigbrown_cluster_sizeMAX]] 
+
+# NOTICE : the remaining populations (Ot, Im, In) all start with 0 inhabitants
+# NOTICE : resistance starts at 0 for every bat
+
+# ---------------------------
+# system-governing parameters
+# ---------------------------
+
+# INFECTION PATHWAYS
+inf_alpha, inf_beta = 5, 2                  # infected variables for beta distribution
+                                            # chance a hibernating bat gets infected (given that PD is on) on any given day
+                                            # low: alpha = 1, beta = 10
+                                            # moderate: alpha = 2, beta = 5
+                                            # high: alpha = 5, beta = 2
+
+delta = 0.05                                # P. destructans decay rate, considered in [0.005, 0.03]
+
+# WINTER AWAKENING PATHWAY
+awake_a = -3                                # represents a baseline arousal tendency, 
+                                            # considered in a [-4,-2]
+awake_b = 0.7                               # represents a social coupling strength, 
+                                            # considered in [0.3, 1]
+
+# DEATH OR RECOVERY PATHWAYS
+T_inf = 30                                  # approximate time in dayseach bat spends infirm before recovering or dying, 
+                                            # considered in [10, 40]
+
+# BOUT and SEASONAL HIBERNATING PATHWAYS
+T_TBD = 4.1                                 # length of torpor bout in days, 
+                                            # considered in [3.9, 4.3] for tricolored bats
+T_AD = 88.5/1440                            # length of arousal bout in days, 
+                                            # considered in [1.74166, 5.63333] for tricolored bats
+T_seasonal = 40                             # approx. transition time in days between hibernating and not
+                                            # considered in 10-40 maybe?
+T_win = 210                                 # length of winter season in days in Nebraska mines
+                                            # considered in 5-7 months, depending on transition period T_seasonal
+
+# BAT IN/OUT FLUX
+lambda_win = 0.0                            # population growth value during winter, 
+                                            # considered in [0, 0.01] 
+lambda_sum = 0.001                           # population growth value during summer,
+                                            # considered in [0.01, 0.1] 
 
 # -----------------
 # types of immunity
 # -----------------
 
+# CHECK DISTRIBUTIONS USED IN biology LITERATURE (beta or gamma? exponential?)
+
 immunity_period = 0                         # number of days spent in recovery before re-infection is possible
-birth_resistance_max = 0.02                 # hereditary resistance of newborn, corresp. w/ rand.normalvariate(0, X)
-recover_resistance_max = 0.02               # resistance after recovery, corresp. w/ rand.normalvariate(0, X)birth_resistance_max = 0.02                # corresp. w/ rand.normalvariate(0, X)
-
-# ----------------------------------------
-# hibernacula-DEPENDENT initial conditions
-# ----------------------------------------
-
-# population counts
-Hi_num = 100            # hibernating bats
-NHO_num = 0         # non-hibernating non-infected bats
-In_num = 1              # non-hibernating infected bats
-Ot_num = 0              # other bats
-Im_num = 0              # recovered bats
-
-# resource limits
-water = 1000            # OKAY # number of bats it would take to deplete water completely
-food = 1000             # OKAY # number of bats it would take to deplete food completely
-
-time = 3650             # total days
-winter = 120            # CONFIDENT # length of T_win season in Nebraska mines
+birth_resistance_max = 0                   # hereditary resistance of newborn, corresp. w/ rand.normalvariate(0, X)
+recover_resistance_max = 0.02               # resistance after recovery, corresp. w/ rand.normalvariate(0, X)
 
 # ----------
 # initialize
 # ----------
 
-res_num = 0             # starting resistance for bats in the hibernaculum
-
 def make_initial_state():
+    # NOTICE : each inhabitant node contains the following information:
+    # [ON/OFF, 
+    #  resistance number, 
+    #  clustering number, 
+    #  infection number MINUS days spent infected (i.e. days left infirm), 
+    #  0 for just entered hibernation OR 1 for exited hibernation at least once (to track arousal periods)
+    # ]
     return {
-        "Hi": [[1, res_num] for _ in range(Hi_num)],
-        "NHO": [[1, res_num] for _ in range(NHO_num)],
-        "Ot": [[1, res_num] for _ in range(Ot_num)],
-        "In": [[1, res_num] for _ in range(In_num)],
-        "De": [[0, res_num] for _ in range(Hi_num + NHO_num + In_num)],
-        "Im": [[0, res_num] for _ in range(Im_num)],
-        "Wa": 1,
-        "Fo": 1,
+        "Hi": [[1, 0, rand.uniform(Hi_list[i][1], Hi_list[i][2]), 0, 0] for i in range(len(Hi_list)) for _ in range(Hi_list[i][0])],
+        "Ot": [],
+        "In": [],
+        "Im": [],
+        "De": 0, # only need total numbers of dead
+        "Re": 1,
         "Te": 0,
         "Hu": 0,
         "PD": 0,
@@ -118,11 +149,11 @@ def loss(parameters, runs=2):
 
         error = 0.0
         for i, t in enumerate(obs_times):
-            pred_N = sim["NHO"][t]
+            pred_N = sim["Ot"][t]
             pred_O = sim["Ot"][t]
             pred_I = sim["In"][t]
 
-            error += (pred_N - obs_NHO[i])**2
+            error += (pred_N - obs_Ot[i])**2
             error += (pred_O - obs_Ot[i])**2
             error += (pred_I - obs_In[i])**2
 
@@ -140,11 +171,10 @@ def simulate(initial_state, steps, parameters):
 
     history = {
         "Hi":[],
-        "NHO":[],
         "Ot":[],
         "In":[],
-        "De":[],
         "Im":[],
+        "De":[],
     }
 
     for t in range(steps):
@@ -157,86 +187,55 @@ def simulate(initial_state, steps, parameters):
         counts = count(state)
 
         history["Hi"].append(counts["Hi"])
-        history["NHO"].append(counts["NHO"])
         history["Ot"].append(counts["Ot"])
         history["In"].append(counts["In"])
-        history["De"].append(counts["De"])
         history["Im"].append(counts["Im"])
+        history["De"].append(counts["De"])
 
         state = step(state, parameters)
 
+        # if t % 50 == 0:
+        #     print(f"done w/ simulation at step {t}")
+
     return history
 
+
 def main():
-    comm = MPI.COMM_WORLD
-    rank = comm.Get_rank()
-    size = comm.Get_size()
-
-    inhabitant_nodes = ["Hi", "NHO", "In", "Ot", "De", "Im"]
-    resource_nodes = ["Wa", "Fo"]
-    environment_nodes = ["Te", "Hu", "El", "Po", "Su", "Ba", "PD"]
-
-    nodes = inhabitant_nodes + resource_nodes + environment_nodes
-
     parameters = {
-        "p_infected": p_infected,
-        "p_dead": p_dead,
-        "p_awake": p_awake,
-        "p_recover": p_recover,
-        "p_hibernate": p_hibernate,
-        "p_netchange": p_netchange,
-        "water": water,
-        "food": food,
-        "water0": water,
-        "food0": food,
+        "inf_alpha": inf_alpha,
+        "inf_beta": inf_beta,
+        "delta": delta,
+        "awake_a": awake_a,
+        "awake_b": awake_b,
+        "T_inf": T_inf,
+        "T_TBD": T_inf,
+        "T_AD": T_inf,
+        "T_seasonal": T_inf,
         "T_win": T_win,
+        "lambda_win": lambda_win,
+        "lambda_sum": lambda_sum,
         "immunity_period": immunity_period,
-        "contact_rate": contact_rate,
         "birth_resistance_max": birth_resistance_max,
         "recover_resistance_max": recover_resistance_max,
     }
 
     best = None
     best_loss = float("inf")
-    local_best = None
-    local_best_loss = float("inf")
+    n_iter = 20
 
-    n_iter = 10000
-    local_iters = n_iter // size
-
-    for i in range(local_iters):
+    for i in range(n_iter):
         params = sample_params()
         L = loss(params)
-
+        
         if L < best_loss:
             best_loss = L
             best = params
             print("New best:", best_loss, best)
         
-        if L < local_best_loss:
-            print(f"checked {i}")
-            local_best_loss = L
-            local_best = params
-
-        #print(f"[rank {rank}] iteration {i}, loss={L}")
-
-    # gather results
-    all_results = comm.gather((local_best_loss, local_best), root=0)
-
-    if rank == 0:
-        best_loss = float("inf")
-        best_params = None
-
-        for L, p in all_results:
-            if L < best_loss:
-                best_loss = L
-                best_params = p
-
-        print("\nGLOBAL BEST:")
-        print(best_loss, best_params)
+        print(f"checked {i}")
 
     best_sim = simulate(make_initial_state(), steps = 4500, parameters=best)
-    plot_history_highlights(best_sim, T_win, sample=[obs_times, obs_NHO])
+    plot_history_highlights(best_sim, T_win, sample=[obs_times, obs_Ot])
 
 
 if __name__ == "__main__":
@@ -262,8 +261,6 @@ New best: 317.9545454545455 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0.04345960
 New best: 321.1363636363636 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0.11996019118621024, 'p_recover': 0, 'p_hibernate': 0.5358468255532175, 'p_netchange': 0.00022540489216466345, 'water': 246.9063201140136, 'food': 386.8256630780159, 'T_win': 120}
 New best: 308.72727272727275 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0.08, 'p_recover': 0, 'p_hibernate': 0.5, 'p_netchange': 0.0002, 'water': 350.34867097205273, 'food': 324.50109337947646, 'T_win': 120}
 New best: 308.04545454545456 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0.08, 'p_recover': 0, 'p_hibernate': 0.5, 'p_netchange': 0.0002, 'water': 371.46665433373187, 'food': 164.4683879543965, 'T_win': 120}
-GLOBAL BEST: 286.0909090909091 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0.08, 'p_recover': 0 , 'p_hibernate': 0.5, 'p_netchange': 0.0002, 'water': 406.0607758097961, 'food': 389.59646170871036, 'T_win': 120}
-GLOBAL BEST: 255.58333333333331 {'p_infected': 0, 'p_dead': 0, 'p_awake': 0.08, 'p_recover': 0, 'p_hibernate': 0.5, 'p_netchange': 0.00021506633607029088, 'water': 291.10905941 12792, 'food': 168.22746809535204, 'T_win': 120}    
 
 RESULTS:
     - p_awake = 0.08

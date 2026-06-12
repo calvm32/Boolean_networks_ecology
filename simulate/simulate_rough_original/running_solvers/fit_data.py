@@ -42,11 +42,12 @@ def sample_params():
         "food": water,
         "water0": water,
         "food0": food,
+        "T_win": T_win,
         "immunity_period": immunity_period,
         "contact_rate": contact_rate,
-        "T_win": T_win
+        "birth_resistance_max": birth_resistance_max,
+        "recover_resistance_max": recover_resistance_max,
     }
-    
     
 # ------------------------------------------
 # hibernacula-INDEPENDENT initial conditions
@@ -191,7 +192,7 @@ def main():
         "recover_resistance_max": recover_resistance_max,
     }
 
-    best = none
+    best = None
     best_loss = float("inf")
     n_iter = 20
 
