@@ -21,7 +21,7 @@ def make_initial_state(Hi_list, fraction_infected, T_inf):
         "Hi": [
                 [1, 0, rand.uniform(Hi_list[i][1], Hi_list[i][2]), 0, 0]
                 for i in range(len(Hi_list))
-                for _ in range(Hi_list[i][0])
+                for _ in range(Hi_list[i][0] - int(Hi_list[i][0]*fraction_infected))
               ],
         "Ot": empty_pop.copy(),
         "In": [
@@ -67,7 +67,6 @@ def count(state):
         "Ot": len(state["Ot"]),
         "In": len(state["In"]),
         "Im": len(state["Im"]),
-        "Im": len(state["Im"]),
         "De": state["De"],
     }
 
@@ -100,9 +99,9 @@ def compute_metrics(history, Hi_list):
     with np.errstate(invalid='ignore', divide='ignore'):
         P = np.where(alive > 0, np.array(history["In"]) / alive, 0.0)
 
-    P_max = P.max()                         # peak prevalence
-    T_Pmax = int(np.argmax(P))              # day of peak prevalence
-    P_avg = P.mean()                        # time-averaged prevalence
+    P_max = P.max()            # peak prevalence
+    T_Pmax = int(np.argmax(P)) # day of peak prevalence
+    P_avg = P.mean()           # time-averaged prevalence
 
     # persistence: S(t) = N(t) / N(0)
     S = alive / N0
@@ -236,14 +235,12 @@ def plot_history_highlights(history, T_win, sample=[]):
     ax2.grid()
 
     # highlight the T_win data
-    for time in t:
-        
-        if time % 365 == T_win and time <= 365:
-            ax1.axvspan(time - T_win, time, facecolor='blue', alpha=0.1)
-            ax2.axvspan(time - T_win, time, facecolor='blue', alpha=0.1)
-        if time % 365 == T_win:
-            ax1.axvspan(time - T_win + 365, time + 365, facecolor='blue', alpha=0.1)
-            ax2.axvspan(time - T_win + 365, time + 365, facecolor='blue', alpha=0.1)
+    for year in range(len(t)//365 + 1):
+        start = year*365
+        end = start + T_win
+
+        ax1.axvspan(start, end, alpha=0.1)
+        ax2.axvspan(start, end, alpha=0.1)
 
     plt.tight_layout()
     plt.show()

@@ -14,8 +14,8 @@ def update_environment(state, agg, parameters):
     # -----------
     # apply rules
     # -----------
-    if Re == 1 and Te == 1: Hu_next = 1 # rule 4
-    if Te == 1: Re_next = 1  # rule 7
+    if Re == 1 and Te == 1: Hu_next = 1
+    if Te == 1: Re_next = 1 
 
     total = Ot_sum + Hi_sum + In_sum + Im_sum
 
@@ -97,11 +97,11 @@ def update_individuals(state, env, parameters):
         # bout hibernation
         p_bouts = 1/T_TBD if T_AD >= 1 else 0
 
-        if (Hi and Te == 0 and r < p_infected): # rule 9
+        if (Hi and Te == 0 and r < p_infected):
             In_next.append([1, res_num, cluster_num, mu_i, 0])
-        elif not Te and Hi and r <= p_bouts: # rule 1
+        elif not Te and Hi and r <= p_bouts:
             Ot_next.append([1, res_num, cluster_num, 0, 1]) # mark [...,1] to signify next hibernating rule is p_bouts and not p_seasonal
-        elif Te and Hi and r <= p_seasonal: # rules 6/7
+        elif Te and Hi and r <= p_seasonal:
             Ot_next.append([1, res_num, cluster_num, 0, 0]) 
         else:
             Hi_next.append([Hi, res_num, cluster_num, 0, 0])
@@ -117,11 +117,11 @@ def update_individuals(state, env, parameters):
         # check if hibernated before, i.e. if the next hibernating rule is p_bouts and not p_seasonal
         p_bouts = 1/T_AD
 
-        if Te and Ot and check and r <= p_bouts: # rule 1
+        if Te and Ot and check and r <= p_bouts:
             Hi_next.append([1, res_num, cluster_num, 0, 0]) 
-        elif not Te and Ot and r <= p_seasonal: # rules 6/7
+        elif not Te and Ot and r <= p_seasonal:
             Hi_next.append([1, res_num, cluster_num, 0, 0]) 
-        elif not Te and not Re: # rule 3
+        elif not Te and not Re:
             De += 1
         else:
             Ot_next.append([Ot, res_num, cluster_num, 0, 0])
@@ -137,9 +137,9 @@ def update_individuals(state, env, parameters):
         p_dead = (1 - np.exp(-mu_i))*(1 + Re)
         p_recover =  1/T_inf
 
-        if (In and r <= p_dead) or (not Te and not Re): # rule 9 or 3
+        if (In and r <= p_dead) or (not Te and not Re):
             De += 1
-        elif In and r <= p_recover: # rule 13
+        elif In and r <= p_recover:
             Im_next.append([0, res_num, cluster_num, 0, 0]) # start recovery counter
         else:
             In_next.append([In, res_num, cluster_num, 0, 0])

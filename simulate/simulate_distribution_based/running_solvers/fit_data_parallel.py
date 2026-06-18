@@ -1,12 +1,49 @@
-from SALib.sample import saltelli
-from SALib.analyze import sobol
-import pandas as pd
 import random as rand
 import numpy as np
+import copy
+from mpi4py import MPI
 
-from simulate.simulate_distribution_based.helper_funcs import *
-from simulate.simulate_distribution_based.rules import *
-from simulate.simulate_distribution_based.simulate import *
+from simulate.simulate_rough_original.helper_funcs import *
+from simulate.simulate_rough_original.rules import *
+from simulate.data import *
+
+# --------------------
+# set up control group
+# --------------------
+
+data = happy_jack_data()
+
+START_YEAR = data[0]["year"]
+SAMPLE_DAY = 140
+
+obs_times = []
+obs_Hi = []
+obs_Ot = []
+obs_In = []
+
+for d in data:
+    t = SAMPLE_DAY + 365 * (d["year"] - START_YEAR)
+    
+    obs_times.append(t)
+    obs_Ot.append(d["Tri_Ot"] + d["Misc_Ot"])
+    obs_In.append(d["In"])
+
+def sample_params():
+    return {
+        "inf_alpha": inf_alpha, #rand.uniform(0.01, 0.8),
+        "inf_beta": inf_beta,
+        "delta": delta,
+        "T_inf": T_inf,
+        "T_TBD": T_TBD,
+        "T_AD": T_AD,
+        "T_seasonal": T_seasonal,
+        "T_win": T_win,
+        "lambda_win": lambda_win,
+        "lambda_sum": rand.uniform(0, 0.001),
+        "immunity_period": immunity_period,
+        "birth_resistance_max": birth_resistance_max,
+        "recover_resistance_max": recover_resistance_max,
+    }
 
 # ==========================================================================================================================
 # ==========================================================================================================================
@@ -29,7 +66,7 @@ bigbrown_cluster_sizeMAX = 9
 Hi_list = [[tricolor_num, tricolor_cluster_sizeMIN, tricolor_cluster_sizeMAX], 
            [bigbrown_num, bigbrown_cluster_sizeMIN, bigbrown_cluster_sizeMAX]] 
 
-fraction_infected = 0.01 # in [0, 1]
+fraction_infected = 0   # choose in [0, 1]
 
 # NOTICE : the remaining populations (Ot, Im) all start with 0 inhabitants
 # NOTICE : resistance starts at 0 for every bat
@@ -81,102 +118,116 @@ recover_resistance_max = 0.02               # resistance after recovery, corresp
 # initialize
 # ----------
 
-time = 3650 # total days
-init_fractions = [0.01, 0.03, 0.05, 0.10]
+time = 3650             # total days
 
 # ==========================================================================================================================
 # ==========================================================================================================================
 # ==========================================================================================================================
+    
+def loss(parameters, runs=2):
+    losses = []
+
+    for _ in range(runs):
+        sim = simulate(make_initial_state(Hi_list, fraction_infected, T_inf), steps=max(obs_times)+1, parameters=parameters)
+
+        error = 0.0
+        for i, t in enumerate(obs_times):
+            pred_Ot = sim["Ot"][t]
+            pred_In = sim["In"][t]
+
+            error += (pred_Ot - obs_Ot[i])**2
+            error += (pred_In - obs_In[i])**2
+
+        losses.append(error / len(obs_times))
+
+    return np.mean(losses)
+
+# ----------
+# run things
+# ----------
+
+def simulate(initial_state, steps, parameters):
+    state = initial_state
+    T_win = parameters["T_win"]
+
+    history = {
+        "Hi": np.empty(steps,dtype=np.int32),
+        "Ot": np.empty(steps,dtype=np.int32),
+        "In": np.empty(steps,dtype=np.int32),
+        "Im": np.empty(steps,dtype=np.int32),
+        "De": np.empty(steps,dtype=np.int32),
+    }
+
+    for t in range(steps):
+
+        # Seasonal tempcycle
+        if (t % 365) <= T_win: # T_win
+            state["Te"] = 0   
+        else:
+            state["Te"] = 1 # summer
+        counts = count(state)
+
+        history["Hi"][t] = (counts["Hi"])
+        history["Ot"][t] = (counts["Ot"])
+        history["In"][t] = (counts["In"])
+        history["Im"][t] = (counts["Im"])
+        history["De"][t] = (counts["De"])
+
+        state = step(state, parameters)
+
+        # if t % 50 == 0:
+        #     print(f"done w/ simulation at step {t}")
+
+    return history
 
 def main():
+    comm = MPI.COMM_WORLD
+    rank = comm.Get_rank()
+    size = comm.Get_size()
 
-    # Define the parameter space w/ ecologically meaningful ranges
-    problem = {
-        "num_vars": 6,
-        "names": ["inf_alpha", "inf_beta", "delta",
-                "T_inf", "T_TBD", "T_win"],
-        "bounds": [
-            [1, 5],         # inf_alpha
-            [2, 10],        # inf_beta
-            [0.005, 0.05],  # delta
-            [10, 40],       # T_inf
-            [3.9, 4.3],     # T_TBD
-            [150, 210],     # T_win
-        ],
-    }
+    parameters = sample_params()
 
-    # Generate Saltelli samples: (N * (2*num_vars + 2) total runs)
-    # N=128 -> 128 * 18 = 2304 runs; N=64 -> 1152 runs (fast for testing)
-    N = 128
-    param_values = saltelli.sample(problem, N, calc_second_order=False)
+    best = None
+    best_loss = float("inf")
+    local_best = None
+    local_best_loss = float("inf")
 
-    # Run the model for each sample row
-    Y_Pmax = np.zeros(len(param_values))
-    Y_Sfinal = np.zeros(len(param_values))
-    Y_Mfinal = np.zeros(len(param_values))
+    n_iter = 10000
+    local_iters = n_iter // size
 
-    parameters = {
-        "inf_alpha": inf_alpha,
-        "inf_beta": inf_beta,
-        "delta": delta,
-        "T_inf": T_inf,
-        "T_TBD": T_TBD,
-        "T_AD": T_AD,
-        "T_seasonal": T_seasonal,
-        "T_win": T_win,
-        "lambda_win": lambda_win,
-        "lambda_sum": lambda_sum,
-        "immunity_period": immunity_period,
-        "birth_resistance_max": birth_resistance_max,
-        "recover_resistance_max": recover_resistance_max,
-    }
+    for i in range(local_iters):
+        params = sample_params()
+        L = loss(params)
 
-    for i, row in enumerate(param_values):
-        for name, val in zip(problem["names"], row):
-            parameters[name] = val
-            if name == "inf_alpha":
-                parameters[name] = max(1.0, val) # keep alpha > 1
+        if L < best_loss:
+            best_loss = L
+            best = params
+            print("New best:", best_loss, best)
+        
+        if L < local_best_loss:
+            print(f"checked {i}")
+            local_best_loss = L
+            local_best = params
 
-        hist = simulate(make_initial_state(Hi_list, fraction_infected, parameters["T_inf"]), time, parameters)
-        m = compute_metrics(hist, Hi_list)
-        Y_Pmax[i]   = m["P_max"]
-        Y_Sfinal[i] = m["S_final"]
-        Y_Mfinal[i] = m["M_final"]
-        if i % 100 == 0:
-            print(f"Sobol run {i}/{len(param_values)}")
+        #print(f"[rank {rank}] iteration {i}, loss={L}")
 
-    # analyze
-    Si_P = sobol.analyze(problem, Y_Pmax,   calc_second_order=False, print_to_console=False)
-    Si_S = sobol.analyze(problem, Y_Sfinal, calc_second_order=False, print_to_console=False)
-    Si_M = sobol.analyze(problem, Y_Mfinal, calc_second_order=False, print_to_console=False)
+    # gather results
+    all_results = comm.gather((local_best_loss, local_best), root=0)
 
-    # Plot: grouped bar chart (S1 and ST side by side per parameter)
-    def plot_sobol(Si, problem, title, ax):
-        names  = problem["names"]
-        x      = np.arange(len(names))
-        width  = 0.35
-        ax.bar(x - width/2, Si["S1"], width, label="S1 (first-order)",
-            color="#4393c3", yerr=Si["S1_conf"], capsize=3, error_kw={"lw":0.8})
-        ax.bar(x + width/2, Si["ST"], width, label="ST (total)",
-            color="#d6604d", yerr=Si["ST_conf"], capsize=3, error_kw={"lw":0.8})
-        ax.set_xticks(x)
-        ax.set_xticklabels(names, rotation=35, ha="right", fontsize=9)
-        ax.set_ylabel("Sobol Index")
-        ax.set_title(title)
-        ax.legend(fontsize=8)
-        ax.set_ylim(0, 1)
-        ax.grid(axis="y", alpha=0.3)
+    if rank == 0:
+        best_loss = float("inf")
+        best_params = None
 
-    fig, axes = plt.subplots(1, 3, figsize=(16, 5))
-    plot_sobol(Si_P, problem, "Sensitivity: Peak Prevalence (P_max)",    axes[0])
-    plot_sobol(Si_S, problem, "Sensitivity: Final Persistence (S_final)", axes[1])
-    plot_sobol(Si_M, problem, "Sensitivity: Final Mortality (M_final)",   axes[2])
-    fig.suptitle("Sobol' Global Sensitivity Analysis", fontsize=13, y=1.02)
-    fig.tight_layout()
-    plt.savefig("figures/sobol_indices.pdf", bbox_inches="tight", dpi=300)
-    plt.show()
+        for L, p in all_results:
+            if L < best_loss:
+                best_loss = L
+                best_params = p
 
+        print("\nGLOBAL BEST:")
+        print(best_loss, best_params)
+
+    best_sim = simulate(make_initial_state(Hi_list, fraction_infected, T_inf), steps = 4500, parameters=best)
+    plot_history_highlights(best_sim, T_win, sample=[obs_times, obs_Ot])
 
 if __name__ == "__main__":
     main()
-    
