@@ -14,7 +14,7 @@ from simulate.data import *
 data = happy_jack_data()
 
 START_YEAR = data[0]["year"]
-SAMPLE_DAY = 140
+SAMPLE_DAY = data[0]["day"]
 
 obs_times = []
 obs_Hi = []
@@ -22,29 +22,29 @@ obs_Ot = []
 obs_In = []
 
 for d in data:
-    t = SAMPLE_DAY + 365 * (d["year"] - START_YEAR)
+    t = d["day"] + 365*(d["year"]-START_YEAR)
     
     obs_times.append(t)
     obs_Ot.append(d["Tri_Ot"] + d["Misc_Ot"])
     obs_In.append(d["In"])
 
-def sample_params():
-    return {
-        "inf_alpha": inf_alpha, #rand.uniform(0.01, 0.8),
-        "inf_beta": inf_beta,
-        "delta": delta,
-        "T_inf": T_inf,
-        "T_TBD": T_TBD,
-        "T_AD": T_AD,
-        "T_seasonal": T_seasonal,
-        "win_length": win_length,
-        "win_start": win_start,
-        "lambda_win": lambda_win,
-        "lambda_sum": rand.uniform(0, 0.001),
-        "immunity_period": immunity_period,
-        "birth_resistance_max": birth_resistance_max,
-        "recover_resistance_max": recover_resistance_max,
-    }
+def sample_params():                                                                                                                                     
+    return {                                                                                                                                             
+        "inf_alpha": inf_alpha, #rand.uniform(0.01, 0.8),                                                                                                
+        "inf_beta": inf_beta,                                               
+        "delta": delta,                                                     
+        "T_inf": T_inf,                                                     
+        "T_TBD": T_TBD,                                                     
+        "T_AD": T_AD,                                                       
+        "T_seasonal": rand.uniform(20,60),                                                                                                               
+        "win_length": rand.uniform(80,120),                                                                                                              
+        "win_start": rand.uniform(230,280),                                                                                                              
+        "lambda_win": lambda_win,                                           
+        "lambda_sum": rand.uniform(0.00015, 0.00025),                                                                                                    
+        "immunity_period": immunity_period,                                                                                                              
+        "birth_resistance_max": birth_resistance_max,                                                                                                    
+        "recover_resistance_max": recover_resistance_max,                                                                                                
+    }    
 
 # ==========================================================================================================================
 # ==========================================================================================================================
@@ -94,16 +94,16 @@ T_TBD = 4.1                                 # length of torpor bout in days,
                                             # considered in [3.9, 4.3] for tricolored bats
 T_AD = 88.5/1440                            # length of arousal bout in days, 
                                             # considered in [1.74166, 5.63333] for tricolored bats
-T_seasonal = 40                             # approx. transition time in days between hibernating and not
+T_seasonal = 20.114361051619568                             # approx. transition time in days between hibernating and not
                                             # considered in 10-40 maybe?
-win_length = 210                                 # length of winter season in days in Nebraska mines
+win_length = 81.17831315823864                                 # length of winter season in days in Nebraska mines
                                             # considered in 5-7 months, depending on transition period T_seasonal
-win_start = 100
+win_start = 251.1083278511041
 
 # BAT IN/OUT FLUX
 lambda_win = 0                              # population growth value during winter, 
                                             # considered in [0, 0.01] 
-lambda_sum = 0.001                           # population growth value during summer,
+lambda_sum = 0.00019076783002288473                           # population growth value during summer,
                                             # considered in [0.01, 0.1] 
 
 # -----------------
@@ -191,7 +191,7 @@ def main():
 
     for i in range(n_iter):
         params = sample_params()
-        L = loss(params)
+        L = abs(loss(params))
         
         if L < best_loss:
             best_loss = L
@@ -201,7 +201,7 @@ def main():
         print(f"checked {i}")
 
     best_sim = simulate(make_initial_state(Hi_list, fraction_infected, T_inf), steps = 4500, parameters=best)
-    plot_history_highlights(best_sim, win_length, sample=[obs_times, obs_Ot])
+    plot_history_highlights(best_sim, win_length, win_start, sample=[obs_times, obs_Ot])
 
 
 if __name__ == "__main__":

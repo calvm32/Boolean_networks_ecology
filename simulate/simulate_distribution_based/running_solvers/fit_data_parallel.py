@@ -19,33 +19,32 @@ SAMPLE_DAY = data[0]["day"]
 
 obs_times = []
 obs_Hi = []
-obs_Ot = []
 obs_In = []
 
 for d in data:
     t = d["day"] + 365*(d["year"]-START_YEAR)
     
     obs_times.append(t)
-    obs_Ot.append(d["Tri_Ot"] + d["Misc_Ot"])
+    obs_Hi.append(d["Tri_Hi"] + d["Misc_Hi"])
     obs_In.append(d["In"])
 
-def sample_params():
-    return {
-        "inf_alpha": inf_alpha, #rand.uniform(0.01, 0.8),
-        "inf_beta": inf_beta,
-        "delta": delta,
-        "T_inf": T_inf,
-        "T_TBD": T_TBD,
-        "T_AD": T_AD,
-        "T_seasonal": T_seasonal,
-        "win_length": win_length,
-        "win_start": win_start,
-        "lambda_win": lambda_win,
-        "lambda_sum": rand.uniform(0, 0.001),
-        "immunity_period": immunity_period,
-        "birth_resistance_max": birth_resistance_max,
-        "recover_resistance_max": recover_resistance_max,
-    }
+def sample_params():                                                                                                                                     
+    return {                                                                                                                                             
+        "inf_alpha": inf_alpha, #rand.uniform(0.01, 0.8),                                                                                                
+        "inf_beta": inf_beta,                                               
+        "delta": delta,                                                     
+        "T_inf": T_inf,                                                     
+        "T_TBD": T_TBD,                                                     
+        "T_AD": T_AD,                                                       
+        "T_seasonal": rand.uniform(20,60),                                                                                                               
+        "win_length": rand.uniform(80,180),                                                                                                              
+        "win_start": rand.uniform(230,280),                                                                                                              
+        "lambda_win": lambda_win,                                           
+        "lambda_sum": rand.uniform(0.00015, 0.00025),                                                                                                    
+        "immunity_period": immunity_period,                                                                                                              
+        "birth_resistance_max": birth_resistance_max,                                                                                                    
+        "recover_resistance_max": recover_resistance_max,                                                                                                
+    }    
 
 # ==========================================================================================================================
 # ==========================================================================================================================
@@ -135,11 +134,11 @@ def loss(parameters, runs=2):
 
         error = 0.0
         for i, t in enumerate(obs_times):
-            pred_Ot = sim["Ot"][t]
-            pred_In = sim["In"][t]
+            pred_Hi = sim["Hi"][t]
+            #pred_In = sim["In"][t]
 
-            error += (pred_Ot - obs_Ot[i])**2
-            error += (pred_In - obs_In[i])**2
+            error += (pred_Hi - obs_Hi[i])**2
+            #error += (pred_In - obs_In[i])**2
 
         losses.append(error / len(obs_times))
 
@@ -200,7 +199,7 @@ def main():
 
     for i in range(local_iters):
         params = sample_params()
-        L = loss(params)
+        L = abs(loss(params))
 
         if L < best_loss:
             best_loss = L
@@ -230,7 +229,7 @@ def main():
         print(best_loss, best_params)
 
     best_sim = simulate(make_initial_state(Hi_list, fraction_infected, T_inf), steps = 4500, parameters=best)
-    plot_history_highlights(best_sim, win_length, sample=[obs_times, obs_Ot])
+    plot_history_highlights(best_sim, win_length, win_start, sample=[obs_times, obs_Hi])
 
 if __name__ == "__main__":
     main()
@@ -241,6 +240,9 @@ New best: 294.625 {'inf_alpha': 5, 'inf_beta': 2, 'delta': 0.05, 'T_inf': 30, 'T
 New best: 290.41666666666663 {'inf_alpha': 5, 'inf_beta': 2, 'delta': 0.05, 'T_inf': 30, 'T_TBD': 4.1, 'T_AD': 0.0614583333333333, 'T_seasonal': 42.84137132196838, 'win_length': 92.9025546096547, 'lambda_win': 0,'lambda_sum': 0.00018596411797403993, 'immunity_period': 0, 'birth_resistance_max': 0, 'recover_resistance_max': 0.02}          
 New best: 253.83333333333331 {'inf_alpha': 5, 'inf_beta': 2, 'delta': 0.05, 'T_inf': 30, 'T_TBD': 4.1, 'T_AD': 0.06145833333333333, 'T_seasonal': 41.84816384106251, 'win_length': 97.62007352307558, 'lambda_win': 0, 'lambda_sum': 0.00020760238859780686, 'immunity_period': 0, 'birth_resistance_max': 0, 'recover_resistance_max': 0.02} 
 New best: 245.20833333333331 {'inf_alpha': 5, 'inf_beta': 2, 'delta': 0.05, 'T_inf': 30, 'T_TBD': 4.1, 'T_AD': 0.06145833333333333, 'T_seasonal': 33.27959466619289, 'win_length': 103.45290874030258, 'lambda_win': 5.956138472403809e-06, 'lambda_sum': 0.00021796636177355251, 'immunity_period': 0, 'birth_resistance_max': 0, 'recover_resistance_max': 0.02}   
+New best: 1429.2916666666667 {'inf_alpha': 5, 'inf_beta': 2, 'delta': 0.05, 'T_inf': 30, 'T_TBD': 4.1, 'T_AD': 0.06145833333333333, 'T_seasonal': 40, 'win_length': 81.23002673731209, 'win_start': 255.9791250706794, 'lambda_win': 0, 'lambda_sum': 0.0004228730195226812, 'immunity_period': 0, 'birth_resistance_max': 0, 'recover_resistance_max': 0.02}
+New best: 932.3333333333334 {'inf_alpha': 5, 'inf_beta': 2, 'delta': 0.05, 'T_inf': 30, 'T_TBD': 4.1, 'T_AD': 0.06145833333333333, 'T_seasonal': 40, 'win_length': 80.00036540268336, 'win_start': 250.03157138705092, 'lambda_win': 0, 'lambda_sum': 0.00028885954892277863, 'immunity_period': 0, 'birth_resistance_max': 0, 'recover_resistance_max': 0.02}
+New best: 816.625 {'inf_alpha': 5, 'inf_beta': 2, 'delta': 0.05, 'T_inf': 30, 'T_TBD': 4.1, 'T_AD': 0.06145833333333333, 'T_seasonal': 20.114361051619568, 'win_length': 81.17831315823864, 'win_start': 251.1083278511041, 'lambda_win': 0, 'lambda_sum': 0.00019076783002288473, 'immunity_period': 0, 'birth_resistance_max': 0, 'recover_resistance_max': 0.02}
 
 
 """

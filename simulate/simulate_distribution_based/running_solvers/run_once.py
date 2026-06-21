@@ -103,7 +103,7 @@ def main():
     }
 
     history = simulate(make_initial_state(Hi_list, fraction_infected, T_inf), steps=time, parameters=parameters)
-    plot_history_highlights(history, win_length)
+    plot_history_highlights(history, win_lengt, win_starth)
 
 if __name__ == "__main__":
     main()

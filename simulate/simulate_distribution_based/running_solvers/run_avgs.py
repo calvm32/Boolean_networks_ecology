@@ -57,6 +57,7 @@ T_seasonal = 40                             # approx. transition time in days be
                                             # considered in 10-40 maybe?
 win_length = 210                                 # length of winter season in days in Nebraska mines
                                             # considered in 5-7 months, depending on transition period T_seasonal
+win_start = 251
 
 # BAT IN/OUT FLUX
 lambda_win = 0                              # population growth value during winter, 
@@ -162,7 +163,7 @@ def main():
     for key in history_avg:
         history_avg[key] /= avg_over    
 
-    plot_history_highlights(history_avg, win_length)
+    plot_history_highlights(history_avg, win_length, win_start)
 
 if __name__ == "__main__":
     main()
