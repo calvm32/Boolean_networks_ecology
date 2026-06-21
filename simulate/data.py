@@ -1,18 +1,18 @@
 # nebraska mine 1
 def happy_jack_data():
     data = [
-        {"year": 2014, "Tri_Ot": 62, "Misc_Ot": 0, "In": 0},
-        {"year": 2015, "Tri_Ot": 52, "Misc_Ot": 0, "In": 0},
-        {"year": 2016, "Tri_Ot": 72, "Misc_Ot": 0, "In": 0},
-        {"year": 2017, "Tri_Ot": 101, "Misc_Ot": 0, "In": 0},
-        {"year": 2018, "Tri_Ot": 73, "Misc_Ot": 0, "In": 0},
-        {"year": 2019, "Tri_Ot": 96, "Misc_Ot": 0, "In": 0},
-        {"year": 2021, "Tri_Ot": 108, "Misc_Ot": 2, "In": 0},
-        {"year": 2022, "Tri_Ot": 128, "Misc_Ot": 0, "In": 0},
-        {"year": 2023, "Tri_Ot": 128, "Misc_Ot": 5, "In": 0},
-        {"year": 2024, "Tri_Ot": 95, "Misc_Ot": 0, "In": 0},
-        {"year": 2025, "Tri_Ot": 86, "Misc_Ot": 0, "In": 0},
-        {"year": 2026, "Tri_Ot": 117, "Misc_Ot": 0, "In": 0},
+        {"year": 2014, "day": 106, "Tri_Ot": 62, "Misc_Ot": 0, "In": 0},
+        {"year": 2015, "day": 109, "Tri_Ot": 52, "Misc_Ot": 0, "In": 0},
+        {"year": 2016, "day": 116, "Tri_Ot": 72, "Misc_Ot": 0, "In": 0},
+        {"year": 2017, "day": 96, "Tri_Ot": 101, "Misc_Ot": 0, "In": 0},
+        {"year": 2018, "day": 102, "Tri_Ot": 73, "Misc_Ot": 0, "In": 0},
+        {"year": 2019, "day": 102, "Tri_Ot": 96, "Misc_Ot": 0, "In": 0},
+        {"year": 2021, "day": 92, "Tri_Ot": 108, "Misc_Ot": 2, "In": 0},
+        {"year": 2022, "day": 102, "Tri_Ot": 128, "Misc_Ot": 0, "In": 0},
+        {"year": 2023, "day": 96, "Tri_Ot": 128, "Misc_Ot": 5, "In": 0},
+        {"year": 2024, "day": 107, "Tri_Ot": 95, "Misc_Ot": 0, "In": 0},
+        {"year": 2025, "day": 106, "Tri_Ot": 86, "Misc_Ot": 0, "In": 0},
+        {"year": 2026, "day": 102, "Tri_Ot": 117, "Misc_Ot": 0, "In": 0},
     ]
     
     return data
@@ -20,10 +20,10 @@ def happy_jack_data():
 # nebraska mine 2
 def ravens_nest_data():
     data = [
-        {"year": 2014, "Tri_Ot": 5, "Misc_Ot": 17, "In": 0},
-        {"year": 2015, "Tri_Ot": 7, "Misc_Ot": 13, "In": 6},
-        {"year": 2016, "Tri_Ot": 0, "Misc_Ot": 33, "In": 10},
-        {"year": 2017, "Tri_Ot": 0, "Misc_Ot": 10, "In": 0},
+        {"year": 2014, "day": 106, "Tri_Ot": 5, "Misc_Ot": 17, "In": 0},
+        {"year": 2015, "day": 109, "Tri_Ot": 7, "Misc_Ot": 13, "In": 6},
+        {"year": 2016, "day": 116, "Tri_Ot": 0, "Misc_Ot": 33, "In": 10},
+        {"year": 2017, "day": 96, "Tri_Ot": 0, "Misc_Ot": 10, "In": 0},
     ]
 
     return data

@@ -6,7 +6,7 @@ from simulate.simulate_distribution_based.rules import *
 
 def simulate(initial_state, steps, parameters):
     state = initial_state
-    T_win = parameters["T_win"]
+    win_length = parameters["win_length"]
 
     history = {
         "Hi": np.empty(steps,dtype=np.int32),
@@ -19,7 +19,7 @@ def simulate(initial_state, steps, parameters):
     for t in range(steps):
 
         # Seasonal tempcycle
-        if (t % 365) <= T_win: # T_win
+        if (t + win_start % 365) <= win_length: # win_length
             state["Te"] = 0   
         else:
             state["Te"] = 1 # summer

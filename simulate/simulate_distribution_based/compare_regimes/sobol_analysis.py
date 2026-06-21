@@ -58,7 +58,7 @@ T_AD = 88.5/1440                            # length of arousal bout in days,
                                             # considered in [1.74166, 5.63333] for tricolored bats
 T_seasonal = 40                             # approx. transition time in days between hibernating and not
                                             # considered in 10-40 maybe?
-T_win = 210                                 # length of winter season in days in Nebraska mines
+win_length = 210                                 # length of winter season in days in Nebraska mines
                                             # considered in 5-7 months, depending on transition period T_seasonal
 
 # BAT IN/OUT FLUX
@@ -94,14 +94,14 @@ def main():
     problem = {
         "num_vars": 6,
         "names": ["inf_alpha", "inf_beta", "delta",
-                "T_inf", "T_TBD", "T_win"],
+                "T_inf", "T_TBD", "win_length"],
         "bounds": [
             [1, 5],         # inf_alpha
             [2, 10],        # inf_beta
             [0.005, 0.05],  # delta
             [10, 40],       # T_inf
             [3.9, 4.3],     # T_TBD
-            [150, 210],     # T_win
+            [150, 210],     # win_length
         ],
     }
 
@@ -123,7 +123,7 @@ def main():
         "T_TBD": T_TBD,
         "T_AD": T_AD,
         "T_seasonal": T_seasonal,
-        "T_win": T_win,
+        "win_length": win_length,
         "lambda_win": lambda_win,
         "lambda_sum": lambda_sum,
         "immunity_period": immunity_period,

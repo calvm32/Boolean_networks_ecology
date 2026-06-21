@@ -32,4 +32,4 @@ water = 1000            # OKAY # number of bats it would take to deplete water c
 food = 1000             # OKAY # number of bats it would take to deplete food completely
 
 time = 3650             # total days
-T_win = 120            # CONFIDENT # length of winter season in Nebraska mines
+win_length = 120            # CONFIDENT # length of winter season in Nebraska mines

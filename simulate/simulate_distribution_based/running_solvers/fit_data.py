@@ -37,7 +37,8 @@ def sample_params():
         "T_TBD": T_TBD,
         "T_AD": T_AD,
         "T_seasonal": T_seasonal,
-        "T_win": T_win,
+        "win_length": win_length,
+        "win_start": win_start,
         "lambda_win": lambda_win,
         "lambda_sum": rand.uniform(0, 0.001),
         "immunity_period": immunity_period,
@@ -95,8 +96,9 @@ T_AD = 88.5/1440                            # length of arousal bout in days,
                                             # considered in [1.74166, 5.63333] for tricolored bats
 T_seasonal = 40                             # approx. transition time in days between hibernating and not
                                             # considered in 10-40 maybe?
-T_win = 210                                 # length of winter season in days in Nebraska mines
+win_length = 210                                 # length of winter season in days in Nebraska mines
                                             # considered in 5-7 months, depending on transition period T_seasonal
+win_start = 100
 
 # BAT IN/OUT FLUX
 lambda_win = 0                              # population growth value during winter, 
@@ -148,7 +150,7 @@ def loss(parameters, runs=2):
 
 def simulate(initial_state, steps, parameters):
     state = initial_state
-    T_win = parameters["T_win"]
+    win_length = parameters["win_length"]
 
     history = {
         "Hi": np.empty(steps,dtype=np.int32),
@@ -161,7 +163,7 @@ def simulate(initial_state, steps, parameters):
     for t in range(steps):
 
         # Seasonal tempcycle
-        if (t % 365) <= T_win: # T_win
+        if (t % 365) <= win_length: # win_length
             state["Te"] = 0   
         else:
             state["Te"] = 1 # summer
@@ -199,7 +201,7 @@ def main():
         print(f"checked {i}")
 
     best_sim = simulate(make_initial_state(Hi_list, fraction_infected, T_inf), steps = 4500, parameters=best)
-    plot_history_highlights(best_sim, T_win, sample=[obs_times, obs_Ot])
+    plot_history_highlights(best_sim, win_length, sample=[obs_times, obs_Ot])
 
 
 if __name__ == "__main__":

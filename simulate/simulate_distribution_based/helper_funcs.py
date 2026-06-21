@@ -190,7 +190,7 @@ def plot_history(history, sample=[]):
     plt.tight_layout()
     plt.show()
 
-def plot_history_highlights(history, T_win, sample=[]):
+def plot_history_highlights(history, win_length, sample=[]):
     t = range(len(history["Hi"]))
 
     fig, (ax1, ax2) = plt.subplots(
@@ -234,10 +234,10 @@ def plot_history_highlights(history, T_win, sample=[]):
     ax2.legend()
     ax2.grid()
 
-    # highlight the T_win data
+    # highlight the win_length data
     for year in range(len(t)//365 + 1):
         start = year*365
-        end = start + T_win
+        end = start + win_length
 
         ax1.axvspan(start, end, alpha=0.1)
         ax2.axvspan(start, end, alpha=0.1)

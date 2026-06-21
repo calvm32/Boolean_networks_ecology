@@ -15,7 +15,7 @@ from simulate.data import *
 data = happy_jack_data()
 
 START_YEAR = data[0]["year"]
-SAMPLE_DAY = 140
+SAMPLE_DAY = data[0]["day"]
 
 obs_times = []
 obs_Hi = []
@@ -23,7 +23,7 @@ obs_Ot = []
 obs_In = []
 
 for d in data:
-    t = SAMPLE_DAY + 365 * (d["year"] - START_YEAR)
+    t = d["day"] + 365*(d["year"]-START_YEAR)
     
     obs_times.append(t)
     obs_Ot.append(d["Tri_Ot"] + d["Misc_Ot"])
@@ -38,7 +38,8 @@ def sample_params():
         "T_TBD": T_TBD,
         "T_AD": T_AD,
         "T_seasonal": T_seasonal,
-        "T_win": T_win,
+        "win_length": win_length,
+        "win_start": win_start,
         "lambda_win": lambda_win,
         "lambda_sum": rand.uniform(0, 0.001),
         "immunity_period": immunity_period,
@@ -96,8 +97,9 @@ T_AD = 88.5/1440                            # length of arousal bout in days,
                                             # considered in [1.74166, 5.63333] for tricolored bats
 T_seasonal = 40                             # approx. transition time in days between hibernating and not
                                             # considered in 10-40 maybe?
-T_win = 210                                 # length of winter season in days in Nebraska mines
+win_length = 210                            # length of winter season in days in Nebraska mines
                                             # considered in 5-7 months, depending on transition period T_seasonal
+win_start = 300                             # approximate day in calendar year that Te : 1 -> 0
 
 # BAT IN/OUT FLUX
 lambda_win = 0                              # population growth value during winter, 
@@ -149,7 +151,7 @@ def loss(parameters, runs=2):
 
 def simulate(initial_state, steps, parameters):
     state = initial_state
-    T_win = parameters["T_win"]
+    win_length = parameters["win_length"]
 
     history = {
         "Hi": np.empty(steps,dtype=np.int32),
@@ -162,7 +164,7 @@ def simulate(initial_state, steps, parameters):
     for t in range(steps):
 
         # Seasonal tempcycle
-        if (t % 365) <= T_win: # T_win
+        if (t % 365) <= win_length: # win_length
             state["Te"] = 0   
         else:
             state["Te"] = 1 # summer
@@ -228,7 +230,17 @@ def main():
         print(best_loss, best_params)
 
     best_sim = simulate(make_initial_state(Hi_list, fraction_infected, T_inf), steps = 4500, parameters=best)
-    plot_history_highlights(best_sim, T_win, sample=[obs_times, obs_Ot])
+    plot_history_highlights(best_sim, win_length, sample=[obs_times, obs_Ot])
 
 if __name__ == "__main__":
     main()
+
+"""
+New best: 408.29166666666663 {'inf_alpha': 5, 'inf_beta': 2, 'delta': 0.05, 'T_inf': 30, 'T_TBD': 4.1, 'T_AD': 0.06145833333333333, 'T_seasonal': 40, 'win_length': 104.55315805032492, 'lambda_win': 0, 'lambda_sum': 0.00030810579178920205, 'immunity_period': 0, 'birth_resistance_max': 0, 'recover_resistance_max': 0.02}
+New best: 294.625 {'inf_alpha': 5, 'inf_beta': 2, 'delta': 0.05, 'T_inf': 30, 'T_TBD': 4.1, 'T_AD': 0.06145833333333333, 'T_seasonal': 40, 'win_length': 93.66088582529426, 'lambda_win': 0, 'lambda_sum': 0.00016730065634549607, 'immunity_period': 0, 'birth_resistance_max': 0, 'recover_resistance_max': 0.02}
+New best: 290.41666666666663 {'inf_alpha': 5, 'inf_beta': 2, 'delta': 0.05, 'T_inf': 30, 'T_TBD': 4.1, 'T_AD': 0.0614583333333333, 'T_seasonal': 42.84137132196838, 'win_length': 92.9025546096547, 'lambda_win': 0,'lambda_sum': 0.00018596411797403993, 'immunity_period': 0, 'birth_resistance_max': 0, 'recover_resistance_max': 0.02}          
+New best: 253.83333333333331 {'inf_alpha': 5, 'inf_beta': 2, 'delta': 0.05, 'T_inf': 30, 'T_TBD': 4.1, 'T_AD': 0.06145833333333333, 'T_seasonal': 41.84816384106251, 'win_length': 97.62007352307558, 'lambda_win': 0, 'lambda_sum': 0.00020760238859780686, 'immunity_period': 0, 'birth_resistance_max': 0, 'recover_resistance_max': 0.02} 
+New best: 245.20833333333331 {'inf_alpha': 5, 'inf_beta': 2, 'delta': 0.05, 'T_inf': 30, 'T_TBD': 4.1, 'T_AD': 0.06145833333333333, 'T_seasonal': 33.27959466619289, 'win_length': 103.45290874030258, 'lambda_win': 5.956138472403809e-06, 'lambda_sum': 0.00021796636177355251, 'immunity_period': 0, 'birth_resistance_max': 0, 'recover_resistance_max': 0.02}   
+
+
+"""

@@ -43,7 +43,7 @@ water = 1000            # OKAY # number of bats it would take to deplete water c
 food = 1000             # OKAY # number of bats it would take to deplete food completely
 
 time = 2*3650           # total days
-T_win = 120            # CONFIDENT # length of winter season in Nebraska mines
+win_length = 120            # CONFIDENT # length of winter season in Nebraska mines
 
 # ----------
 # initialize
@@ -80,7 +80,7 @@ history_avg = {
 
 def simulate(initial_state, steps, parameters):
     state = initial_state
-    T_win = parameters["T_win"]
+    win_length = parameters["win_length"]
 
     history = {
         "Hi":[],
@@ -94,7 +94,7 @@ def simulate(initial_state, steps, parameters):
     for t in range(steps):
 
         # Seasonal tempcycle
-        if (t % 365) <= T_win: # T_win
+        if (t % 365) <= win_length: # win_length
             state["Te"] = 0   
         else:
             state["Te"] = 1 # summer
@@ -131,7 +131,7 @@ def main():
         "food": food,
         "water0": water,
         "food0": food,
-        "T_win": T_win,
+        "win_length": win_length,
         "immunity_period": immunity_period,
         "contact_rate": contact_rate,
         "birth_resistance_max": birth_resistance_max,
@@ -153,7 +153,7 @@ def main():
     for key in history_avg:
         history_avg[key] /= avg_over    
 
-    plot_history_highlights(history_avg, T_win)
+    plot_history_highlights(history_avg, win_length)
 
 if __name__ == "__main__":
     main()
