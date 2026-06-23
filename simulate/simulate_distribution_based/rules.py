@@ -117,7 +117,7 @@ def update_individuals(state, env, parameters):
         # check if hibernated before, i.e. if the next hibernating rule is p_bouts and not p_seasonal
         p_bouts = 1/T_AD
 
-        if Te and Ot and check and r <= p_bouts:
+        if Te == 0 and Ot and check and r <= p_bouts:
             Hi_next.append([1, res_num, cluster_num, 0, 0]) 
         elif not Te and Ot and r <= p_seasonal:
             Hi_next.append([1, res_num, cluster_num, 0, 0]) 

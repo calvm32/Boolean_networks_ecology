@@ -94,16 +94,16 @@ T_TBD = 4.1                                 # length of torpor bout in days,
                                             # considered in [3.9, 4.3] for tricolored bats
 T_AD = 88.5/1440                            # length of arousal bout in days, 
                                             # considered in [1.74166, 5.63333] for tricolored bats
-T_seasonal = 40                             # approx. transition time in days between hibernating and not
+T_seasonal = 35                             # approx. transition time in days between hibernating and not
                                             # considered in 10-40 maybe?
-win_length = 210                            # length of winter season in days in Nebraska mines
+win_length = 95                             # length of winter season in days in Nebraska mines
                                             # considered in 5-7 months, depending on transition period T_seasonal
-win_start = 300                             # approximate day in calendar year that Te : 1 -> 0
+win_start = 264                             # approximate day in calendar year that Te : 1 -> 0
 
 # BAT IN/OUT FLUX
 lambda_win = 0                              # population growth value during winter, 
                                             # considered in [0, 0.01] 
-lambda_sum = 0.001                           # population growth value during summer,
+lambda_sum = 0.00015806                     # population growth value during summer,
                                             # considered in [0.01, 0.1] 
 
 # -----------------
@@ -235,14 +235,18 @@ if __name__ == "__main__":
     main()
 
 """
-New best: 408.29166666666663 {'inf_alpha': 5, 'inf_beta': 2, 'delta': 0.05, 'T_inf': 30, 'T_TBD': 4.1, 'T_AD': 0.06145833333333333, 'T_seasonal': 40, 'win_length': 104.55315805032492, 'lambda_win': 0, 'lambda_sum': 0.00030810579178920205, 'immunity_period': 0, 'birth_resistance_max': 0, 'recover_resistance_max': 0.02}
-New best: 294.625 {'inf_alpha': 5, 'inf_beta': 2, 'delta': 0.05, 'T_inf': 30, 'T_TBD': 4.1, 'T_AD': 0.06145833333333333, 'T_seasonal': 40, 'win_length': 93.66088582529426, 'lambda_win': 0, 'lambda_sum': 0.00016730065634549607, 'immunity_period': 0, 'birth_resistance_max': 0, 'recover_resistance_max': 0.02}
-New best: 290.41666666666663 {'inf_alpha': 5, 'inf_beta': 2, 'delta': 0.05, 'T_inf': 30, 'T_TBD': 4.1, 'T_AD': 0.0614583333333333, 'T_seasonal': 42.84137132196838, 'win_length': 92.9025546096547, 'lambda_win': 0,'lambda_sum': 0.00018596411797403993, 'immunity_period': 0, 'birth_resistance_max': 0, 'recover_resistance_max': 0.02}          
-New best: 253.83333333333331 {'inf_alpha': 5, 'inf_beta': 2, 'delta': 0.05, 'T_inf': 30, 'T_TBD': 4.1, 'T_AD': 0.06145833333333333, 'T_seasonal': 41.84816384106251, 'win_length': 97.62007352307558, 'lambda_win': 0, 'lambda_sum': 0.00020760238859780686, 'immunity_period': 0, 'birth_resistance_max': 0, 'recover_resistance_max': 0.02} 
-New best: 245.20833333333331 {'inf_alpha': 5, 'inf_beta': 2, 'delta': 0.05, 'T_inf': 30, 'T_TBD': 4.1, 'T_AD': 0.06145833333333333, 'T_seasonal': 33.27959466619289, 'win_length': 103.45290874030258, 'lambda_win': 5.956138472403809e-06, 'lambda_sum': 0.00021796636177355251, 'immunity_period': 0, 'birth_resistance_max': 0, 'recover_resistance_max': 0.02}   
-New best: 1429.2916666666667 {'inf_alpha': 5, 'inf_beta': 2, 'delta': 0.05, 'T_inf': 30, 'T_TBD': 4.1, 'T_AD': 0.06145833333333333, 'T_seasonal': 40, 'win_length': 81.23002673731209, 'win_start': 255.9791250706794, 'lambda_win': 0, 'lambda_sum': 0.0004228730195226812, 'immunity_period': 0, 'birth_resistance_max': 0, 'recover_resistance_max': 0.02}
-New best: 932.3333333333334 {'inf_alpha': 5, 'inf_beta': 2, 'delta': 0.05, 'T_inf': 30, 'T_TBD': 4.1, 'T_AD': 0.06145833333333333, 'T_seasonal': 40, 'win_length': 80.00036540268336, 'win_start': 250.03157138705092, 'lambda_win': 0, 'lambda_sum': 0.00028885954892277863, 'immunity_period': 0, 'birth_resistance_max': 0, 'recover_resistance_max': 0.02}
-New best: 816.625 {'inf_alpha': 5, 'inf_beta': 2, 'delta': 0.05, 'T_inf': 30, 'T_TBD': 4.1, 'T_AD': 0.06145833333333333, 'T_seasonal': 20.114361051619568, 'win_length': 81.17831315823864, 'win_start': 251.1083278511041, 'lambda_win': 0, 'lambda_sum': 0.00019076783002288473, 'immunity_period': 0, 'birth_resistance_max': 0, 'recover_resistance_max': 0.02}
+New best: 408.29166666666663    {'inf_alpha': 5, 'inf_beta': 2, 'delta': 0.05, 'T_inf': 30, 'T_TBD': 4.1, 'T_AD': 0.06145833333333333, 'T_seasonal': 40, 'win_length': 104.55315805032492, 'lambda_win': 0, 'lambda_sum': 0.00030810579178920205, 'immunity_period': 0, 'birth_resistance_max': 0, 'recover_resistance_max': 0.02}
+New best: 294.625               {'inf_alpha': 5, 'inf_beta': 2, 'delta': 0.05, 'T_inf': 30, 'T_TBD': 4.1, 'T_AD': 0.06145833333333333, 'T_seasonal': 40, 'win_length': 93.66088582529426, 'lambda_win': 0, 'lambda_sum': 0.00016730065634549607, 'immunity_period': 0, 'birth_resistance_max': 0, 'recover_resistance_max': 0.02}
+New best: 290.41666666666663    {'inf_alpha': 5, 'inf_beta': 2, 'delta': 0.05, 'T_inf': 30, 'T_TBD': 4.1, 'T_AD': 0.06145833333333333, 'T_seasonal': 42.84137132196838, 'win_length': 92.9025546096547, 'lambda_win': 0,'lambda_sum': 0.00018596411797403993, 'immunity_period': 0, 'birth_resistance_max': 0, 'recover_resistance_max': 0.02}          
+New best: 253.83333333333331    {'inf_alpha': 5, 'inf_beta': 2, 'delta': 0.05, 'T_inf': 30, 'T_TBD': 4.1, 'T_AD': 0.06145833333333333, 'T_seasonal': 41.84816384106251, 'win_length': 97.62007352307558, 'lambda_win': 0, 'lambda_sum': 0.00020760238859780686, 'immunity_period': 0, 'birth_resistance_max': 0, 'recover_resistance_max': 0.02} 
+New best: 245.20833333333331    {'inf_alpha': 5, 'inf_beta': 2, 'delta': 0.05, 'T_inf': 30, 'T_TBD': 4.1, 'T_AD': 0.06145833333333333, 'T_seasonal': 33.27959466619289, 'win_length': 103.45290874030258, 'lambda_win': 5.956138472403809e-06, 'lambda_sum': 0.00021796636177355251, 'immunity_period': 0, 'birth_resistance_max': 0, 'recover_resistance_max': 0.02}   
+New best: 1429.2916666666667    {'inf_alpha': 5, 'inf_beta': 2, 'delta': 0.05, 'T_inf': 30, 'T_TBD': 4.1, 'T_AD': 0.06145833333333333, 'T_seasonal': 40, 'win_length': 81.23002673731209, 'win_start': 255.9791250706794, 'lambda_win': 0, 'lambda_sum': 0.0004228730195226812, 'immunity_period': 0, 'birth_resistance_max': 0, 'recover_resistance_max': 0.02}
+New best: 932.3333333333334     {'inf_alpha': 5, 'inf_beta': 2, 'delta': 0.05, 'T_inf': 30, 'T_TBD': 4.1, 'T_AD': 0.06145833333333333, 'T_seasonal': 40, 'win_length': 80.00036540268336, 'win_start': 250.03157138705092, 'lambda_win': 0, 'lambda_sum': 0.00028885954892277863, 'immunity_period': 0, 'birth_resistance_max': 0, 'recover_resistance_max': 0.02}
+New best: 816.625               {'inf_alpha': 5, 'inf_beta': 2, 'delta': 0.05, 'T_inf': 30, 'T_TBD': 4.1, 'T_AD': 0.06145833333333333, 'T_seasonal': 20.114361051619568, 'win_length': 81.17831315823864, 'win_start': 251.1083278511041, 'lambda_win': 0, 'lambda_sum': 0.00019076783002288473, 'immunity_period': 0, 'birth_resistance_mcax': 0, 'recover_resistance_max': 0.02}
+New best: 121.54166666666667    {'inf_alpha': 5, 'inf_beta': 2, 'delta': 0.05, 'T_inf': 30, 'T_TBD': 4.1, 'T_AD': 0.06145833333333333, 'T_seasonal': 24.457813421532066, 'win_length': 95.81641676014776, 'win_start': 235.0505687167425, 'lambda_win': 0, 'lambda_sum': 0.0001557314442035817, 'immunity_period': 0, 'birth_resistance_max': 0, 'recover_resistance_max': 0.02}
+New best: 137.08333333333334    {'inf_alpha': 5, 'inf_beta': 2, 'delta': 0.05, 'T_inf': 30, 'T_TBD': 4.1, 'T_AD': 0.06145833333333333, 'T_seasonal': 28.063329031264438, 'win_length': 96.98455618792036, 'win_start': 269.301568887714, 'lambda_win': 0, 'lambda_sum': 0.00015453903825809258, 'immunity_period': 0, 'birth_resistance_max': 0, 'recover_resistance_max': 0.02}
+New best: 116.08333333333334    {'inf_alpha': 5, 'inf_beta': 2, 'delta': 0.05, 'T_inf': 30, 'T_TBD': 4.1, 'T_AD': 0.06145833333333333, 'T_seasonal': 36.0488257140253, 'win_length': 92.28247844125634, 'win_start': 256.9756753221267, 'lambda_win': 0, 'lambda_sum': 0.00012091541782081852, 'immunity_period': 0, 'birth_resistance_max': 0, 'recover_resistance_max': 0.02}
+New best: 109.0                 {'inf_alpha': 5, 'inf_beta': 2, 'delta': 0.05, 'T_inf': 30, 'T_TBD': 4.1, 'T_AD': 0.06145833333333333, 'T_seasonal': 35.346254558328134, 'win_length': 94.61334026606372, 'win_start': 263.7285881550976, 'lambda_win': 0, 'lambda_sum': 0.00015806109432201025, 'immunity_period': 0, 'birth_resistance_max': 0, 'recover_resistance_max': 0.02}
 
 
 """
