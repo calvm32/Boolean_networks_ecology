@@ -40,7 +40,7 @@ def update_environment(state, agg, parameters):
 def update_individuals(state, env, parameters):
     Wa, Fo, Te, Hu, PD = env["Wa"], env["Fo"], env["Te"], env["Hu"], env["PD"]
     p_awake, p_dead, p_hibernate, p_infected, p_recover, p_netchange = parameters["p_awake"], parameters["p_dead"], parameters["p_hibernate"], parameters["p_infected"], parameters["p_recover"], parameters["p_netchange"]
-    food, water, immunity_period, contact_rate, birth_res_max, recover_res_max = parameters["food"], parameters["water"], parameters["immunity_period"], parameters["contact_rate"], parameters["birth_resistance_max"], parameters["recover_resistance_max"]
+    food, water, T_im, contact_rate, birth_res_max, recover_res_max = parameters["food"], parameters["water"], parameters["T_im"], parameters["contact_rate"], parameters["res_max"], parameters["recover_resistance_max"]
 
     # go over OLD STATE
     Hi_old = state["Hi"]
@@ -153,7 +153,7 @@ def update_individuals(state, env, parameters):
         new_res_num = res_num + rand.normalvariate(0, recover_res_max)
         new_res_num = max(0, min(1, new_res_num))
 
-        if age >= immunity_period:
+        if age >= T_im:
             Hi_next.append([1, new_res_num]) # return to hibernation
         else:
             Im_next.append([age + 1, res_num])

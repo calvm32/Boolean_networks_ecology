@@ -53,6 +53,6 @@ lambda_sum = 0.05                           # population growth value during sum
 
 # CHECK DISTRIBUTIONS USED IN biology LITERATURE (beta or gamma? exponential?)
 
-immunity_period = 0                         # number of days spent in recovery before re-infection is possible
-birth_resistance_max = 0                   # hereditary resistance of newborn, corresp. w/ rand.normalvariate(0, X)
+T_im = 0                         # number of days spent in recovery before re-infection is possible
+res_max = 0                   # hereditary resistance of newborn, corresp. w/ rand.normalvariate(0, X)
 recover_resistance_max = 0.02               # resistance after recovery, corresp. w/ rand.normalvariate(0, X)

@@ -5,31 +5,28 @@ from simulate.simulate_distribution_based.helper_funcs import *
 from simulate.simulate_distribution_based.rules import *
 from simulate.simulate_distribution_based.simulate import *
 
+def sample_params():                                                                                                                                     
+    return {                                                                                                                                             
+        "inf_alpha": inf_alpha,                                                                                               
+        "inf_beta": inf_beta,                                               
+        "delta": delta,                                                     
+        "T_inf": T_inf,                                                     
+        "T_TBD": T_TBD,                                                     
+        "T_AD": T_AD,                                                       
+        "T_seasonal": T_seasonal,                                                                                                               
+        "win_length": win_length,                                                                                                              
+        "win_start": win_start,                                                                                                              
+        "lambda_win": lambda_win,                                           
+        "lambda_sum": lambda_sum,                                                                                                    
+        "res_gain": res_gain,                                                                                                              
+        "res_max": res_max,                                                                                                    
+        "k_imm": k_imm,   
+        "theta_imm": theta_imm,                                                                                             
+    }    
+
 # ==========================================================================================================================
 # ==========================================================================================================================
 # ==========================================================================================================================
-
-# -------------------------
-# set up initial population
-# -------------------------
-
-# first select number of bats belonging to each species
-tricolor_num = 100
-tricolor_cluster_sizeMIN = 1
-tricolor_cluster_sizeMAX = 2
-
-bigbrown_num = 0
-bigbrown_cluster_sizeMIN = 1
-bigbrown_cluster_sizeMAX = 9
-
-# hibernating non-infected bats of each species
-Hi_list = [[tricolor_num, tricolor_cluster_sizeMIN, tricolor_cluster_sizeMAX], 
-           [bigbrown_num, bigbrown_cluster_sizeMIN, bigbrown_cluster_sizeMAX]] 
-
-fraction_infected = 0   # choose in [0, 1]
-
-# NOTICE : the remaining populations (Ot, Im) all start with 0 inhabitants
-# NOTICE : resistance starts at 0 for every bat
 
 # -------------------------
 # set up initial population
@@ -84,18 +81,17 @@ win_start = 264                             # approximate day in calendar year t
 # BAT IN/OUT FLUX
 lambda_win = 0                              # population growth value during winter, 
                                             # considered in [0, 0.01] 
-lambda_sum = 0.00015806                     # population growth value during summer,
+lambda_sum = 0.00015317467856               # population growth value during summer,
                                             # considered in [0.01, 0.1] 
 
 # -----------------
 # types of immunity
 # -----------------
 
-# CHECK DISTRIBUTIONS USED IN biology LITERATURE (beta or gamma? exponential?)
-
-immunity_period = 0                         # number of days spent in recovery before re-infection is possible
-birth_resistance_max = 0                   # hereditary resistance of newborn, corresp. w/ rand.normalvariate(0, X)
-recover_resistance_max = 0.02               # resistance after recovery, corresp. w/ rand.normalvariate(0, X)
+res_max = 0.2                               # hereditary resistance of newborn, corresp. w/ rand.normalvariate(0, X)
+k_imm, theta_imm = 1, 1                     # number of days spent in recovery before re-infection is possible
+                                            # corresp. w/ Gamma(k_imm, theta_imm)
+res_gain = 0.02                             # resistance AFTER recovery
 
 # ----------
 # initialize
@@ -106,7 +102,6 @@ time = 3650             # total days
 # ==========================================================================================================================
 # ==========================================================================================================================
 # ==========================================================================================================================
-
 
 # initialize accumulators
 history_avg = {
@@ -153,27 +148,12 @@ def simulate(initial_state, steps, parameters):
 
 
 def main():
-    parameters = {
-        "inf_alpha": inf_alpha,
-        "inf_beta": inf_beta,
-        "delta": delta,
-        "T_inf": T_inf,
-        "T_TBD": T_TBD,
-        "T_AD": T_AD,
-        "T_seasonal": T_seasonal,
-        "win_length": win_length,
-        "win_start": win_start,
-        "lambda_win": lambda_win,
-        "lambda_sum": lambda_sum,
-        "immunity_period": immunity_period,
-        "birth_resistance_max": birth_resistance_max,
-        "recover_resistance_max": recover_resistance_max,
-    }
+    parameters = sample_params()
 
     for i in range(avg_over):
 
         history = simulate(
-            make_initial_state(Hi_list, fraction_infected, T_inf),
+            make_initial_state(Hi_list, fraction_infected),
             steps=time,
             parameters=parameters
         )

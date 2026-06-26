@@ -72,8 +72,8 @@ lambda_sum = 0.001                           # population growth value during su
 
 # CHECK DISTRIBUTIONS USED IN biology LITERATURE (beta or gamma? exponential?)
 
-immunity_period = 0                         # number of days spent in recovery before re-infection is possible
-birth_resistance_max = 0                   # hereditary resistance of newborn, corresp. w/ rand.normalvariate(0, X)
+T_im = 0                         # number of days spent in recovery before re-infection is possible
+res_max = 0                   # hereditary resistance of newborn, corresp. w/ rand.normalvariate(0, X)
 recover_resistance_max = 0.02               # resistance after recovery, corresp. w/ rand.normalvariate(0, X)
 
 # ----------
@@ -105,7 +105,7 @@ title = "deadvinf"
 # title = "infvrec"
 
 # inf v immune
-# param_change = ["p_infected", "immunity_period"]
+# param_change = ["p_infected", "T_im"]
 # parameters_list = [np.linspace(0.001,0.1,num_params), np.linspace(0,130,num_params)]
 # title = "infvimm"
 
@@ -142,8 +142,8 @@ def main():
         "win_length": win_length,
         "lambda_win": lambda_win,
         "lambda_sum": lambda_sum,
-        "immunity_period": immunity_period,
-        "birth_resistance_max": birth_resistance_max,
+        "T_im": T_im,
+        "res_max": res_max,
         "recover_resistance_max": recover_resistance_max,
     }
 
@@ -153,7 +153,7 @@ def main():
         for j in range(len(parameters_list[1])):
             parameters[param_change[1]] = parameters_list[1][j]
 
-            history = simulate(make_initial_state(Hi_list, fraction_infected, T_inf), steps=times_list[-1], parameters=parameters)
+            history = simulate(make_initial_state(Hi_list, fraction_infected), steps=times_list[-1], parameters=parameters)
             total = np.array(history["Hi"]) + np.array(history["Ot"]) + np.array(history["In"]) + np.array(history["Im"])
 
             totals_list[i][j] = total

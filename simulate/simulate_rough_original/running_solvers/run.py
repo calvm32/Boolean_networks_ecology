@@ -23,8 +23,8 @@ contact_rate = 10                           # population-dependent rate of conta
 
 # CHECK DISTRIBUTIONS USED IN biology LITERATURE (beta or gamma? exponential?)
 
-immunity_period = 0                         # number of days spent in recovery before re-infection is possible
-birth_resistance_max = 0                   # hereditary resistance of newborn, corresp. w/ rand.normalvariate(0, X)
+T_im = 0                         # number of days spent in recovery before re-infection is possible
+res_max = 0                   # hereditary resistance of newborn, corresp. w/ rand.normalvariate(0, X)
 recover_resistance_max = 0.02               # resistance after recovery, corresp. w/ rand.normalvariate(0, X)
 
 # ----------------------------------------
@@ -120,9 +120,9 @@ def main():
         "water0": water,
         "food0": food,
         "win_length": win_length,
-        "immunity_period": immunity_period,
+        "T_im": T_im,
         "contact_rate": contact_rate,
-        "birth_resistance_max": birth_resistance_max,
+        "res_max": res_max,
         "recover_resistance_max": recover_resistance_max,
     }
 

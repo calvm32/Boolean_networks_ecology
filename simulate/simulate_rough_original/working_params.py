@@ -13,7 +13,7 @@ p_hibernate = 0.5                           # CONFIDENT # chance of a bat switch
 p_netchange = 0.000215                      # CONFIDENT # chance of new bat due to immigration/birth per day
 res_num = 0                                 # CONFIDENT # starting resistance for bats in the hibernaculum
 
-immunity_period = 0     # DEPRECATED DO NOT USE # number of days spent in recovery before re-infection is possible
+T_im = 0     # DEPRECATED DO NOT USE # number of days spent in recovery before re-infection is possible
 contact_rate = 10       # population-dependent rate of contact btwn health bat and PD infected bat or surface
 
 # ----------------------------------------

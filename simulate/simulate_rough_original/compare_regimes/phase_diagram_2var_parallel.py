@@ -23,9 +23,9 @@ p_netchange = 0.000215                      # CONFIDENT # chance of new bat due 
 # types of immunity
 # -----------------
 
-immunity_period = 0                         # number of days spent in recovery before re-infection is possible
-birth_resistance_max = 0.02                 # hereditary resistance of newborn, corresp. w/ rand.normalvariate(0, X)
-recover_resistance_max = 0.02               # resistance after recovery, corresp. w/ rand.normalvariate(0, X)birth_resistance_max = 0.02                 # corresp. w/ rand.normalvariate(0, X)
+T_im = 0                         # number of days spent in recovery before re-infection is possible
+res_max = 0.02                 # hereditary resistance of newborn, corresp. w/ rand.normalvariate(0, X)
+recover_resistance_max = 0.02               # resistance after recovery, corresp. w/ rand.normalvariate(0, X)res_max = 0.02                 # corresp. w/ rand.normalvariate(0, X)
 
 # ----------------------------------------
 # hibernacula-DEPENDENT initial conditions
@@ -64,7 +64,7 @@ parameters_list = [np.linspace(0.001,0.5,num_params), np.linspace(0.001,0.5,num_
 title = "deadvinf"
 
 # inf v immune
-# param_change = ["p_infected", "immunity_period"]
+# param_change = ["p_infected", "T_im"]
 # parameters_list = [np.linspace(0.001,0.1,num_params), np.linspace(0,130,num_params)]
 # title = "infvimm"
 
@@ -163,9 +163,9 @@ def main():
         "water0": water,
         "food0": food,
         "win_length": win_length,
-        "immunity_period": immunity_period,
+        "T_im": T_im,
         "contact_rate": contact_rate,
-        "birth_resistance_max": birth_resistance_max,
+        "res_max": res_max,
         "recover_resistance_max": recover_resistance_max,
     }
     

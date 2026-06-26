@@ -30,20 +30,21 @@ for d in data:
 
 def sample_params():                                                                                                                                     
     return {                                                                                                                                             
-        "inf_alpha": inf_alpha, #rand.uniform(0.01, 0.8),                                                                                                
+        "inf_alpha": inf_alpha,                                                                                               
         "inf_beta": inf_beta,                                               
         "delta": delta,                                                     
         "T_inf": T_inf,                                                     
         "T_TBD": T_TBD,                                                     
         "T_AD": T_AD,                                                       
         "T_seasonal": rand.uniform(20,60),                                                                                                               
-        "win_length": rand.uniform(80,120),                                                                                                              
+        "win_length": rand.uniform(80,180),                                                                                                              
         "win_start": rand.uniform(230,280),                                                                                                              
         "lambda_win": lambda_win,                                           
         "lambda_sum": rand.uniform(0.00015, 0.00025),                                                                                                    
-        "immunity_period": immunity_period,                                                                                                              
-        "birth_resistance_max": birth_resistance_max,                                                                                                    
-        "recover_resistance_max": recover_resistance_max,                                                                                                
+        "res_gain": res_gain,                                                                                                              
+        "res_max": res_max,                                                                                                    
+        "k_imm": k_imm,   
+        "theta_imm": theta_imm,                                                                                             
     }    
 
 # ==========================================================================================================================
@@ -103,18 +104,17 @@ win_start = 264                             # approximate day in calendar year t
 # BAT IN/OUT FLUX
 lambda_win = 0                              # population growth value during winter, 
                                             # considered in [0, 0.01] 
-lambda_sum = 0.00015806                     # population growth value during summer,
+lambda_sum = 0.00015317467856               # population growth value during summer,
                                             # considered in [0.01, 0.1] 
 
 # -----------------
 # types of immunity
 # -----------------
 
-# CHECK DISTRIBUTIONS USED IN biology LITERATURE (beta or gamma? exponential?)
-
-immunity_period = 0                         # number of days spent in recovery before re-infection is possible
-birth_resistance_max = 0                   # hereditary resistance of newborn, corresp. w/ rand.normalvariate(0, X)
-recover_resistance_max = 0.02               # resistance after recovery, corresp. w/ rand.normalvariate(0, X)
+res_max = 0.2                               # hereditary resistance of newborn, corresp. w/ rand.normalvariate(0, X)
+k_imm, theta_imm = 1, 1                     # number of days spent in recovery before re-infection is possible
+                                            # corresp. w/ Gamma(k_imm, theta_imm)
+res_gain = 0.02                             # resistance AFTER recovery
 
 # ----------
 # initialize
@@ -130,7 +130,7 @@ def loss(parameters, runs=2):
     losses = []
 
     for _ in range(runs):
-        sim = simulate(make_initial_state(Hi_list, fraction_infected, T_inf), steps=max(obs_times)+1, parameters=parameters)
+        sim = simulate(make_initial_state(Hi_list, fraction_infected), steps=max(obs_times)+1, parameters=parameters)
 
         error = 0.0
         for i, t in enumerate(obs_times):
@@ -200,7 +200,7 @@ def main():
         
         print(f"checked {i}")
 
-    best_sim = simulate(make_initial_state(Hi_list, fraction_infected, T_inf), steps = 4500, parameters=best)
+    best_sim = simulate(make_initial_state(Hi_list, fraction_infected), steps = 4500, parameters=best)
     plot_history_highlights(best_sim, win_length, win_start, sample=[obs_times, obs_Ot])
 
 

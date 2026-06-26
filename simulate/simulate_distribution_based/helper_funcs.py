@@ -6,26 +6,27 @@ from simulate.simulate_distribution_based.rules import *
 # setup before each run
 # ---------------------
 
-def make_initial_state(Hi_list, fraction_infected, T_inf):
+def make_initial_state(Hi_list, fraction_infected):
     # NOTICE : each inhabitant node contains the following information:
     # [ ON/OFF, 
     #   resistance number AKA res_num, 
     #   clustering number AKA mu_i, 
-    #   infection number MINUS days spent infected (i.e. days left infirm), 
-    #   0 for just entered hibernation OR 1 for exited hibernation at least once (to track arousal periods)
+    #   days left infirm, 
+    #   0 for just entered hibernation OR 1 for exited hibernation at least once (to track arousal periods),
+    #   days left immune
     # ]
     
     empty_pop = np.empty((0,5), dtype=float)
 
     return {
         "Hi": [
-                [1, 0, rand.uniform(Hi_list[i][1], Hi_list[i][2]), 0, 0]
+                [1, 0, rand.uniform(Hi_list[i][1], Hi_list[i][2]), 0, 0, 0]
                 for i in range(len(Hi_list))
                 for _ in range(Hi_list[i][0] - int(Hi_list[i][0]*fraction_infected))
               ],
         "Ot": empty_pop.copy(),
         "In": [
-                [1, 0, rand.uniform(Hi_list[i][1], Hi_list[i][2]), 0, 0]
+                [1, 0, rand.uniform(Hi_list[i][1], Hi_list[i][2]), 0, 0, 0]
                 for i in range(len(Hi_list))
                 for _ in range(int(Hi_list[i][0]*fraction_infected))
               ],

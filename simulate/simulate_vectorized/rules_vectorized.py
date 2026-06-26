@@ -42,7 +42,7 @@ def update_individuals(state, env, parameters):
     inf_alpha, inf_beta, delta = parameters["inf_alpha"], parameters["inf_beta"], parameters["delta"]
     T_inf, T_TBD, T_AD, T_seasonal, win_length = parameters["T_inf"], parameters["T_TBD"], parameters["T_AD"], parameters["T_seasonal"], parameters["win_length"]
     lambda_win, lambda_sum = parameters["lambda_win"], parameters["lambda_sum"]
-    immunity_period, birth_res_max, recover_res_max = parameters["immunity_period"], parameters["birth_resistance_max"], parameters["recover_resistance_max"]
+    T_im, birth_res_max, recover_res_max = parameters["T_im"], parameters["res_max"], parameters["recover_resistance_max"]
 
     Hi, Ot, In, Im, De = state["Hi"], state["Ot"], state["In"], state["Im"], state["De"]
     parents = np.vstack((Ot, Im)) # reproducing population
@@ -167,7 +167,7 @@ def update_individuals(state, env, parameters):
     
     # rule 10: Im -> Hi
     Im_res_new = np.clip( Im_res + np.random.normal(0, parameters["recover_resistance_max"], nIm), 0, 1 ) 
-    end_immunity_mask = Im_age >= parameters["immunity_period"] 
+    end_immunity_mask = Im_age >= parameters["T_im"] 
     
     Hi_from_Im = Im[end_immunity_mask].copy() 
     Hi_from_Im[:, 0] = 1 
@@ -194,7 +194,7 @@ def update_individuals(state, env, parameters):
     parents = np.vstack((Ot, Im)) 
     Ot_births = parents[rP < p_netchange].copy() 
     Ot_births[:, 0] = 1 
-    Ot_births[:, 1] = np.clip( Ot_births[:, 1] + np.random.normal(0, parameters["birth_resistance_max"], len(Ot_births)), 0, 1 )
+    Ot_births[:, 1] = np.clip( Ot_births[:, 1] + np.random.normal(0, parameters["res_max"], len(Ot_births)), 0, 1 )
     
     # -------------------------
     # Rebuild arrays and return
