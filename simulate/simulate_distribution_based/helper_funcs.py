@@ -236,15 +236,40 @@ def plot_history_highlights(history, win_length, win_start, sample=[]):
     ax2.grid()
 
     # highlight the win_length data
-    for year in range(-1, len(t)//365 + 1):
-        if year == -1:
-            start = 0
-        else:
-            start = win_start + year*365
+    days_per_year = 365
+    n_days = len(t)
+    n_years = int(np.ceil(n_days / days_per_year))
+
+    for year in range(n_years):
+        year_start = year * days_per_year
+
+        start = year_start + win_start
         end = start + win_length
 
-        ax1.axvspan(start, end, alpha=0.1)
-        ax2.axvspan(start, end, alpha=0.1)
+        year_end = year_start + days_per_year
+
+        if end <= year_end:
+            # doesn't wrap around New Year
+            ax1.axvspan(start, min(end, n_days), alpha=0.1)
+            ax2.axvspan(start, min(end, n_days), alpha=0.1)
+        else:
+            # wraps around New Year
+
+            # end of this year
+            ax1.axvspan(start, min(year_end, n_days), alpha=0.1)
+            ax2.axvspan(start, min(year_end, n_days), alpha=0.1)
+
+            # beginning of next year
+            wrap_end = end - year_end
+            next_year_start = year_end
+
+            if next_year_start < n_days:
+                ax1.axvspan(next_year_start,
+                            min(next_year_start + wrap_end, n_days),
+                            alpha=0.1)
+                ax2.axvspan(next_year_start,
+                            min(next_year_start + wrap_end, n_days),
+                            alpha=0.1)
 
     plt.tight_layout()
     plt.show()
