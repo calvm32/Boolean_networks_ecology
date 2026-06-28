@@ -18,14 +18,13 @@ SAMPLE_DAY = data[0]["day"]
 
 obs_times = []
 obs_Hi = []
-obs_Ot = []
 obs_In = []
 
 for d in data:
     t = d["day"] + 365*(d["year"]-START_YEAR)
     
     obs_times.append(t)
-    obs_Ot.append(d["Tri_Ot"] + d["Misc_Ot"])
+    obs_Hi.append(d["Tri_Hi"] + d["Misc_Hi"])
     obs_In.append(d["In"])
 
 def sample_params():                                                                                                                                     
@@ -130,15 +129,15 @@ def loss(parameters, runs=2):
     losses = []
 
     for _ in range(runs):
-        sim = simulate(make_initial_state(Hi_list, fraction_infected), steps=max(obs_times)+1, parameters=parameters)
+        sim = simulate(make_initial_state(Hi_list, fraction_infected), steps=max(obs_times)+1, parameters=parameters, Print=False)
 
         error = 0.0
         for i, t in enumerate(obs_times):
-            pred_Ot = sim["Ot"][t]
-            pred_In = sim["In"][t]
+            pred_Hi = sim["Hi"][t]
+            #pred_In = sim["In"][t]
 
-            error += (pred_Ot - obs_Ot[i])**2
-            error += (pred_In - obs_In[i])**2
+            error += (pred_Hi - obs_Hi[i])**2
+            #error += (pred_In - obs_In[i])**2
 
         losses.append(error / len(obs_times))
 
@@ -148,46 +147,11 @@ def loss(parameters, runs=2):
 # run things
 # ----------
 
-def simulate(initial_state, steps, parameters):
-    state = initial_state
-    win_length = parameters["win_length"]
-
-    history = {
-        "Hi": np.empty(steps,dtype=np.int32),
-        "Ot": np.empty(steps,dtype=np.int32),
-        "In": np.empty(steps,dtype=np.int32),
-        "Im": np.empty(steps,dtype=np.int32),
-        "De": np.empty(steps,dtype=np.int32),
-    }
-
-    for t in range(steps):
-
-        # Seasonal tempcycle
-        if (t % 365) <= win_length: # win_length
-            state["Te"] = 0   
-        else:
-            state["Te"] = 1 # summer
-        counts = count(state)
-
-        history["Hi"][t] = (counts["Hi"])
-        history["Ot"][t] = (counts["Ot"])
-        history["In"][t] = (counts["In"])
-        history["Im"][t] = (counts["Im"])
-        history["De"][t] = (counts["De"])
-
-        state = step(state, parameters)
-
-        # if t % 50 == 0:
-        #     print(f"done w/ simulation at step {t}")
-
-    return history
-
-
 def main():
     parameters = sample_params()
     best = None
     best_loss = float("inf")
-    n_iter = 20
+    n_iter = 2
 
     for i in range(n_iter):
         params = sample_params()
@@ -200,8 +164,8 @@ def main():
         
         print(f"checked {i}")
 
-    best_sim = simulate(make_initial_state(Hi_list, fraction_infected), steps = 4500, parameters=best)
-    plot_history_highlights(best_sim, win_length, win_start, sample=[obs_times, obs_Ot])
+    best_sim = simulate(make_initial_state(Hi_list, fraction_infected), steps = 4500, parameters=best, Print=False)
+    plot_history_highlights(best_sim, win_length, win_start, T_seasonal, sample=[obs_times, obs_Hi])
 
 
 if __name__ == "__main__":

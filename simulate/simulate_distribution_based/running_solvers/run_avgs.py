@@ -112,40 +112,6 @@ history_avg = {
     "De": np.zeros(time),
 }
 
-def simulate(initial_state, steps, parameters):
-    state = initial_state
-    win_length = parameters["win_length"]
-
-    history = {
-        "Hi": np.empty(steps,dtype=np.int32),
-        "Ot": np.empty(steps,dtype=np.int32),
-        "In": np.empty(steps,dtype=np.int32),
-        "Im": np.empty(steps,dtype=np.int32),
-        "De": np.empty(steps,dtype=np.int32),
-    }
-
-    for t in range(steps):
-
-        # Seasonal tempcycle
-        if (t % 365) <= win_length: # win_length
-            state["Te"] = 0   
-        else:
-            state["Te"] = 1 # summer
-        counts = count(state)
-
-        history["Hi"][t] = (counts["Hi"])
-        history["Ot"][t] = (counts["Ot"])
-        history["In"][t] = (counts["In"])
-        history["Im"][t] = (counts["Im"])
-        history["De"][t] = (counts["De"])
-
-        state = step(state, parameters)
-
-        if t % 50 == 0:
-            print(f"done w/ simulation at step {t}")
-
-    return history
-
 
 def main():
     parameters = sample_params()
@@ -165,7 +131,7 @@ def main():
     for key in history_avg:
         history_avg[key] /= avg_over    
 
-    plot_history_highlights(history_avg, win_length, win_start)
+    plot_history_highlights(history_avg, win_length, win_start, T_seasonal)
 
 if __name__ == "__main__":
     main()

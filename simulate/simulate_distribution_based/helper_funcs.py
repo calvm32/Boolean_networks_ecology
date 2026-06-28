@@ -42,11 +42,11 @@ def make_initial_state(Hi_list, fraction_infected):
 # computing individaul & population values
 # ----------------------------------------
 
-def step(state, parameters):
+def step(state, parameters, t):
     agg = aggregate(state)
 
-    env_next = update_environment(state, agg, parameters)
-    pop_next = update_individuals(state, {**state, **env_next}, parameters)
+    env_next = update_environment(state, agg, parameters, t)
+    pop_next = update_individuals(state, {**state, **env_next}, parameters, t)
 
     return {**state, **env_next, **pop_next}
     
@@ -189,9 +189,10 @@ def plot_history(history, sample=[]):
     ax2.grid()
 
     plt.tight_layout()
+    plt.grid(axis='x')
     plt.show()
 
-def plot_history_highlights(history, win_length, win_start, sample=[]):
+def plot_history_highlights(history, win_length, win_start, T_seasonal, sample=[]):
     t = range(len(history["Hi"]))
 
     fig, (ax1, ax2) = plt.subplots(
@@ -235,42 +236,49 @@ def plot_history_highlights(history, win_length, win_start, sample=[]):
     ax2.legend()
     ax2.grid()
 
-    # highlight the win_length data
+    # highlight winter including transition periods
     days_per_year = 365
     n_days = len(t)
     n_years = int(np.ceil(n_days / days_per_year))
 
-    for year in range(n_years):
+    win_length += T_seasonal
+
+    highlighter(n_years, n_days, days_per_year, win_start, win_length, ax1, ax2, 0.2)
+
+    plt.tight_layout()
+    plt.grid(axis='x')
+    plt.show()
+
+
+def highlighter(n_years, n_days, days_per_year, win_start, win_length, ax1, ax2, alpha):
+
+    for year in range(-1, n_years):
         year_start = year * days_per_year
 
         start = year_start + win_start
         end = start + win_length
-
+        
         year_end = year_start + days_per_year
 
-        if end <= year_end:
-            # doesn't wrap around New Year
-            ax1.axvspan(start, min(end, n_days), alpha=0.1)
-            ax2.axvspan(start, min(end, n_days), alpha=0.1)
-        else:
-            # wraps around New Year
+        # wraps before Jan 1
+        if start < 0:
+            # Only draw the visible part.
+            ax1.axvspan(0, min(end, n_days), alpha=alpha)
+            ax2.axvspan(0, min(end, n_days), alpha=alpha)
 
-            # end of this year
-            ax1.axvspan(start, min(year_end, n_days), alpha=0.1)
-            ax2.axvspan(start, min(year_end, n_days), alpha=0.1)
+        # wraps after Dec 31
+        elif end > year_end:
+            ax1.axvspan(start, min(year_end, n_days), alpha=alpha)
+            ax2.axvspan(start, min(year_end, n_days), alpha=alpha)
 
-            # beginning of next year
             wrap_end = end - year_end
             next_year_start = year_end
 
             if next_year_start < n_days:
-                ax1.axvspan(next_year_start,
-                            min(next_year_start + wrap_end, n_days),
-                            alpha=0.1)
-                ax2.axvspan(next_year_start,
-                            min(next_year_start + wrap_end, n_days),
-                            alpha=0.1)
+                ax1.axvspan(next_year_start, min(next_year_start + wrap_end, n_days), alpha=alpha)
+                ax2.axvspan(next_year_start, min(next_year_start + wrap_end, n_days), alpha=alpha)
 
-    plt.tight_layout()
-    plt.show()
-
+        # no wrapping
+        else:
+            ax1.axvspan(start, end, alpha=alpha)
+            ax2.axvspan(start, end, alpha=alpha)

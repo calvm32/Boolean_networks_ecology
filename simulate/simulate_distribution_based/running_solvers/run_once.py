@@ -97,7 +97,7 @@ res_gain = 0.02                             # resistance AFTER recovery
 # initialize
 # ----------
 
-time = 3650             # total days
+time = 365             # total days
 
 # ==========================================================================================================================
 # ==========================================================================================================================
@@ -107,7 +107,7 @@ def main():
     parameters = sample_params()
 
     history = simulate(make_initial_state(Hi_list, fraction_infected), steps=time, parameters=parameters)
-    plot_history_highlights(history, win_length, win_start)
+    plot_history_highlights(history, win_length, win_start, T_seasonal)
 
 if __name__ == "__main__":
     main()
