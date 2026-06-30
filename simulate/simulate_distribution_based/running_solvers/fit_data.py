@@ -35,11 +35,11 @@ def sample_params():
         "T_inf": T_inf,                                                     
         "T_TBD": T_TBD,                                                     
         "T_AD": T_AD,                                                       
-        "T_seasonal": rand.uniform(20,60),                                                                                                               
-        "win_length": rand.uniform(80,180),                                                                                                              
-        "win_start": rand.uniform(230,280),                                                                                                              
+        "T_seasonal": T_seasonal,                                                                                                               
+        "win_length": win_length,                                                                                                              
+        "win_start": win_start,                                                                                                              
         "lambda_win": lambda_win,                                           
-        "lambda_sum": rand.uniform(0.00015, 0.00025),                                                                                                    
+        "lambda_sum": lambda_sum,                                                                                                    
         "res_gain": res_gain,                                                                                                              
         "res_max": res_max,                                                                                                    
         "k_imm": k_imm,   
@@ -90,20 +90,20 @@ T_inf = 30                                  # approximate time in dayseach bat s
                                             # considered in [10, 40]
 
 # BOUT and SEASONAL HIBERNATING PATHWAYS
-T_TBD = 4.1                                 # length of torpor bout in days, 
+T_TBD = 4.1                                 # CONFIDENT # length of torpor bout in days, 
                                             # considered in [3.9, 4.3] for tricolored bats
-T_AD = 88.5/1440                            # length of arousal bout in days, 
+T_AD = 88.5/1440                            # CONFIDENT # length of arousal bout in days, 
                                             # considered in [1.74166, 5.63333] for tricolored bats
-T_seasonal = 35                             # approx. transition time in days between hibernating and not
+T_seasonal = 40                             # CONFIDENT # approx. transition time in days between hibernating and not
                                             # considered in 10-40 maybe?
-win_length = 95                             # length of winter season in days in Nebraska mines
+win_length = 95                             # CONFIDENT # length of winter season in days in Nebraska mines
                                             # considered in 5-7 months, depending on transition period T_seasonal
-win_start = 264                             # approximate day in calendar year that Te : 1 -> 0
+win_start = 297                             # CONFIDENT # approximate day in calendar year that Te : 1 -> 0
 
 # BAT IN/OUT FLUX
-lambda_win = 0                              # population growth value during winter, 
+lambda_win = 0                              # CONFIDENT # population growth value during winter, 
                                             # considered in [0, 0.01] 
-lambda_sum = 0.00015317467856               # population growth value during summer,
+lambda_sum = 0.00013942579094               # CONFIDENT # population growth value during summer,
                                             # considered in [0.01, 0.1] 
 
 # -----------------

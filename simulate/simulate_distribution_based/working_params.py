@@ -38,20 +38,20 @@ T_inf = 30                                  # approximate time in dayseach bat s
                                             # considered in [10, 40]
 
 # BOUT and SEASONAL HIBERNATING PATHWAYS
-T_TBD = 4.1                                 # length of torpor bout in days, 
+T_TBD = 4.1                                 # CONFIDENT # length of torpor bout in days, 
                                             # considered in [3.9, 4.3] for tricolored bats
-T_AD = 88.5/1440                            # length of arousal bout in days, 
+T_AD = 88.5/1440                            # CONFIDENT # length of arousal bout in days, 
                                             # considered in [1.74166, 5.63333] for tricolored bats
-T_seasonal = 35                             # approx. transition time in days between hibernating and not
+T_seasonal = 40                             # CONFIDENT # approx. transition time in days between hibernating and not
                                             # considered in 10-40 maybe?
-win_length = 95                             # length of winter season in days in Nebraska mines
+win_length = 95                             # CONFIDENT # length of winter season in days in Nebraska mines
                                             # considered in 5-7 months, depending on transition period T_seasonal
-win_start = 264                             # approximate day in calendar year that Te : 1 -> 0
+win_start = 297                             # CONFIDENT # approximate day in calendar year that Te : 1 -> 0
 
 # BAT IN/OUT FLUX
-lambda_win = 0                              # population growth value during winter, 
+lambda_win = 0                              # CONFIDENT # population growth value during winter, 
                                             # considered in [0, 0.01] 
-lambda_sum = 0.00015317467856               # population growth value during summer,
+lambda_sum = 0.00013942579094               # CONFIDENT # population growth value during summer,
                                             # considered in [0.01, 0.1] 
 
 # -----------------
@@ -62,3 +62,19 @@ res_max = 0.2                               # hereditary resistance of newborn, 
 k_imm, theta_imm = 1, 1                     # number of days spent in recovery before re-infection is possible
                                             # corresp. w/ Gamma(k_imm, theta_imm)
 res_gain = 0.02                             # resistance AFTER recovery
+
+
+# -----------------
+# -----------------
+# NOTICE:
+# -----------------
+# -----------------
+
+
+# ABOVE DATE BASED ON THIS RUN:
+# New best: 100.08333333333334    {'inf_alpha': 5, 'inf_beta': 2, 'delta': 0.05, 'T_inf': 30,
+#                                  'T_TBD': 4.1, 'T_AD': 0.06145833333333333, 
+#                                  'T_seasonal': 40.40106604493598, 'win_length': 95.48630043980653,
+#                                  'win_start': 297.13823328979703, 'lambda_win': 0,
+#                                  'lambda_sum': 0.0001394257909475772, 'immunity_period': 0,
+#                                  'birth_resistance_max': 0, 'recover_resistance_max': 0.02}

@@ -91,20 +91,20 @@ T_inf = 30                                  # approximate time in dayseach bat s
                                             # considered in [10, 40]
 
 # BOUT and SEASONAL HIBERNATING PATHWAYS
-T_TBD = 4.1                                 # length of torpor bout in days, 
+T_TBD = 4.1                                 # CONFIDENT # length of torpor bout in days, 
                                             # considered in [3.9, 4.3] for tricolored bats
-T_AD = 88.5/1440                            # length of arousal bout in days, 
+T_AD = 88.5/1440                            # CONFIDENT # length of arousal bout in days, 
                                             # considered in [1.74166, 5.63333] for tricolored bats
-T_seasonal = 35                             # approx. transition time in days between hibernating and not
+T_seasonal = 40                             # CONFIDENT # approx. transition time in days between hibernating and not
                                             # considered in 10-40 maybe?
-win_length = 95                             # length of winter season in days in Nebraska mines
+win_length = 95                             # CONFIDENT # length of winter season in days in Nebraska mines
                                             # considered in 5-7 months, depending on transition period T_seasonal
-win_start = 264                             # approximate day in calendar year that Te : 1 -> 0
+win_start = 297                             # CONFIDENT # approximate day in calendar year that Te : 1 -> 0
 
 # BAT IN/OUT FLUX
-lambda_win = 0                              # population growth value during winter, 
+lambda_win = 0                              # CONFIDENT # population growth value during winter, 
                                             # considered in [0, 0.01] 
-lambda_sum = 0.00015317467856               # population growth value during summer,
+lambda_sum = 0.00013942579094               # CONFIDENT # population growth value during summer,
                                             # considered in [0.01, 0.1] 
 
 # -----------------
@@ -214,6 +214,10 @@ New best: 137.08333333333334    {'inf_alpha': 5, 'inf_beta': 2, 'delta': 0.05, '
 New best: 116.08333333333334    {'inf_alpha': 5, 'inf_beta': 2, 'delta': 0.05, 'T_inf': 30, 'T_TBD': 4.1, 'T_AD': 0.06145833333333333, 'T_seasonal': 36.0488257140253, 'win_length': 92.28247844125634, 'win_start': 256.9756753221267, 'lambda_win': 0, 'lambda_sum': 0.00012091541782081852, 'T_im': 0, 'res_max': 0, 'recover_resistance_max': 0.02}
 New best: 109.0                 {'inf_alpha': 5, 'inf_beta': 2, 'delta': 0.05, 'T_inf': 30, 'T_TBD': 4.1, 'T_AD': 0.06145833333333333, 'T_seasonal': 35.346254558328134, 'win_length': 94.61334026606372, 'win_start': 263.7285881550976, 'lambda_win': 0, 'lambda_sum': 0.00015806109432201025, 'T_im': 0, 'res_max': 0, 'recover_resistance_max': 0.02}
 New best: 89.125                {'inf_alpha': 5, 'inf_beta': 2, 'delta': 0.05, 'T_inf': 30, 'T_TBD': 4.1, 'T_AD': 0.06145833333333333, 'T_seasonal': 35, 'win_length': 95, 'win_start': 264, 'lambda_win': 0, 'lambda_sum': 0.00015317467855989502, 'T_im': 0, 'res_max': 0, 'recover_resistance_max': 0.02}
-
+New best: 145.16666666666666    {'inf_alpha': 5, 'inf_beta': 2, 'delta': 0.05, 'T_inf': 30, 'T_TBD': 4.1, 'T_AD': 0.06145833333333333, 'T_seasonal': 34.125793287274874, 'win_length': 96.47363069048322, 'win_start': 289.1807638339611, 'lambda_win': 0, 'lambda_sum': 0.00012092211224764207, 'immunity_period': 0, 'birth_resistance_max': 0, 'recover_resistance_max': 0.02}
+New best: 125.375               {'inf_alpha': 5, 'inf_beta': 2, 'delta': 0.05, 'T_inf': 30, 'T_TBD': 4.1, 'T_AD': 0.06145833333333333, 'T_seasonal': 33.100452060440986, 'win_length': 94.29226998561904, 'win_start': 294.12915468895557, 'lambda_win': 0, 'lambda_sum': 0.0001346888474519478, 'immunity_period': 0, 'birth_resistance_max': 0, 'recover_resistance_max': 0.02}     
+New best: 103.20833333333334    {'inf_alpha': 5, 'inf_beta': 2, 'delta': 0.05, 'T_inf': 30, 'T_TBD': 4.1, 'T_AD': 0.06145833333333333, 'T_seasonal': 33.71688254962579, 'win_length': 93.13885332280054, 'win_start': 293.07908392175176, 'lambda_win': 0, 'lambda_sum': 0.00013211076447680871, 'immunity_period': 0, 'birth_resistance_max': 0, 'recover_resistance_max': 0.02}
+New best: 109.20833333333334    {'inf_alpha': 5, 'inf_beta': 2, 'delta': 0.05, 'T_inf': 30, 'T_TBD': 4.1, 'T_AD': 0.06145833333333333, 'T_seasonal': 37.942374262579655, 'win_length': 95.69298853308041, 'win_start': 297.91247404156496, 'lambda_win': 0, 'lambda_sum': 0.00012226569319270935, 'immunity_period': 0, 'birth_resistance_max': 0, 'recover_resistance_max': 0.02}
+New best: 100.08333333333334    {'inf_alpha': 5, 'inf_beta': 2, 'delta': 0.05, 'T_inf': 30, 'T_TBD': 4.1, 'T_AD': 0.06145833333333333, 'T_seasonal': 40.40106604493598, 'win_length': 95.48630043980653, 'win_start': 297.13823328979703, 'lambda_win': 0, 'lambda_sum': 0.0001394257909475772, 'immunity_period': 0, 'birth_resistance_max': 0, 'recover_resistance_max': 0.02}
 
 """
