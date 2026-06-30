@@ -50,9 +50,9 @@ Hi_list = [[tricolor_num, tricolor_cluster_sizeMIN, tricolor_cluster_sizeMAX],
 
 fraction_infected = 0  
 
-# ---------------------------
+# -----------------------------------
 # system-governing parameters (FIXED)
-# ---------------------------
+# -----------------------------------
 
 inf_alpha, inf_beta = 5, 2                  
 delta = 0.05                                
@@ -129,7 +129,7 @@ def main():
 
     # PSO Hyperparameters
     num_particles = max(size * 4, 40) # Ensure we have enough particles to saturate all cores
-    max_iterations = 250
+    max_iterations = 1000
     w = 0.7298   # Inertia weight
     c1 = 1.49618 # Cognitive coefficient (Personal Best)
     c2 = 1.49618 # Social coefficient (Global Best)
@@ -157,6 +157,8 @@ def main():
 
     # Optimization Loop
     for it in range(max_iterations):
+        # Linearly decay inertia weight from 0.9 down to 0.4
+        w = 0.9 - ((0.9 - 0.4) * (it / max_iterations))
         
         # 1. Broadcast the current particle positions to all compute nodes
         positions = comm.bcast(positions, root=0)
@@ -211,9 +213,20 @@ def main():
                         positions[i][j] = upper
                         velocities[i][j] *= -0.5
                         
-    # ---------------------------
+                # === NEW: Mutation Operator ("Craziness") ===
+                # 5% chance to randomly teleport a particle to a new spot
+                # to prevent the swarm from getting stuck in a local minimum.
+                mutation_rate = 0.05 
+                if np.random.rand() < mutation_rate:
+                    for j, key in enumerate(PARAM_KEYS):
+                        lower, upper = BOUNDS[key]
+                        positions[i][j] = np.random.uniform(lower, upper)
+                        # Give it a fresh random velocity to explore the new area
+                        velocities[i][j] = np.random.uniform(-0.1*(upper-lower), 0.1*(upper-lower))
+                        
+    # -----------------------
     # Finish and Plot Results
-    # ---------------------------
+    # -----------------------
     
     if rank == 0:
         best_final_params = array_to_params(gbest)
