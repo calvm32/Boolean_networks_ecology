@@ -24,13 +24,13 @@ def update_environment(state, agg, parameters, t):
     # update Te
     day = t % 365
     winter_day = (day - win_start) % 365 # shift calendar
-    state["Te"] = 0 if winter_day < win_length else 1
+    Te_next = 0 if winter_day < win_length else 1
 
     return {
         "Hu": Hu_next,
         "PD": PD_next,
         "Re": Re_next,
-        "Te": Te
+        "Te": Te_next
     }
 
 def update_individuals(state, env, parameters, t):
@@ -111,7 +111,7 @@ def update_individuals(state, env, parameters, t):
         p_bouts = 1/T_TBD if T_AD >= 1 else 0
 
         if (Hi and Te == 0 and r < p_infected):
-            In_next.append([1, res_num, cluster_num, mu_i, 0, 0, 0])
+            In_next.append([1, res_num, cluster_num, mu_i, 0, 0])
         elif not Te and Hi and r <= p_bouts:
             Ot_next.append([1, res_num, cluster_num, 0, 1, 0]) # mark [...,1] to signify next hibernating rule is p_bouts and not p_seasonal
         elif Te and Hi and r <= p_seasonal:
@@ -130,12 +130,12 @@ def update_individuals(state, env, parameters, t):
         # check if hibernated before, i.e. if the next hibernating rule is p_bouts and not p_seasonal
         p_bouts = 1/T_AD
 
-        if Te == 0 and Ot and check and r <= p_bouts:
+        if Ot and not Te and not Re:
+            De += 1
+        elif not Te and Ot and check and r <= p_bouts:
             Hi_next.append([1, res_num, cluster_num, 0, 0, 0]) 
         elif not Te and Ot and r <= p_seasonal:
             Hi_next.append([1, res_num, cluster_num, 0, 0, 0]) 
-        elif not Te and not Re:
-            De += 1
         else:
             Ot_next.append([Ot, res_num, cluster_num, 0, 0, 0])
 
@@ -144,7 +144,8 @@ def update_individuals(state, env, parameters, t):
     # ---------
     for i in range(len(In_old)):
         In, res_num, cluster_num, mu_i, _, _ = state["In"][i]
-        r = rand.uniform(0, 1)
+        r1 = rand.uniform(0, 1)
+        r2 = rand.uniform(0, 1)
 
         # probability of death
         p_dead = (1 - np.exp(-mu_i))*(1 + Re)
@@ -152,9 +153,11 @@ def update_individuals(state, env, parameters, t):
 
         T_im = int(np.random.gamma(shape=k_imm, scale=theta_imm))
 
-        if (In and r <= p_dead) or (not Te and not Re):
+        if In and not Te and not Re:
             De += 1
-        elif In and r <= p_recover:
+        elif In and r1 <= p_dead:
+            De += 1
+        elif In and r2 <= p_recover:
             Im_next.append([In, res_num, cluster_num, 0, 0, T_im]) # start recovery counter
         else:
             In_next.append([In, res_num, cluster_num, 0, 0, 0])

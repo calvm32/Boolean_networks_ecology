@@ -72,16 +72,16 @@ T_TBD = 4.1                                 # CONFIDENT # length of torpor bout 
                                             # considered in [3.9, 4.3] for tricolored bats
 T_AD = 88.5/1440                            # CONFIDENT # length of arousal bout in days, 
                                             # considered in [1.74166, 5.63333] for tricolored bats
-T_seasonal = 40                             # CONFIDENT # approx. transition time in days between hibernating and not
+T_seasonal = 59                             # CONFIDENT # approx. transition time in days between hibernating and not
                                             # considered in 10-40 maybe?
-win_length = 95                             # CONFIDENT # length of winter season in days in Nebraska mines
+win_length = 161                            # CONFIDENT # length of winter season in days in Nebraska mines
                                             # considered in 5-7 months, depending on transition period T_seasonal
-win_start = 297                             # CONFIDENT # approximate day in calendar year that Te : 1 -> 0
+win_start = 290                             # CONFIDENT # approximate day in calendar year that Te : 1 -> 0
 
 # BAT IN/OUT FLUX
 lambda_win = 0                              # CONFIDENT # population growth value during winter, 
                                             # considered in [0, 0.01] 
-lambda_sum = 0.00013942579094               # CONFIDENT # population growth value during summer,
+lambda_sum = 0.00028895065208               # CONFIDENT # population growth value during summer,
                                             # considered in [0.01, 0.1] 
 
 # -----------------

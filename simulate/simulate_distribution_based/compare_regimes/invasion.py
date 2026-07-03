@@ -5,6 +5,25 @@ from simulate.simulate_distribution_based.helper_funcs import *
 from simulate.simulate_distribution_based.rules import *
 from simulate.simulate_distribution_based.simulate import *
 
+def sample_params():                                                                                                                                     
+    return {                                                                                                                                             
+        "inf_alpha": inf_alpha,                                                                                               
+        "inf_beta": inf_beta,                                               
+        "delta": delta,                                                     
+        "T_inf": T_inf,                                                     
+        "T_TBD": T_TBD,                                                     
+        "T_AD": T_AD,                                                       
+        "T_seasonal": T_seasonal,                                                                                                               
+        "win_length": win_length,                                                                                                              
+        "win_start": win_start,                                                                                                              
+        "lambda_win": lambda_win,                                           
+        "lambda_sum": lambda_sum,                                                                                                    
+        "res_gain": res_gain,                                                                                                              
+        "res_max": res_max,                                                                                                    
+        "k_imm": k_imm,   
+        "theta_imm": theta_imm,                                                                                             
+    }   
+
 # ==========================================================================================================================
 # ==========================================================================================================================
 # ==========================================================================================================================
@@ -47,30 +66,30 @@ T_inf = 30                                  # approximate time in dayseach bat s
                                             # considered in [10, 40]
 
 # BOUT and SEASONAL HIBERNATING PATHWAYS
-T_TBD = 4.1                                 # length of torpor bout in days, 
+T_TBD = 4.1                                 # CONFIDENT # length of torpor bout in days, 
                                             # considered in [3.9, 4.3] for tricolored bats
-T_AD = 88.5/1440                            # length of arousal bout in days, 
+T_AD = 88.5/1440                            # CONFIDENT # length of arousal bout in days, 
                                             # considered in [1.74166, 5.63333] for tricolored bats
-T_seasonal = 40                             # approx. transition time in days between hibernating and not
+T_seasonal = 40                             # CONFIDENT # approx. transition time in days between hibernating and not
                                             # considered in 10-40 maybe?
-win_length = 210                                 # length of winter season in days in Nebraska mines
+win_length = 95                             # CONFIDENT # length of winter season in days in Nebraska mines
                                             # considered in 5-7 months, depending on transition period T_seasonal
+win_start = 297                             # CONFIDENT # approximate day in calendar year that Te : 1 -> 0
 
 # BAT IN/OUT FLUX
-lambda_win = 0                              # population growth value during winter, 
+lambda_win = 0                              # CONFIDENT # population growth value during winter, 
                                             # considered in [0, 0.01] 
-lambda_sum = 0.001                           # population growth value during summer,
+lambda_sum = 0.00013942579094               # CONFIDENT # population growth value during summer,
                                             # considered in [0.01, 0.1] 
 
 # -----------------
 # types of immunity
 # -----------------
 
-# CHECK DISTRIBUTIONS USED IN biology LITERATURE (beta or gamma? exponential?)
-
-T_im = 0                         # number of days spent in recovery before re-infection is possible
-res_max = 0                   # hereditary resistance of newborn, corresp. w/ rand.normalvariate(0, X)
-recover_resistance_max = 0.02               # resistance after recovery, corresp. w/ rand.normalvariate(0, X)
+res_max = 0.2                               # hereditary resistance of newborn, corresp. w/ rand.normalvariate(0, X)
+k_imm, theta_imm = 1, 1                     # number of days spent in recovery before re-infection is possible
+                                            # corresp. w/ Gamma(k_imm, theta_imm)
+res_gain = 0.02                             # resistance AFTER recovery
 
 # ----------
 # initialize
@@ -85,28 +104,14 @@ init_fractions = [0.01, 0.03, 0.05, 0.10]
 
 
 def main():
-    parameters = {
-        "inf_alpha": inf_alpha,
-        "inf_beta": inf_beta,
-        "delta": delta,
-        "T_inf": T_inf,
-        "T_TBD": T_TBD,
-        "T_AD": T_AD,
-        "T_seasonal": T_seasonal,
-        "win_length": win_length,
-        "lambda_win": lambda_win,
-        "lambda_sum": lambda_sum,
-        "T_im": T_im,
-        "res_max": res_max,
-        "recover_resistance_max": recover_resistance_max,
-    }
+    parameters = sample_params()
 
     fig, axes = plt.subplots(1, 2, figsize=(12, 4.5))
     cmap = plt.cm.get_cmap("YlOrRd", len(init_fractions))
     
     for idx, frac in enumerate(init_fractions):
 
-        hist = simulate(make_initial_state(Hi_list, frac), time, parameters)
+        hist = simulate(make_initial_state(Hi_list, frac), steps=time, parameters=parameters)
         m = compute_metrics(hist, Hi_list)
         t = np.arange(time)
         color = cmap(idx)
@@ -124,6 +129,7 @@ def main():
     fig.tight_layout()
     plt.savefig("figures/invasion_scenarios.pdf", bbox_inches="tight", dpi=300)
     plt.show()
+    plt.savefig('invasion_plot.pdf', format='pdf', bbox_inches='tight')
 
     history = simulate(make_initial_state(Hi_list, frac), time, parameters=parameters)
     plot_history_highlights(history, win_length)

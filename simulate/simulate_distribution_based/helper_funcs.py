@@ -16,7 +16,7 @@ def make_initial_state(Hi_list, fraction_infected):
     #   days left immune
     # ]
     
-    empty_pop = np.empty((0,5), dtype=float)
+    empty_pop = []
 
     return {
         "Hi": [
@@ -165,7 +165,7 @@ def plot_history(history, sample=[]):
 
     ax1.set_xlabel("Time step")
     ax1.set_ylabel("Population count")
-    ax1.set_title("Bat Population Dynamics (Boolean Network)")
+    ax1.set_title("Bat Population Dynamics")
     ax1.legend()
     ax1.grid()
 
@@ -184,26 +184,32 @@ def plot_history(history, sample=[]):
 
     ax2.set_xlabel("Time step")
     ax2.set_ylabel("Population count")
-    ax2.set_title("Bat Population Dynamics (Boolean Network)")
+    ax2.set_title("Bat Population Dynamics")
     ax2.legend()
     ax2.grid()
 
     plt.tight_layout()
     plt.grid(axis='x')
     plt.show()
+    plt.savefig('history_plot.pdf', format='pdf', bbox_inches='tight')
 
-def plot_history_highlights(history, win_length, win_start, T_seasonal, sample=[]):
+
+def plot_history_highlights(history, win_length, win_start, T_seasonal, sample=[], xlim_max=None):
     t = range(len(history["Hi"]))
+    n_days = len(t)
+
+    # default cutoff: last observed time point, capped by how long the sim actually ran
+    if xlim_max is None:
+        if len(sample) != 0:
+            xlim_max = min(max(sample[0]), n_days - 1)
+        else:
+            xlim_max = n_days - 1
 
     fig, (ax1, ax2) = plt.subplots(
         1, 2,
         constrained_layout=True,
-        figsize = (14,7)
+        figsize=(14, 7)
     )
-
-    # -----------------
-    # individual counts
-    # -----------------
 
     ax1.plot(t, history["Hi"], label="Hibernating (Hi)")
     ax1.plot(t, history["Ot"], label="Non-hibernating, non-infected, non-immune (Ot)")
@@ -213,121 +219,129 @@ def plot_history_highlights(history, win_length, win_start, T_seasonal, sample=[
 
     ax1.set_xlabel("Time step")
     ax1.set_ylabel("Population count")
-    ax1.set_title("Bat Population Dynamics (Boolean Network)")
+    ax1.set_title("Bat Population Dynamics")
     ax1.legend()
     ax1.grid()
 
-    # ------------
-    # total counts
-    # ------------
-
     total = np.array(history["Hi"]) + np.array(history["Ot"]) + np.array(history["In"]) + np.array(history["Im"])
-
     ax2.plot(t, total, label="Total tricolored bats")
 
-    # if there's sample data, compare:
     if len(sample) != 0:
         obs_times = sample[0]; obs_Ot = sample[1]
         ax2.scatter(obs_times, obs_Ot, label="Observed total tricolored bats")
 
     ax2.set_xlabel("Time step")
     ax2.set_ylabel("Population count")
-    ax2.set_title("Bat Population Dynamics (Boolean Network)")
+    ax2.set_title("Bat Population Dynamics")
     ax2.legend()
     ax2.grid()
 
-    # highlight winter including transition periods
+    # highlight winter, using xlim_max as the cutoff instead of the full sim length
     days_per_year = 365
-    n_days = len(t)
-    n_years = int(np.ceil(n_days / days_per_year))
+    cutoff = xlim_max + 1
+    n_years = int(np.ceil(cutoff / days_per_year))
 
-    win_length += T_seasonal
+    win_length_padded = win_length + T_seasonal
 
-    highlighter(n_years, n_days, days_per_year, win_start, win_length, ax1, ax2, 0.2)
+    highlighter(n_years, cutoff, days_per_year, win_start, win_length_padded, ax1, ax2, 0.2)
+
+    ax1.set_xlim(0, xlim_max)
+    ax2.set_xlim(0, xlim_max)
 
     plt.tight_layout()
     plt.grid(axis='x')
     plt.show()
+    plt.savefig('history_plot_highlighted.pdf', format='pdf', bbox_inches='tight')
 
 
-def highlighter(n_years, n_days, days_per_year, win_start, win_length, ax1, ax2, alpha):
+def plot_error(history, win_length, win_start, T_seasonal, sample=[], xlim_max=None):
+    t = range(len(history["Hi"]))
+    n_days = len(t)
+
+    if xlim_max is None:
+        if len(sample) != 0:
+            xlim_max = min(max(sample[0]), n_days - 1)
+        else:
+            xlim_max = n_days - 1
+
+    fig, (ax1, ax2) = plt.subplots(
+        1, 2,
+        constrained_layout=True,
+        figsize=(14, 7)
+    )
+
+    ax1.plot(t, history["Hi"], label="Hibernating (Hi)")
+    ax1.plot(t, history["Ot"], label="Non-hibernating, non-infected, non-immune (Ot)")
+    # ax1.plot(t, history["In"], label="Infected (In)")
+    # ax1.plot(t, history["Im"], label="Immune (Im)")
+    # ax1.plot(t, history["De"], label="Deceased (De)")
+
+    total = np.array(history["Hi"]) + np.array(history["Ot"]) + np.array(history["In"]) + np.array(history["Im"])
+    ax1.plot(t, total, label="Total tricolored bats", color='black', linewidth=2)
+
+    ax1.set_xlabel("Time step")
+    ax1.set_ylabel("Population count")
+    ax1.set_title("Bat Population Dynamics")
+    ax1.legend()
+    ax1.grid()
+
+    if len(sample) != 0:
+        obs_times, obs_Hi = sample[0], sample[1]
+
+        fitted_Hi = np.array(history["Hi"])
+        diff = [obs_Hi[i] - fitted_Hi[t_val] for i, t_val in enumerate(obs_times)]
+
+        ax2.plot(obs_times, diff, marker='o', linestyle='-', label="Observed − Fitted (Hi)")
+        ax2.axhline(0, color='black', linewidth=1, linestyle='--')
+
+    ax2.set_xlabel("Time step")
+    ax2.set_ylabel("Observed − Fitted (Hi)")
+    ax2.set_title("Residual Error in Hibernating Population (Hi)")
+    ax2.legend()
+    ax2.grid()
+
+    ax1.set_xlim(0, xlim_max)
+    ax2.set_xlim(0, xlim_max)
+
+    plt.tight_layout()
+    plt.grid(axis='x')
+    plt.show()
+    plt.savefig('history_error_plot.pdf', format='pdf', bbox_inches='tight')
+
+
+def highlighter(n_years, cutoff, days_per_year, win_start, win_length, ax1, ax2, alpha):
+    # cutoff = the day AFTER the last day you want plotted (i.e. xlim_max + 1)
 
     for year in range(-1, n_years):
         year_start = year * days_per_year
 
         start = year_start + win_start
         end = start + win_length
-        
+
         year_end = year_start + days_per_year
+
+        # skip this year's span entirely if it starts beyond the cutoff
+        if start >= cutoff:
+            continue
 
         # wraps before Jan 1
         if start < 0:
-            # Only draw the visible part.
-            ax1.axvspan(0, min(end, n_days), alpha=alpha)
-            ax2.axvspan(0, min(end, n_days), alpha=alpha)
+            ax1.axvspan(0, min(end, cutoff), alpha=alpha)
+            ax2.axvspan(0, min(end, cutoff), alpha=alpha)
 
         # wraps after Dec 31
         elif end > year_end:
-            ax1.axvspan(start, min(year_end, n_days), alpha=alpha)
-            ax2.axvspan(start, min(year_end, n_days), alpha=alpha)
+            ax1.axvspan(start, min(year_end, cutoff), alpha=alpha)
+            ax2.axvspan(start, min(year_end, cutoff), alpha=alpha)
 
             wrap_end = end - year_end
             next_year_start = year_end
 
-            if next_year_start < n_days:
-                ax1.axvspan(next_year_start, min(next_year_start + wrap_end, n_days), alpha=alpha)
-                ax2.axvspan(next_year_start, min(next_year_start + wrap_end, n_days), alpha=alpha)
+            if next_year_start < cutoff:
+                ax1.axvspan(next_year_start, min(next_year_start + wrap_end, cutoff), alpha=alpha)
+                ax2.axvspan(next_year_start, min(next_year_start + wrap_end, cutoff), alpha=alpha)
 
         # no wrapping
         else:
-            ax1.axvspan(start, end, alpha=alpha)
-            ax2.axvspan(start, end, alpha=alpha)
-
-
-def plot_error(history, sample=[]):
-    t = range(len(history["Hi"]))
-
-    fig, (ax1, ax2) = plt.subplots(
-        1, 2,
-        constrained_layout=True,
-        figsize = (14,7)
-    )
-
-    # -----------------
-    # individual counts
-    # -----------------
-
-    ax1.plot(t, history["Hi"], label="Hibernating (Hi)")
-    ax1.plot(t, history["Ot"], label="Non-hibernating, non-infected, non-immune (Ot)")
-    ax1.plot(t, history["In"], label="Infected (In)")
-    ax1.plot(t, history["Im"], label="Immune (Im)")
-    ax1.plot(t, history["De"], label="Deceased (De)")
-
-    ax1.set_xlabel("Time step")
-    ax1.set_ylabel("Population count")
-    ax1.set_title("Bat Population Dynamics (Boolean Network)")
-    ax1.legend()
-    ax1.grid()
-
-    # ------------
-    # total counts
-    # ------------
-
-    total = np.array(history["Hi"]) + np.array(history["Ot"]) + np.array(history["In"]) + np.array(history["Im"])
-
-    ax2.plot(t, total, label="Total tricolored bats")
-
-    # if there's sample data, compare:
-    if len(sample) != 0:
-        obs_times = sample[0]; obs_Ot = sample[1]
-        ax2.scatter(obs_times, obs_Ot, label="Observed total tricolored bats")
-
-    ax2.set_xlabel("Time step")
-    ax2.set_ylabel("Population count")
-    ax2.set_title("Bat Population Dynamics (Boolean Network)")
-    ax2.legend()
-    ax2.grid()
-
-    plt.tight_layout()
-    plt.grid(axis='x')
-    plt.show()
+            ax1.axvspan(start, min(end, cutoff), alpha=alpha)
+            ax2.axvspan(start, min(end, cutoff), alpha=alpha)
