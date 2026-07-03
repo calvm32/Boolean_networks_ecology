@@ -129,7 +129,6 @@ def main():
     fig.tight_layout()
     plt.savefig("figures/invasion_scenarios.pdf", bbox_inches="tight", dpi=300)
     plt.show()
-    plt.savefig('invasion_plot.pdf', format='pdf', bbox_inches='tight')
 
     history = simulate(make_initial_state(Hi_list, frac), time, parameters=parameters)
     plot_history_highlights(history, win_length)

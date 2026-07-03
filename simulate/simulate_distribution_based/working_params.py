@@ -32,7 +32,6 @@ inf_alpha, inf_beta = 5, 2                  # infected variables for beta distri
                                             # high: alpha = 5, beta = 2
 
 delta = 0.05                                # P. destructans decay rate, considered in [0.005, 0.03]
-
 # DEATH OR RECOVERY PATHWAYS
 T_inf = 30                                  # approximate time in dayseach bat spends infirm before recovering or dying, 
                                             # considered in [10, 40]
@@ -66,15 +65,15 @@ res_gain = 0.02                             # resistance AFTER recovery
 
 # -----------------
 # -----------------
-# NOTICE:
-# -----------------
-# -----------------
 
+"""
 
-# ABOVE DATE BASED ON THIS RUN:
-# New best: 100.08333333333334    {'inf_alpha': 5, 'inf_beta': 2, 'delta': 0.05, 'T_inf': 30,
-#                                  'T_TBD': 4.1, 'T_AD': 0.06145833333333333, 
-#                                  'T_seasonal': 40.40106604493598, 'win_length': 95.48630043980653,
-#                                  'win_start': 297.13823328979703, 'lambda_win': 0,
-#                                  'lambda_sum': 0.0001394257909475772, 'immunity_period': 0,
-#                                  'birth_resistance_max': 0, 'recover_resistance_max': 0.02}
+New best: 379.54166666666663    'T_seasonal': 53.03145102211801, 'win_length': 171.8073545805218, 'win_start': 278.92671603576855, 'lambda_win': 0, 'lambda_sum': 0.00017711957391318124, 'res_gain': 0.02, 'res_max': 0.2, 'k_imm': 1, 'theta_imm': 1}
+New best: 146.33333333333334    'T_seasonal': 41.21787049830048, 'win_length': 190.3327411105248, 'win_start': 269.08553986430616, 'lambda_win': 0, 'lambda_sum': 0.00015441617617432672, 'res_gain': 0.02, 'res_max': 0.2, 'k_imm': 1, 'theta_imm': 1}
+New best: 132.375               'T_seasonal': 43.460387151848266, 'win_length': 197.57926135060328, 'win_start': 261.508501689169, 'lambda_win': 0, 'lambda_sum': 0.0001676431683071884, 'res_gain': 0.02, 'res_max': 0.2, 'k_imm': 1, 'theta_imm': 1}
+New best: 127.54166             'T_seasonal': np.float64(47.40178558756894), 'win_length': np.float64(170.03850624815655), 'win_start': np.float64(287.8314551381096), 'lambda_sum': np.float64(0.0001605245540170072)}
+New best: 116.375               'T_seasonal': np.float64(59.21406004055691), 'win_length': np.float64(161.27930678762138), 'win_start': np.float64(289.9954597398685), 'lambda_sum': np.float64(0.0002889506520826776)}
+New best: 131.08333333333331    'T_seasonal': 58.75370628407185, 'win_length': 155.30960681369473, 'win_start': 293.137360917269, 'lambda_win': 0, 'lambda_sum': 0.000271915055457734, 'res_gain': 0.02, 'res_max': 0.2, 'k_imm': 1, 'theta_imm': 1}
+New best: 151.70833333333331    'T_seasonal': 59.21406004055691, 'win_length': 161.27930678762138, 'win_start': 289.9954597398685, 'lambda_win': 0, 'lambda_sum': 0.0002889506520826776, 'res_gain': 0.02, 'res_max': 0.2, 'k_imm': 1, 'theta_imm': 1}
+
+"""

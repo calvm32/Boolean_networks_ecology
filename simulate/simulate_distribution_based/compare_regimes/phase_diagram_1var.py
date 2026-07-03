@@ -141,8 +141,8 @@ def main():
         axes[i].set_ylabel(f"Population at day {time}")
 
     plt.tight_layout()
+    plt.savefig('figures/phase_diagram1.pdf', format='pdf', bbox_inches='tight')
     plt.show()
-    plt.savefig('phase_diagram1.pdf', format='pdf', bbox_inches='tight')
 
 if __name__ == "__main__":
     main()

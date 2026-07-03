@@ -203,8 +203,8 @@ def main():
     )
 
     plt.savefig(f"3D_bifurcations_{title}.png", dpi=200)
+    plt.savefig('figures/phase_diagram2.pdf', format='pdf', bbox_inches='tight')
     plt.show()
-    plt.savefig('phase_diagram2.pdf', format='pdf', bbox_inches='tight')
 
 if __name__ == "__main__":
     main()

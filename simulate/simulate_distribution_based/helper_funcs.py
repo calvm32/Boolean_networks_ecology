@@ -190,8 +190,8 @@ def plot_history(history, sample=[]):
 
     plt.tight_layout()
     plt.grid(axis='x')
+    plt.savefig('figures/history_plot.pdf', format='pdf', bbox_inches='tight')
     plt.show()
-    plt.savefig('history_plot.pdf', format='pdf', bbox_inches='tight')
 
 
 def plot_history_highlights(history, win_length, win_start, T_seasonal, sample=[], xlim_max=None):
@@ -250,8 +250,8 @@ def plot_history_highlights(history, win_length, win_start, T_seasonal, sample=[
 
     plt.tight_layout()
     plt.grid(axis='x')
+    plt.savefig('figures/history_plot_highlighted.pdf', format='pdf', bbox_inches='tight')
     plt.show()
-    plt.savefig('history_plot_highlighted.pdf', format='pdf', bbox_inches='tight')
 
 
 def plot_error(history, win_length, win_start, T_seasonal, sample=[], xlim_max=None):
@@ -305,8 +305,8 @@ def plot_error(history, win_length, win_start, T_seasonal, sample=[], xlim_max=N
 
     plt.tight_layout()
     plt.grid(axis='x')
+    plt.savefig('figures/history_error_plot.pdf', format='pdf', bbox_inches='tight')
     plt.show()
-    plt.savefig('history_error_plot.pdf', format='pdf', bbox_inches='tight')
 
 
 def highlighter(n_years, cutoff, days_per_year, win_start, win_length, ax1, ax2, alpha):

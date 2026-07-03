@@ -84,10 +84,10 @@ FIXED_PARAMS = {
 # ------------------------------------
 
 BOUNDS = {
-    "T_seasonal": (20.0, 60.0),
-    "win_length": (80.0, 200.0),
-    "win_start": (230.0, 290.0),
-    "lambda_sum": (0.00010, 0.00030)
+    "T_seasonal": (40.0, 80.0),
+    "win_length": (120.0, 200.0),
+    "win_start": (230.0, 320.0),
+    "lambda_sum": (0.00023, 0.00030)
 }
 PARAM_KEYS = list(BOUNDS.keys())
 NUM_DIMS = len(PARAM_KEYS)

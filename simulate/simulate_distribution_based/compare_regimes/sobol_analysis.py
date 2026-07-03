@@ -178,9 +178,8 @@ def main():
     plot_sobol(Si_M, problem, "Sensitivity: Final Mortality (M_final)",   axes[2])
     fig.suptitle("Sobol' Global Sensitivity Analysis", fontsize=13, y=1.02)
     fig.tight_layout()
-    plt.savefig("figures/sobol_indices.pdf", bbox_inches="tight", dpi=300)
+    plt.savefig("figures/sobol_analysis_plot.pdf", bbox_inches="tight", dpi=300)
     plt.show()
-    plt.savefig('sobol_analysis_plot.pdf', format='pdf', bbox_inches='tight')
 
 
 if __name__ == "__main__":

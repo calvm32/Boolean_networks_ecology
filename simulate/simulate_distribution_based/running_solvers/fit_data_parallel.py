@@ -99,12 +99,12 @@ T_seasonal = 59                             # CONFIDENT # approx. transition tim
                                             # considered in 10-40 maybe?
 win_length = 161                            # CONFIDENT # length of winter season in days in Nebraska mines
                                             # considered in 5-7 months, depending on transition period T_seasonal
-win_start = 290                             # CONFIDENT # approximate day in calendar year that Te : 1 -> 0
+win_start = 289                             # CONFIDENT # approximate day in calendar year that Te : 1 -> 0
 
 # BAT IN/OUT FLUX
 lambda_win = 0                              # CONFIDENT # population growth value during winter, 
                                             # considered in [0, 0.01] 
-lambda_sum = 0.00028895065208               # CONFIDENT # population growth value during summer,
+lambda_sum = 0.00028895065208267            # CONFIDENT # population growth value during summer,
                                             # considered in [0.01, 0.1] 
 
 # -----------------
@@ -199,15 +199,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-"""
-
-New best: 379.54166666666663    {'inf_alpha': 5, 'inf_beta': 2, 'delta': 0.05, 'T_inf': 30, 'T_TBD': 4.1, 'T_AD': 0.06145833333333333, 'T_seasonal': 53.03145102211801, 'win_length': 171.8073545805218, 'win_start': 278.92671603576855, 'lambda_win': 0, 'lambda_sum': 0.00017711957391318124, 'res_gain': 0.02, 'res_max': 0.2, 'k_imm': 1, 'theta_imm': 1}
-New best: 146.33333333333334    {'inf_alpha': 5, 'inf_beta': 2, 'delta': 0.05, 'T_inf': 30, 'T_TBD': 4.1, 'T_AD': 0.06145833333333333, 'T_seasonal': 41.21787049830048, 'win_length': 190.3327411105248, 'win_start': 269.08553986430616, 'lambda_win': 0, 'lambda_sum': 0.00015441617617432672, 'res_gain': 0.02, 'res_max': 0.2, 'k_imm': 1, 'theta_imm': 1}
-New best: 132.375               {'inf_alpha': 5, 'inf_beta': 2, 'delta': 0.05, 'T_inf': 30, 'T_TBD': 4.1, 'T_AD': 0.06145833333333333, 'T_seasonal': 43.460387151848266, 'win_length': 197.57926135060328, 'win_start': 261.508501689169, 'lambda_win': 0, 'lambda_sum': 0.0001676431683071884, 'res_gain': 0.02, 'res_max': 0.2, 'k_imm': 1, 'theta_imm': 1}
-New best: 127.54166             {'inf_alpha': 5, 'inf_beta': 2, 'delta': 0.05, 'T_inf': 30, 'T_TBD': 4.1, 'T_AD': 0.06145833333333333, 'T_seasonal': np.float64(47.40178558756894), 'win_length': np.float64(170.03850624815655), 'win_start': np.float64(287.8314551381096), 'lambda_sum': np.float64(0.0001605245540170072)}
-New best: 116.375               {'inf_alpha': 5, 'inf_beta': 2, 'delta': 0.05, 'T_inf': 30, 'T_TBD': 4.1, 'T_AD': 0.06145833333333333, 'T_seasonal': np.float64(59.21406004055691), 'win_length': np.float64(161.27930678762138), 'win_start': np.float64(289.9954597398685), 'lambda_sum': np.float64(0.0002889506520826776)}
-New best: 131.08333333333331    {'inf_alpha': 5, 'inf_beta': 2, 'delta': 0.05, 'T_inf': 30, 'T_TBD': 4.1, 'T_AD': 0.06145833333333333, 'T_seasonal': 58.75370628407185, 'win_length': 155.30960681369473, 'win_start': 293.137360917269, 'lambda_win': 0, 'lambda_sum': 0.000271915055457734, 'res_gain': 0.02, 'res_max': 0.2, 'k_imm': 1, 'theta_imm': 1}
-New best: 151.70833333333331    {'inf_alpha': 5, 'inf_beta': 2, 'delta': 0.05, 'T_inf': 30, 'T_TBD': 4.1, 'T_AD': 0.06145833333333333, 'T_seasonal': 59.21406004055691, 'win_length': 161.27930678762138, 'win_start': 289.9954597398685, 'lambda_win': 0, 'lambda_sum': 0.0002889506520826776, 'res_gain': 0.02, 'res_max': 0.2, 'k_imm': 1, 'theta_imm': 1}
-
-"""
