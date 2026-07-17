@@ -7,7 +7,7 @@ from simulate.simulate_distribution_based.rules import *
 from simulate.simulate_distribution_based.simulate import *
 from simulate.data import *
 
-num_runs = 100
+num_runs = 150
 
 # --------------------
 # set up control group

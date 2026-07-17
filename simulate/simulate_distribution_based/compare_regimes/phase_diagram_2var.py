@@ -109,29 +109,9 @@ times_list = [180, 365, 3*365, 10*365, 20*365, 40*365]
 num_params = 10
 
 # dead vs inf
-param_change = ["p_dead", "p_infected"]
-parameters_list = [np.linspace(0.001,0.1,num_params), np.linspace(0.01,1.0,num_params)]
-title = "deadvinf"
-
-# dead vs rec
-# param_change = ["p_dead", "p_recover"]
-# parameters_list = [np.linspace(0.001,0.1,num_params), np.linspace(0.001,1.0,num_params)]
-# title = "deadvrec"
-
-# inf vs rec
-# param_change = ["p_infected", "p_recover"]
-# parameters_list = [np.linspace(0.001,0.1,num_params), np.linspace(0.001,1.0,num_params)]
-# title = "infvrec"
-
-# inf v immune
-# param_change = ["p_infected", "T_im"]
-# parameters_list = [np.linspace(0.001,0.1,num_params), np.linspace(0,130,num_params)]
-# title = "infvimm"
-
-# inf v contact rate
-# param_change = ["p_infected", "contact_rate"]
-# parameters_list = [np.linspace(0.001,0.1,num_params), np.linspace(0,130,num_params)]
-# title = "infvcon"
+param_change = ["inf_alpha", "inf_beta"]
+parameters_list = [np.linspace(0.1,10,num_params), np.linspace(0.1,10,num_params)]
+title = "inf_alphavbeta"
 
 # --------------
 # actual testing
@@ -158,12 +138,12 @@ def main():
         for j in range(len(parameters_list[1])):
             parameters[param_change[1]] = parameters_list[1][j]
 
-            history = simulate(make_initial_state(Hi_list, fraction_infected), steps=times_list[-1], parameters=parameters)
+            history = simulate(make_initial_state(Hi_list, fraction_infected), steps=times_list[-1], parameters=parameters, Print=False)
             total = np.array(history["Hi"]) + np.array(history["Ot"]) + np.array(history["In"]) + np.array(history["Im"])
 
             totals_list[i][j] = total
             if (i % 10 == 0) and (j % 10 == 0): # save some time
-                print(f"list ({i},{j})")
+                print(f"done w/ parameter ({i},{j})/({len(parameters_list[0])}x{len(parameters_list[1])})")
 
     rows = 2
     cols = len(times_list)// rows

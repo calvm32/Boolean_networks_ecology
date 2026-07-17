@@ -123,10 +123,10 @@ def main():
     for i in range(len(parameters_list)):
         parameters[param_change] = parameters_list[i]
 
-        history = simulate(make_initial_state(Hi_list, fraction_infected), steps=times_list[-1], parameters=parameters)
+        history = simulate(make_initial_state(Hi_list, fraction_infected), steps=times_list[-1], parameters=parameters, Print=False)
         total = np.array(history["Hi"]) + np.array(history["Ot"]) + np.array(history["In"]) + np.array(history["Im"])
         totals_list.append(total)
-        print(f"{i}/{len(parameters_list)}")
+        print(f"done w/ parameter {i}/{len(parameters_list)}")
 
     fig, axes = plt.subplots(nrows=2, ncols=3, figsize=(8, 10))
     axes = axes.ravel() # for iteration

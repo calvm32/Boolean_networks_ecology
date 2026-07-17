@@ -75,5 +75,6 @@ New best: 127.54166             'T_seasonal': np.float64(47.40178558756894), 'wi
 New best: 116.375               'T_seasonal': np.float64(59.21406004055691), 'win_length': np.float64(161.27930678762138), 'win_start': np.float64(289.9954597398685), 'lambda_sum': np.float64(0.0002889506520826776)}
 New best: 131.08333333333331    'T_seasonal': 58.75370628407185, 'win_length': 155.30960681369473, 'win_start': 293.137360917269, 'lambda_win': 0, 'lambda_sum': 0.000271915055457734, 'res_gain': 0.02, 'res_max': 0.2, 'k_imm': 1, 'theta_imm': 1}
 New best: 151.70833333333331    'T_seasonal': 59.21406004055691, 'win_length': 161.27930678762138, 'win_start': 289.9954597398685, 'lambda_win': 0, 'lambda_sum': 0.0002889506520826776, 'res_gain': 0.02, 'res_max': 0.2, 'k_imm': 1, 'theta_imm': 1}
+New best: 125.08333333333334    'T_seasonal': 64.81388922827558, 'win_length': 160.72298105475397, 'win_start': 287.58701553750285, 'lambda_win': 0, 'lambda_sum': 0.0002714267087703034, 'res_gain': 0.02, 'res_max': 0.2, 'k_imm': 1, 'theta_imm': 1}
 
 """

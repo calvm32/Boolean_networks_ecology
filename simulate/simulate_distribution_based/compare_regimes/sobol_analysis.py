@@ -8,6 +8,8 @@ from simulate.simulate_distribution_based.helper_funcs import *
 from simulate.simulate_distribution_based.rules import *
 from simulate.simulate_distribution_based.simulate import *
 
+avg_over = 10
+
 def sample_params():                                                                                                                                     
     return {                                                                                                                                             
         "inf_alpha": inf_alpha,                                                                                               
@@ -101,11 +103,20 @@ res_gain = 0.02                             # resistance AFTER recovery
 # ----------
 
 time = 3650 # total days
-init_fractions = [0.01, 0.03, 0.05, 0.10]
 
 # ==========================================================================================================================
 # ==========================================================================================================================
 # ==========================================================================================================================
+
+# initialize accumulators
+history_avg_zeros = {
+    "Hi": np.zeros(time),
+    "Ot": np.zeros(time),
+    "In": np.zeros(time),
+    "Im": np.zeros(time),
+    "De": np.zeros(time),
+}
+
 
 def main():
 
@@ -142,12 +153,24 @@ def main():
             if name == "inf_alpha":
                 parameters[name] = max(1.0, val) # keep alpha > 1
 
-        hist = simulate(make_initial_state(Hi_list, fraction_infected, parameters["T_inf"]), time, parameters)
-        m = compute_metrics(hist, Hi_list)
+        history_avg = history_avg_zeros.copy()
+
+        for j in range(avg_over):
+
+            history = simulate(make_initial_state(Hi_list, fraction_infected), time, parameters, False)
+
+            for key in history_avg:
+                history_avg[key] += np.array(history[key])
+
+        # divide by number of runs for avg
+        for key in history_avg:
+            history_avg[key] /= avg_over    
+
+        m = compute_metrics(history_avg, Hi_list)
         Y_Pmax[i]   = m["P_max"]
         Y_Sfinal[i] = m["S_final"]
         Y_Mfinal[i] = m["M_final"]
-        if i % 100 == 0:
+        if i % 10 == 0:
             print(f"Sobol run {i}/{len(param_values)}")
 
     # analyze

@@ -5,6 +5,8 @@ from simulate.simulate_distribution_based.helper_funcs import *
 from simulate.simulate_distribution_based.rules import *
 from simulate.simulate_distribution_based.simulate import *
 
+avg_over = 20
+
 def sample_params():                                                                                                                                     
     return {                                                                                                                                             
         "inf_alpha": inf_alpha,                                                                                               
@@ -102,6 +104,14 @@ init_fractions = [0.01, 0.03, 0.05, 0.10]
 # ==========================================================================================================================
 # ==========================================================================================================================
 
+# initialize accumulators
+history_avg_zeros = {
+    "Hi": np.zeros(time),
+    "Ot": np.zeros(time),
+    "In": np.zeros(time),
+    "Im": np.zeros(time),
+    "De": np.zeros(time),
+}
 
 def main():
     parameters = sample_params()
@@ -111,8 +121,21 @@ def main():
     
     for idx, frac in enumerate(init_fractions):
 
-        hist = simulate(make_initial_state(Hi_list, frac), steps=time, parameters=parameters)
-        m = compute_metrics(hist, Hi_list)
+        history_avg = history_avg_zeros.copy()
+
+        for i in range(avg_over):
+
+            history = simulate(make_initial_state(Hi_list, frac), steps=time, parameters=parameters, Print=False)
+            for key in history_avg:
+                history_avg[key] += np.array(history[key])
+        
+            print(f"done w/ avg {i+1}/{avg_over} for idx {idx+1}/{len(init_fractions)}")
+
+        # divide by number of runs for avg
+        for key in history_avg:
+            history_avg[key] /= avg_over   
+        
+        m = compute_metrics(history_avg, Hi_list)
         t = np.arange(time)
         color = cmap(idx)
 
@@ -130,8 +153,8 @@ def main():
     plt.savefig("figures/invasion_scenarios.pdf", bbox_inches="tight", dpi=300)
     plt.show()
 
-    history = simulate(make_initial_state(Hi_list, frac), time, parameters=parameters)
-    plot_history_highlights(history, win_length)
+    # history = simulate(make_initial_state(Hi_list, frac), time, parameters=parameters)
+    # plot_history_highlights(history, win_length)
     
 
 if __name__ == "__main__":
