@@ -44,7 +44,8 @@ def sample_params():
         "res_gain": res_gain,                                                                                                              
         "res_max": res_max,                                                                                                    
         "k_imm": k_imm,   
-        "theta_imm": theta_imm,                                                                                             
+        "theta_imm": theta_imm,      
+        "disp_r": rand.uniform(0.1, 1000),                                                                                       
     }    
 
 # ==========================================================================================================================
@@ -122,25 +123,37 @@ res_gain = 0.02                             # resistance AFTER recovery
 
 time = 3650             # total days
 
+disp_r = 10             # dispersion parameter # ONLY USED FOR DATA FITTING
+
 # ==========================================================================================================================
 # ==========================================================================================================================
 # ==========================================================================================================================
     
+import numpy as np
+from scipy.special import gammaln
+
 def loss(parameters, runs=2):
     losses = []
+    r = parameters.get("disp_r")
 
     for _ in range(runs):
         sim = simulate(make_initial_state(Hi_list, fraction_infected), steps=max(obs_times)+1, parameters=parameters, Print=False)
 
-        error = 0.0
+        nll = 0.0
         for i, t in enumerate(obs_times):
-            pred_Hi = sim["Hi"][t]
-            #pred_In = sim["In"][t]
+            pred = sim["Hi"][t]
+            obs = obs_Hi[i]
 
-            error += (pred_Hi - obs_Hi[i])**2
-            #error += (pred_In - obs_In[i])**2
+            pred = max(pred, 1e-9) # remove log(0) domain errs if predicts extinction
+            p = r / (r + pred) # for variance = pred + (pred^2 / r)
 
-        losses.append(error / len(obs_times))
+            # log likelihood based on NB2
+            ll = (gammaln(obs + r) - gammaln(obs + 1) - gammaln(r) 
+                  + r * np.log(p) + obs * np.log(1 - p))
+            
+            nll -= ll # subtracted b/c we're trying to minimize
+
+        losses.append(nll)
 
     return np.mean(losses)
 

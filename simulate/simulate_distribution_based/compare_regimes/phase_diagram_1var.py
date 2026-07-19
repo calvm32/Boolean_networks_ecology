@@ -94,12 +94,6 @@ k_imm, theta_imm = 1, 1                     # number of days spent in recovery b
                                             # corresp. w/ Gamma(k_imm, theta_imm)
 res_gain = 0.02                             # resistance AFTER recovery
 
-# ----------
-# initialize
-# ----------
-
-init_fractions = [0.01, 0.03, 0.05, 0.10]
-
 # ----------------------------------
 # phase diagram comparison variables
 # ----------------------------------

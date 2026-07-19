@@ -254,7 +254,7 @@ def plot_history_highlights(history, win_length, win_start, T_seasonal, sample=[
     plt.show()
 
 
-def plot_error(history, win_length, win_start, T_seasonal, sample=[], xlim_max=None):
+def plot_residual_error(history, win_length, win_start, T_seasonal, sample=[], xlim_max=None):
     t = range(len(history["Hi"]))
     n_days = len(t)
 
@@ -299,6 +299,66 @@ def plot_error(history, win_length, win_start, T_seasonal, sample=[], xlim_max=N
     ax2.set_title("Residual Error in Hibernating Population (Hi)")
     ax2.legend()
     ax2.grid()
+
+    highlighter(n_years, cutoff, days_per_year, win_start, win_length_padded, ax1, ax2, 0.2)
+
+    ax1.set_xlim(0, xlim_max)
+    ax2.set_xlim(0, xlim_max)
+
+    plt.tight_layout()
+    plt.grid(axis='x')
+    plt.savefig('figures/history_error_plot.pdf', format='pdf', bbox_inches='tight')
+    plt.show()
+
+
+def plot_MAPE(history, win_length, win_start, T_seasonal, sample=[], xlim_max=None):
+    # MAPE = mean absolute percentage error
+    t = range(len(history["Hi"]))
+    n_days = len(t)
+
+    if xlim_max is None:
+        if len(sample) != 0:
+            xlim_max = min(max(sample[0]), n_days - 1)
+        else:
+            xlim_max = n_days - 1
+
+    fig, (ax1, ax2) = plt.subplots(
+        1, 2,
+        constrained_layout=True,
+        figsize=(14, 7)
+    )
+
+    ax1.plot(t, history["Hi"], label="Hibernating (Hi)")
+    ax1.plot(t, history["Ot"], label="Non-hibernating, non-infected, non-immune (Ot)")
+    # ax1.plot(t, history["In"], label="Infected (In)")
+    # ax1.plot(t, history["Im"], label="Immune (Im)")
+    # ax1.plot(t, history["De"], label="Deceased (De)")
+
+    total = np.array(history["Hi"]) + np.array(history["Ot"]) + np.array(history["In"]) + np.array(history["Im"])
+    ax1.plot(t, total, label="Total tricolored bats", color='black', linewidth=2)
+
+    ax1.set_xlabel("Time step")
+    ax1.set_ylabel("Population count")
+    ax1.set_title("Bat Population Dynamics")
+    ax1.legend()
+    ax1.grid()
+
+    if len(sample) != 0:
+        obs_times, obs_Hi = sample[0], sample[1]
+
+        fitted_Hi = np.array(history["Hi"])
+        diff = [obs_Hi[i] - fitted_Hi[t_val] for i, t_val in enumerate(obs_times)]
+
+        ax2.plot(obs_times, diff, marker='o', linestyle='-', label="Observed − Fitted (Hi)")
+        ax2.axhline(0, color='black', linewidth=1, linestyle='--')
+
+    ax2.set_xlabel("Time step")
+    ax2.set_ylabel("Observed − Fitted (Hi)")
+    ax2.set_title("Residual Error in Hibernating Population (Hi)")
+    ax2.legend()
+    ax2.grid()
+
+    highlighter(n_years, cutoff, days_per_year, win_start, win_length_padded, ax1, ax2, 0.2)
 
     ax1.set_xlim(0, xlim_max)
     ax2.set_xlim(0, xlim_max)
