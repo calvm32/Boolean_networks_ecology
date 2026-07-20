@@ -23,7 +23,7 @@ def sample_params():
         "res_gain": res_gain,                                                                                                              
         "res_max": res_max,                                                                                                    
         "k_imm": k_imm,   
-        "theta_imm": theta_imm,                                                                                             
+        "theta_imm": theta_imm,
     }   
 
 # ==========================================================================================================================
@@ -120,12 +120,13 @@ def main():
     cmap = plt.cm.get_cmap("YlOrRd", len(init_fractions))
     
     for idx, frac in enumerate(init_fractions):
+        num_infected = int(Hi_list[i][0]*frac)
 
         history_avg = history_avg_zeros.copy()
 
         for i in range(avg_over):
 
-            history = simulate(make_initial_state(Hi_list, frac), steps=time, parameters=parameters, Print=False)
+            history = simulate(make_initial_state(Hi_list, num_infected), steps=time, parameters=parameters, Print=False)
             for key in history_avg:
                 history_avg[key] += np.array(history[key])
         
@@ -135,7 +136,7 @@ def main():
         for key in history_avg:
             history_avg[key] /= avg_over   
         
-        m = compute_metrics(history_avg, Hi_list)
+        m = compute_metrics(history_avg, Hi_list, num_infected)
         t = np.arange(time)
         color = cmap(idx)
 
@@ -153,9 +154,6 @@ def main():
     plt.savefig("figures/invasion_scenarios.pdf", bbox_inches="tight", dpi=300)
     plt.show()
 
-    # history = simulate(make_initial_state(Hi_list, frac), time, parameters=parameters)
-    # plot_history_highlights(history, win_length)
-    
 
 if __name__ == "__main__":
     main()

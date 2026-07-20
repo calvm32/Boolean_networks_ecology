@@ -23,7 +23,7 @@ def sample_params():
         "res_gain": res_gain,                                                                                                              
         "res_max": res_max,                                                                                                    
         "k_imm": k_imm,   
-        "theta_imm": theta_imm,                                                                                             
+        "theta_imm": theta_imm,                                                                                       
     }   
 
 # ==========================================================================================================================
@@ -48,6 +48,10 @@ Hi_list = [[tricolor_num, tricolor_cluster_sizeMIN, tricolor_cluster_sizeMAX],
            [bigbrown_num, bigbrown_cluster_sizeMIN, bigbrown_cluster_sizeMAX]] 
 
 fraction_infected = 0.01 # in [0, 1]
+
+num_infected = 0 # DO NOT CHANGE
+for i in range(len(Hi_list)):
+    num_infected += int(Hi_list[i][0]*fraction_infected) # DO NOT CHANGE
 
 # NOTICE : the remaining populations (Ot, Im) all start with 0 inhabitants
 # NOTICE : resistance starts at 0 for every bat
@@ -132,7 +136,7 @@ def main():
         for j in range(len(parameters_list[1])):
             parameters[param_change[1]] = parameters_list[1][j]
 
-            history = simulate(make_initial_state(Hi_list, fraction_infected), steps=times_list[-1], parameters=parameters, Print=False)
+            history = simulate(make_initial_state(Hi_list, num_infected), steps=times_list[-1], parameters=parameters, Print=False)
             total = np.array(history["Hi"]) + np.array(history["Ot"]) + np.array(history["In"]) + np.array(history["Im"])
 
             totals_list[i][j] = total

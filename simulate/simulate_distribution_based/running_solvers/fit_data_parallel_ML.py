@@ -8,6 +8,11 @@ from simulate.simulate_distribution_based.rules import *
 from simulate.simulate_distribution_based.simulate import *
 from simulate.data import *
 
+"""
+NOTICE: this code was generated using an LLM, but neither its contents nor
+any result of running it was used in the manuscript submitted for publication
+"""
+
 # --------------------
 # set up control group
 # --------------------
@@ -50,6 +55,10 @@ Hi_list = [[tricolor_num, tricolor_cluster_sizeMIN, tricolor_cluster_sizeMAX],
 
 fraction_infected = 0  
 
+num_infected = 0 # DO NOT CHANGE
+for i in range(len(Hi_list)):
+    num_infected += int(Hi_list[i][0]*fraction_infected) # DO NOT CHANGE
+
 # -----------------------------------
 # system-governing parameters (FIXED)
 # -----------------------------------
@@ -89,6 +98,7 @@ BOUNDS = {
     "win_start": (230.0, 320.0),
     "lambda_sum": (0.00023, 0.00030)
 }
+
 PARAM_KEYS = list(BOUNDS.keys())
 NUM_DIMS = len(PARAM_KEYS)
 
@@ -107,7 +117,7 @@ def loss(parameters, runs=5):
     losses = []
 
     for _ in range(runs):
-        sim = simulate(make_initial_state(Hi_list, fraction_infected), steps=max(obs_times)+1, parameters=parameters, Print=False)
+        sim = simulate(make_initial_state(Hi_list, num_infected), steps=max(obs_times)+1, parameters=parameters, Print=False)
 
         error = 0.0
         for i, t in enumerate(obs_times):
@@ -238,7 +248,7 @@ def main():
         print("=============================================\n")
 
         # Run one final simulation with the best parameters and plot it
-        best_sim = simulate(make_initial_state(Hi_list, fraction_infected), steps=4500, parameters=best_final_params, Print=False)
+        best_sim = simulate(make_initial_state(Hi_list, num_infected), steps=4500, parameters=best_final_params, Print=False)
         plot_history_highlights(best_sim, 
                                 best_final_params['win_length'], 
                                 best_final_params['win_start'], 

@@ -21,7 +21,7 @@ def sample_params():
         "res_gain": res_gain,                                                                                                              
         "res_max": res_max,                                                                                                    
         "k_imm": k_imm,   
-        "theta_imm": theta_imm,                                                                                             
+        "theta_imm": theta_imm,                                                                                       
     }    
 
 # ==========================================================================================================================
@@ -46,6 +46,10 @@ Hi_list = [[tricolor_num, tricolor_cluster_sizeMIN, tricolor_cluster_sizeMAX],
            [bigbrown_num, bigbrown_cluster_sizeMIN, bigbrown_cluster_sizeMAX]] 
 
 fraction_infected = 0   # choose in [0, 1]
+
+num_infected = 0 # DO NOT CHANGE
+for i in range(len(Hi_list)):
+    num_infected += int(Hi_list[i][0]*fraction_infected) # DO NOT CHANGE
 
 # NOTICE : the remaining populations (Ot, Im) all start with 0 inhabitants
 # NOTICE : resistance starts at 0 for every bat
@@ -106,7 +110,7 @@ time = 365             # total days
 def main():
     parameters = sample_params()
 
-    history = simulate(make_initial_state(Hi_list, fraction_infected), steps=time, parameters=parameters)
+    history = simulate(make_initial_state(Hi_list, num_infected), steps=time, parameters=parameters)
     plot_history_highlights(history, win_length, win_start, T_seasonal)
 
 if __name__ == "__main__":

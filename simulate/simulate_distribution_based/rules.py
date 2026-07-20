@@ -39,6 +39,7 @@ def update_individuals(state, env, parameters, t):
     T_inf, T_TBD, T_AD, T_seasonal, win_length, win_start = parameters["T_inf"], parameters["T_TBD"], parameters["T_AD"], parameters["T_seasonal"], parameters["win_length"], parameters["win_start"]
     lambda_win, lambda_sum = parameters["lambda_win"], parameters["lambda_sum"]
     res_gain, res_max, k_imm, theta_imm = parameters["res_gain"], parameters["res_max"], parameters["k_imm"], parameters["theta_imm"]
+    secondary_cases = state["SC"]
 
     # go over OLD STATE
     Hi_old = state["Hi"]
@@ -83,11 +84,14 @@ def update_individuals(state, env, parameters, t):
     else:
         p_seasonal = 1/(T_seasonal-d)
 
+    active_inf = len(In_old)
+    active_IC = sum(1 for bat in In_old if bat[6] == 1)
+
     # ---------
     # Update Hi
     # ---------
     for i in range(len(Hi_old)):
-        Hi, res_num, cluster_num, _, _, _ = state["Hi"][i]
+        Hi, res_num, cluster_num, _, _, _, _ = state["Hi"][i]
         r = rand.uniform(0,1)
 
         # bat-to-bat contact WNS exposure
@@ -111,19 +115,40 @@ def update_individuals(state, env, parameters, t):
         p_bouts = 1/T_TBD if T_AD >= 1 else 0
 
         if (Hi and Te == 0 and r < p_infected):
-            In_next.append([1, res_num, cluster_num, mu_i, 0, 0])
+
+            # handle absolutes to prevent np.log(0) errors
+            if p_bat == 1 and p_env == 1:
+                prob_from_bat = 0.5
+            elif p_bat == 1:
+                prob_from_bat = 1.0
+            elif p_env == 1:
+                prob_from_bat = 0.0
+            else:
+                # separate bat vs. env transmission cases. use "continuous competing risks" approximation 
+                # to determine likelihood of p_bat being the transmissio mechanism 
+                # GIVEN that the transmission already occurred
+                prob_from_bat = np.log(1 - p_bat) / (np.log(1 - p_bat) + np.log(1 - p_env))
+
+                # IF infection came from a bat, attribute it to an index case based on proportion
+                if rand.uniform(0,1) < prob_from_bat and active_inf > 0:
+                    prob_infector_is_index = active_IC / active_inf
+                    if rand.uniform(0,1) < prob_infector_is_index:
+                        secondary_cases += 1
+                        
+            In_next.append([1, res_num, cluster_num, mu_i, 0, 0, 0])
+
         elif not Te and Hi and r <= p_bouts:
-            Ot_next.append([1, res_num, cluster_num, 0, 1, 0]) # mark [...,1] to signify next hibernating rule is p_bouts and not p_seasonal
+            Ot_next.append([1, res_num, cluster_num, 0, 1, 0, 0]) # mark [...,1] to signify next hibernating rule is p_bouts and not p_seasonal
         elif Te and Hi and r <= p_seasonal:
-            Ot_next.append([1, res_num, cluster_num, 0, 0, 0]) 
+            Ot_next.append([1, res_num, cluster_num, 0, 0, 0, 0]) 
         else:
-            Hi_next.append([Hi, res_num, cluster_num, 0, 0, 0])
+            Hi_next.append([Hi, res_num, cluster_num, 0, 0, 0, 0])
 
     # ----------
     # Update Ot
     # ----------
     for i in range(len(Ot_old)):
-        Ot, res_num, cluster_num, _, check, _ = state["Ot"][i]
+        Ot, res_num, cluster_num, _, check, _, _ = state["Ot"][i]
         r = rand.uniform(0, 1)
 
         # bout hibernation
@@ -133,17 +158,17 @@ def update_individuals(state, env, parameters, t):
         if Ot and not Te and not Re:
             De += 1
         elif not Te and Ot and check and r <= p_bouts:
-            Hi_next.append([1, res_num, cluster_num, 0, 0, 0]) 
+            Hi_next.append([1, res_num, cluster_num, 0, 0, 0, 0]) 
         elif not Te and Ot and r <= p_seasonal:
-            Hi_next.append([1, res_num, cluster_num, 0, 0, 0]) 
+            Hi_next.append([1, res_num, cluster_num, 0, 0, 0, 0]) 
         else:
-            Ot_next.append([Ot, res_num, cluster_num, 0, 0, 0])
+            Ot_next.append([Ot, res_num, cluster_num, 0, 0, 0, 0])
 
     # ---------
     # Update In
     # ---------
     for i in range(len(In_old)):
-        In, res_num, cluster_num, mu_i, _, _ = state["In"][i]
+        In, res_num, cluster_num, mu_i, _, _, is_IC = state["In"][i]
         r1 = rand.uniform(0, 1)
         r2 = rand.uniform(0, 1)
 
@@ -158,24 +183,24 @@ def update_individuals(state, env, parameters, t):
         elif In and r1 <= p_dead:
             De += 1
         elif In and r2 <= p_recover:
-            Im_next.append([In, res_num, cluster_num, 0, 0, T_im]) # start recovery counter
+            Im_next.append([In, res_num, cluster_num, 0, 0, T_im, 0]) # start recovery counter
         else:
-            In_next.append([In, res_num, cluster_num, 0, 0, 0])
+            In_next.append([In, res_num, cluster_num, 0, 0, 0, is_IC]) # track index cases (IC)
 
     # ---------
     # Update Im
     # ---------
     for i in range(len(Im_old)):
-        In, res_num, cluster_num, _, _, T_im_i = state["Im"][i]
+        In, res_num, cluster_num, _, _, T_im_i, _ = state["Im"][i]
 
         if T_im_i <= 0:
             # immunity improves with infection
             new_res_num = res_num + res_gain*(1-res_num)
             new_res_num = max(0, min(1, new_res_num))
 
-            Hi_next.append([In, new_res_num, cluster_num, 0, 0, 0]) # return to hibernation
+            Hi_next.append([In, new_res_num, cluster_num, 0, 0, 0, 0]) # return to hibernation
         else:
-            Im_next.append([In, res_num, cluster_num, 0, 0, T_im_i - 1])
+            Im_next.append([In, res_num, cluster_num, 0, 0, T_im_i - 1, 0])
 
     # --------------------
     # Calculate net change
@@ -183,18 +208,18 @@ def update_individuals(state, env, parameters, t):
     parents = state["Ot"] + state["Im"]
     for parent in parents:
         r = rand.uniform(0,1)
-        _, parent_res_num, cluster_num, _, _, _ = parent
+        _, parent_res_num, cluster_num, _, _, _, _ = parent
 
         if Te and r <= p_netchange:
             child_res_num = parent_res_num + rand.normalvariate(0, res_max)
             child_res_num = max(0, min(1, child_res_num))
 
-            Ot_next.append([1, child_res_num, cluster_num, 0, 0, 0])
+            Ot_next.append([1, child_res_num, cluster_num, 0, 0, 0, 0])
         elif not Te and r <= p_netchange:
             child_res_num = parent_res_num + rand.normalvariate(0, res_max)
             child_res_num = max(0, min(1, child_res_num))
 
-            Ot_next.append([1, child_res_num, cluster_num, 0, 0, 0])
+            Ot_next.append([1, child_res_num, cluster_num, 0, 0, 0, 0])
         
     return {
         "Hi": Hi_next,
@@ -202,4 +227,5 @@ def update_individuals(state, env, parameters, t):
         "In": In_next,
         "Im": Im_next,
         "De": De,
+        "SC": secondary_cases
     }

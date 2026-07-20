@@ -6,29 +6,30 @@ from simulate.simulate_distribution_based.rules import *
 # setup before each run
 # ---------------------
 
-def make_initial_state(Hi_list, fraction_infected):
+def make_initial_state(Hi_list, num_infected):
     # NOTICE : each inhabitant node contains the following information:
     # [ ON/OFF, 
     #   resistance number AKA res_num, 
     #   clustering number AKA mu_i, 
     #   days left infirm, 
     #   0 for just entered hibernation OR 1 for exited hibernation at least once (to track arousal periods),
-    #   days left immune
+    #   days left immune,
+    #   1 if that bat was an "index case", i.e. first infected bats introduced. used for calculating R0
     # ]
     
     empty_pop = []
 
-    return {
+    return{
         "Hi": [
-                [1, 0, rand.uniform(Hi_list[i][1], Hi_list[i][2]), 0, 0, 0]
+                [1, 0, rand.uniform(Hi_list[i][1], Hi_list[i][2]), 0, 0, 0, 0]
                 for i in range(len(Hi_list))
-                for _ in range(Hi_list[i][0] - int(Hi_list[i][0]*fraction_infected))
+                for _ in range(Hi_list[i][0] - num_infected)
               ],
         "Ot": empty_pop.copy(),
         "In": [
-                [1, 0, rand.uniform(Hi_list[i][1], Hi_list[i][2]), 0, 0, 0]
+                [1, 0, rand.uniform(Hi_list[i][1], Hi_list[i][2]), 0, 0, 0, 1]
                 for i in range(len(Hi_list))
-                for _ in range(int(Hi_list[i][0]*fraction_infected))
+                for _ in range(num_infected)
               ],
         "Im": empty_pop.copy(),
         "De": 0, # only need total numbers of dead
@@ -36,50 +37,14 @@ def make_initial_state(Hi_list, fraction_infected):
         "Te": 0,
         "Hu": 0,
         "PD": 0,
+        "SC": 0, # SECONDARY cases, used to calculate R0
     }
 
-# ----------------------------------------
-# computing individaul & population values
-# ----------------------------------------
+# -------------------------------------------------------
+# metrics used for measuring data, e.g. in Sobol analysis
+# -------------------------------------------------------
 
-def step(state, parameters, t):
-    agg = aggregate(state)
-
-    env_next = update_environment(state, agg, parameters, t)
-    pop_next = update_individuals(state, {**state, **env_next}, parameters, t)
-
-    return {**state, **env_next, **pop_next}
-    
-def aggregate(state):
-    return {
-        "Hi_any": len(state["Hi"]) > 0,
-        "Ot_any": len(state["Ot"]) > 0,
-        "In_any": len(state["In"]) > 0,
-        "Im_any": len(state["Im"]) > 0,
-        "Hi_sum": len(state["Hi"]),
-        "Ot_sum": len(state["Ot"]),
-        "In_sum": len(state["In"]),
-        "Im_sum": len(state["Im"]),
-    }
-
-def count(state):
-    return {
-        "Hi": len(state["Hi"]),
-        "Ot": len(state["Ot"]),
-        "In": len(state["In"]),
-        "Im": len(state["Im"]),
-        "De": state["De"],
-    }
-
-def perturb(params, keys, scale=0.15):
-    new = params.copy()
-    for k in keys:
-        val = params[k]
-        if val > 0:
-            new[k] = max(0, val + np.random.normal(0, scale * val))
-    return new
-
-def compute_metrics(history, Hi_list):
+def compute_metrics(history, Hi_list, num_infected):
     
     N0 = 0 # total pop
     for i in range(len(Hi_list)):
@@ -96,48 +61,62 @@ def compute_metrics(history, Hi_list):
     N_max = alive.max() # max population ever reached
     N_final = alive[-1] # final pop
 
-    # prevalence: P(t) = In(t) / N(t)
+    # ----------------------------------
+    # 1. prevalence: P(t) = In(t) / N(t)
+    # ----------------------------------
     with np.errstate(invalid='ignore', divide='ignore'):
         P = np.where(alive > 0, np.array(history["In"]) / alive, 0.0)
 
-    P_max = P.max()            # peak prevalence
-    T_Pmax = int(np.argmax(P)) # day of peak prevalence
-    P_avg = P.mean()           # time-averaged prevalence
+    P_max = P.max()             # peak prevalence
+    T_Pmax = int(np.argmax(P))  # day of peak prevalence
+    P_avg = P.mean()            # time-averaged prevalence
 
-    # persistence: S(t) = N(t) / N(0)
+    # ----------------------------------
+    # 2. persistence: S(t) = N(t) / N(0)
+    # ----------------------------------
     S = alive / N0
-    S_final = S[-1]                         # final persistence
+    S_final = S[-1]             # final persistence
 
-    # mortality burded: M(t) = De(t) / N(0)
+    # ----------------------------------------
+    # 3. mortality burded: M(t) = De(t) / N(0)
+    # ----------------------------------------
     M = np.array(history["De"]) / N0
     M_final = M[-1]
     M_max = M.max()
     death_days = np.where(np.array(history["De"]) > 0)[0]
     T_De = int(death_days[0]) if len(death_days) > 0 else np.nan    # first death
 
-    # disease invasion rate: I_new(t) = In(t+1) - In(t)
+    # ----------------------------------------------------
+    # 4. disease invasion rate: I_new(t) = In(t+1) - In(t)
+    # ----------------------------------------------------
     In_arr = np.array(history["In"])
     I_new = np.diff(In_arr, prepend=In_arr[0])                      # new infections per day
     with np.errstate(invalid='ignore', divide='ignore'):
         I_rate = np.where(alive > 0, I_new / alive, 0.0)            # per-capita rate
 
+    # -------------------------------------------------------
+    # 5. R0 reproduction number: secondary inf. by single bat
+    # -------------------------------------------------------
+    exact_R0 = history["SC"] / num_infected
+    
     return {
-        "N_min":    N_min,
-        "N_final":  N_final,
-        "P_max":    P_max,
-        "T_Pmax":   T_Pmax,
-        "P_avg":    P_avg,
-        "S_final":  S_final,
-        "M_final":  M_final,
-        "M_max":    M_max,
-        "T_De":     T_De,
+        "N_min": N_min,
+        "N_final": N_final,
+        "P_max": P_max,
+        "T_Pmax": T_Pmax,
+        "P_avg": P_avg,
+        "S_final": S_final,
+        "M_final": M_final,
+        "M_max": M_max,
+        "T_De": T_De,
+        "R0_empirical": exact_R0,
 
         # full time-series (needed for Monte Carlo bands)
-        "_P":       P,
-        "_S":       S,
-        "_M":       M,
-        "_I_rate":  I_rate,
-        "_alive":   alive,
+        "_P": P,
+        "_S": S,
+        "_M": M,
+        "_I_rate": I_rate,
+        "_alive": alive,
     }
 
 # ------------------------------
@@ -291,11 +270,11 @@ def plot_residual_error(history, win_length, win_start, T_seasonal, sample=[], x
         fitted_Hi = np.array(history["Hi"])
         diff = [obs_Hi[i] - fitted_Hi[t_val] for i, t_val in enumerate(obs_times)]
 
-        ax2.plot(obs_times, diff, marker='o', linestyle='-', label="Observed − Fitted (Hi)")
+        ax2.plot(obs_times, diff, marker='o', linestyle='-', label="Observed - Simulated (Hi)")
         ax2.axhline(0, color='black', linewidth=1, linestyle='--')
 
     ax2.set_xlabel("Time step")
-    ax2.set_ylabel("Observed − Fitted (Hi)")
+    ax2.set_ylabel("Observed - Simulated (Hi)")
     ax2.set_title("Residual Error in Hibernating Population (Hi)")
     ax2.legend()
     ax2.grid()
@@ -311,7 +290,7 @@ def plot_residual_error(history, win_length, win_start, T_seasonal, sample=[], x
     plt.show()
 
 
-def plot_MAPE(history, win_length, win_start, T_seasonal, sample=[], xlim_max=None):
+def plot_wMAPE(history, win_length, win_start, T_seasonal, sample=[], xlim_max=None):
     # MAPE = mean absolute percentage error
     t = range(len(history["Hi"]))
     n_days = len(t)
@@ -349,11 +328,11 @@ def plot_MAPE(history, win_length, win_start, T_seasonal, sample=[], xlim_max=No
         fitted_Hi = np.array(history["Hi"])
         diff = [obs_Hi[i] - fitted_Hi[t_val] for i, t_val in enumerate(obs_times)]
 
-        ax2.plot(obs_times, diff, marker='o', linestyle='-', label="Observed − Fitted (Hi)")
+        ax2.plot(obs_times, diff, marker='o', linestyle='-', label="Observed - Simulated (Hi)")
         ax2.axhline(0, color='black', linewidth=1, linestyle='--')
 
     ax2.set_xlabel("Time step")
-    ax2.set_ylabel("Observed − Fitted (Hi)")
+    ax2.set_ylabel("Observed - Simulated (Hi)")
     ax2.set_title("Residual Error in Hibernating Population (Hi)")
     ax2.legend()
     ax2.grid()

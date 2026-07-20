@@ -26,7 +26,7 @@ def sample_params():
         "res_gain": res_gain,                                                                                                              
         "res_max": res_max,                                                                                                    
         "k_imm": k_imm,   
-        "theta_imm": theta_imm,                                                                                             
+        "theta_imm": theta_imm,                                                                                    
     }   
 
 # ==========================================================================================================================
@@ -51,6 +51,10 @@ Hi_list = [[tricolor_num, tricolor_cluster_sizeMIN, tricolor_cluster_sizeMAX],
            [bigbrown_num, bigbrown_cluster_sizeMIN, bigbrown_cluster_sizeMAX]] 
 
 fraction_infected = 0.01 # in [0, 1]
+
+num_infected = 0 # DO NOT CHANGE
+for i in range(len(Hi_list)):
+    num_infected += int(Hi_list[i][0]*fraction_infected) # DO NOT CHANGE
 
 # NOTICE : the remaining populations (Ot, Im) all start with 0 inhabitants
 # NOTICE : resistance starts at 0 for every bat
@@ -120,7 +124,8 @@ history_avg_zeros = {
 
 def main():
 
-    # Define the parameter space w/ ecologically meaningful ranges
+    # parameter space THAT GETS CHANGED
+    # w/ ecologically meaningful ranges
     problem = {
         "num_vars": 6,
         "names": ["inf_alpha", "inf_beta", "delta",
@@ -137,13 +142,14 @@ def main():
 
     # Generate Saltelli samples: (N * (2*num_vars + 2) total runs)
     # N=128 -> 128 * 18 = 2304 runs; N=64 -> 1152 runs (fast for testing)
-    N = 128
+    N = 64
     param_values = saltelli.sample(problem, N, calc_second_order=False)
 
     # Run the model for each sample row
     Y_Pmax = np.zeros(len(param_values))
     Y_Sfinal = np.zeros(len(param_values))
     Y_Mfinal = np.zeros(len(param_values))
+    Y_R0 = np.zeros(len(param_values))
 
     parameters = sample_params()
 
@@ -157,19 +163,23 @@ def main():
 
         for j in range(avg_over):
 
-            history = simulate(make_initial_state(Hi_list, fraction_infected), time, parameters, False)
+            history = simulate(make_initial_state(Hi_list, num_infected), time, parameters, False)
 
             for key in history_avg:
                 history_avg[key] += np.array(history[key])
 
         # divide by number of runs for avg
         for key in history_avg:
-            history_avg[key] /= avg_over    
+            history_avg[key] /= avg_over   
 
-        m = compute_metrics(history_avg, Hi_list)
+        history_avg["SC"] = history["SC"] 
+
+        m = compute_metrics(history_avg, Hi_list, num_infected)
         Y_Pmax[i]   = m["P_max"]
         Y_Sfinal[i] = m["S_final"]
         Y_Mfinal[i] = m["M_final"]
+        Y_R0[i]     = m["R0_empirical"]
+
         if i % 10 == 0:
             print(f"Sobol run {i}/{len(param_values)}")
 
@@ -177,6 +187,7 @@ def main():
     Si_P = sobol.analyze(problem, Y_Pmax,   calc_second_order=False, print_to_console=False)
     Si_S = sobol.analyze(problem, Y_Sfinal, calc_second_order=False, print_to_console=False)
     Si_M = sobol.analyze(problem, Y_Mfinal, calc_second_order=False, print_to_console=False)
+    Si_R0 = sobol.analyze(problem, Y_R0,    calc_second_order=False, print_to_console=False)
 
     # Plot: grouped bar chart (S1 and ST side by side per parameter)
     def plot_sobol(Si, problem, title, ax):
@@ -195,11 +206,16 @@ def main():
         ax.set_ylim(0, 1)
         ax.grid(axis="y", alpha=0.3)
 
-    fig, axes = plt.subplots(1, 3, figsize=(16, 5))
-    plot_sobol(Si_P, problem, "Sensitivity: Peak Prevalence (P_max)",    axes[0])
-    plot_sobol(Si_S, problem, "Sensitivity: Final Persistence (S_final)", axes[1])
-    plot_sobol(Si_M, problem, "Sensitivity: Final Mortality (M_final)",   axes[2])
-    fig.suptitle("Sobol' Global Sensitivity Analysis", fontsize=13, y=1.02)
+    fig, axes = plt.subplots(2, 2, figsize=(16, 10))
+    axes = axes.flatten() # flattens the 2x2 array so we can index it 0-3
+
+    # R0 drives Peak Prevalence, which drives Mortality and Persistence
+    plot_sobol(Si_R0, problem, "Sensitivity: Empirical R0", axes[0])
+    plot_sobol(Si_P, problem, "Sensitivity: Peak Prevalence (P_max)", axes[1])
+    plot_sobol(Si_S, problem, "Sensitivity: Final Persistence (S_final)", axes[2])
+    plot_sobol(Si_M, problem, "Sensitivity: Final Mortality (M_final)", axes[3])
+    
+    fig.suptitle("Sobol' Global Sensitivity Analysis", fontsize=15, y=1.02)
     fig.tight_layout()
     plt.savefig("figures/sobol_analysis_plot.pdf", bbox_inches="tight", dpi=300)
     plt.show()
