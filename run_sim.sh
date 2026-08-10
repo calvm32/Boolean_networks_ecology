@@ -29,7 +29,7 @@ if [ ! -d "$VENV_DIR" ]; then
     echo -e "${YELLOW}First time setup detected: Creating Python virtual environment...${NC}"
     module purge
     # MINIMAL CHANGE: Added openmpi so mpi4py compiles against the cluster hardware
-    module load python/3.10 openmpi/4.1 compiler/gcc/11 2>/dev/null || module load python/3.10 openmpi/4.1
+    module load python/3.10 openmpi/4.1.5 compiler/gcc/11 2>/dev/null || module load python/3.10 openmpi/4.1.5
     python3 -m venv "$VENV_DIR"
     source "$VENV_DIR/bin/activate"
     # MINIMAL CHANGE: Added --no-cache-dir so pip doesn't reuse the broken, cached mpi4py install
@@ -103,7 +103,7 @@ cat <<EOF > "$BATCH_FILE"
 # Setup compute node environment
 module purge
 # MINIMAL CHANGE: Ensured openmpi is loaded on the compute node
-module load python/3.10 openmpi/4.1 compiler/gcc/11 2>/dev/null || module load python/3.10 openmpi/4.1
+module load python/3.10 openmpi/4.1.5 compiler/gcc/11 2>/dev/null || module load python/3.10 openmpi/4.1.5
 
 # Activate virtual environment
 source "${VENV_DIR}/bin/activate"
