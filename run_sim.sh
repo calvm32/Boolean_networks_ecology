@@ -3,6 +3,11 @@
 # BN_Ecology Simulation Execution Tool
 # Publication-quality output management & multi-core execution controller
 
+module purge
+module load apptainer compiler/gcc/11 openmpi/4.1
+
+set -e
+
 # Styling & Colors
 BOLD='\033[1m'
 CYAN='\033[0;36m'
@@ -15,7 +20,7 @@ NC='\033[0m' # No Color
 # Configuration
 PYTHON_CMD="python"
 BASE_DIR=$(pwd)
-SIM_DIR="simulate/simulate_distribution_based"  # Adjust as needed
+SIM_DIR="simulate/simulate_CURRENT"  # or simulate/simulate_OLD
 OUTPUT_BASE="results"
 
 # System Core Detection
