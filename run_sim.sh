@@ -1,24 +1,17 @@
 #!/bin/bash
 
 # BN_Ecology Simulation Execution Tool
-# Publication-quality output management & multi-core execution controller
 
-# Installs
+set -e
 
-apptainer exec \
-    --bind $PROJECT_DIR:$PROJECT_DIR \
-    --pwd $PROJECT_DIR \
-    $IMAGE \
-    bash -c "
-        pip install --user -e .
-        pip install --user -r requirements.txt
-        export PATH=\$HOME/.local/bin:\$PATH
-    "
-
+# HPC Environment Setup
 module purge
 module load apptainer compiler/gcc/11 openmpi/4.1
 
-set -e
+# Configuration & Paths
+PROJECT_DIR=$(pwd)
+OUTPUT_BASE="results"
+SIM_DIR="simulate/simulate_CURRENT"
 
 # Styling & Colors
 BOLD='\033[1m'
@@ -29,33 +22,19 @@ RED='\033[0;31m'
 MAGENTA='\033[0;35m'
 NC='\033[0m' # No Color
 
-# Configuration
-PYTHON_CMD="python3"
-BASE_DIR=$(pwd)
-SIM_DIR="simulate/simulate_CURRENT"  # or simulate/simulate_OLD
-OUTPUT_BASE="results"
-
-# System Core Detection
-detect_max_cores() {
-    if command -v nproc &>/dev/null; then
-        nproc
-    elif command -v sysctl &>/dev/null; then
-        sysctl -n hw.ncpu
-    else
-        $PYTHON_CMD -c "import os; print(os.cpu_count() or 1)"
-    fi
-}
-
-MAX_CORES=$(detect_max_cores)
-
-# Ensure output base directory exists
-mkdir -p "$OUTPUT_BASE"
-
 echo -e "${CYAN}${BOLD}"
 echo "==================================================="
 echo "BN_Ecology Simulation Execution Tool"
 echo "==================================================="
 echo -e "${NC}"
+
+apptainer exec --bind "$PROJECT_DIR:$PROJECT_DIR" --pwd "$PROJECT_DIR" "$IMAGE" bash -c "pip install --user -e . && pip install --user -r requirements.txt"
+
+# System Core Detection (Runs via Apptainer so it reads container constraints)
+MAX_CORES=$(apptainer exec "$IMAGE" python3 -c "import os; print(os.cpu_count() or 1)")
+
+# Ensure output base directory exists
+mkdir -p "$OUTPUT_BASE"
 
 # Find Runnable Scripts
 mapfile -t SCRIPTS < <(find "$SIM_DIR" -type f -name "*.py" ! -name "__init__.py" ! -name "helper_funcs.py" ! -name "rules*.py" ! -name "working_params.py" | sort)
@@ -83,39 +62,26 @@ done
 
 # Parallel Execution & Core Selection
 NUM_CORES=1
-
-# Auto-detect if file is intended for parallel execution or prompt user
 if [[ "$SCRIPT_NAME" == *"parallel"* ]]; then
     echo -e "\n${MAGENTA}${BOLD}⚡ Parallel Script Detected:${NC} ${BOLD}$SCRIPT_NAME${NC}"
-    echo -e "  Available system CPU cores: ${BOLD}$MAX_CORES${NC}"
-    
+    echo -e "  Available container CPU cores: ${BOLD}$MAX_CORES${NC}"
     read -p "$(echo -e "${CYAN}  Enter number of cores to allocate [Default: $MAX_CORES]: ${NC}")" USER_CORES
     
-    if [[ -z "$USER_CORES" ]]; then
-        NUM_CORES=$MAX_CORES
-    elif [[ "$USER_CORES" =~ ^[0-9]+$ ]] && [ "$USER_CORES" -ge 1 ] && [ "$USER_CORES" -le "$MAX_CORES" ]; then
-        NUM_CORES=$USER_CORES
-    else
-        echo -e "${YELLOW}  Invalid entry. Defaulting to $MAX_CORES cores.${NC}"
-        NUM_CORES=$MAX_CORES
-    fi
+    if [[ -z "$USER_CORES" ]]; then NUM_CORES=$MAX_CORES;
+    elif [[ "$USER_CORES" =~ ^[0-9]+$ ]] && [ "$USER_CORES" -ge 1 ] && [ "$USER_CORES" -le "$MAX_CORES" ]; then NUM_CORES=$USER_CORES;
+    else NUM_CORES=$MAX_CORES; fi
 else
-    # Optional override for standard scripts
     read -p "$(echo -e "\n${CYAN}Run with parallel workers? (Enter core count 1-$MAX_CORES, [Default: 1]): ${NC}")" USER_CORES
-    if [[ "$USER_CORES" =~ ^[0-9]+$ ]] && [ "$USER_CORES" -ge 1 ] && [ "$USER_CORES" -le "$MAX_CORES" ]; then
-        NUM_CORES=$USER_CORES
-    fi
+    if [[ "$USER_CORES" =~ ^[0-9]+$ ]] && [ "$USER_CORES" -ge 1 ] && [ "$USER_CORES" -le "$MAX_CORES" ]; then NUM_CORES=$USER_CORES; fi
 fi
 
 # Organize Output Directory & Environment
 TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
 RUN_OUT_DIR="${OUTPUT_BASE}/${TIMESTAMP}_${SCRIPT_NAME}"
 
-mkdir -p "$RUN_OUT_DIR/data"
-mkdir -p "$RUN_OUT_DIR/figures"
-mkdir -p "$RUN_OUT_DIR/logs"
+mkdir -p "$RUN_OUT_DIR/data" "$RUN_OUT_DIR/figures" "$RUN_OUT_DIR/logs"
 
-# Export environment variables for Python & underlying numeric libraries
+# Export variables (Apptainer automatically passes these into the container!)
 export SIM_OUTPUT_DIR="$RUN_OUT_DIR"
 export SIM_NUM_CORES="$NUM_CORES"
 export OMP_NUM_THREADS="$NUM_CORES"
@@ -134,24 +100,29 @@ echo -e "${CYAN}-----------------------------------------------------------${NC}
 # Execution & Logging
 LOG_FILE="$RUN_OUT_DIR/logs/terminal_output.log"
 
-# Save metadata file inside the run directory for complete auditability
 cat <<EOF > "$RUN_OUT_DIR/run_info.json"
 {
   "script": "$SCRIPT_PATH",
   "timestamp": "$TIMESTAMP",
   "allocated_cores": $NUM_CORES,
-  "max_system_cores": $MAX_CORES,
+  "container_image": "$IMAGE",
   "user": "$(whoami)",
   "hostname": "$(hostname)"
 }
 EOF
 
-echo -e "${YELLOW}Starting execution... (Output streaming to terminal and log file)${NC}\n"
+echo -e "${YELLOW}Starting execution inside Apptainer... (Output streaming to log)${NC}\n"
 
-# Execute script with live terminal output + logging
-$PYTHON_CMD "$SCRIPT_PATH" 2>&1 | tee "$LOG_FILE"
+# This is the magic line. It runs your python script *inside* the container,
+# but streams the output back to your host terminal and log file.
+apptainer exec \
+    --bind "$PROJECT_DIR:$PROJECT_DIR" \
+    --pwd "$PROJECT_DIR" \
+    "$IMAGE" \
+    python3 "$SCRIPT_PATH" 2>&1 | tee "$LOG_FILE"
 
 # Completion Wrap-Up
+# Note: PIPESTATUS[0] captures the exit code of the python script, not the 'tee' command
 EXIT_CODE=${PIPESTATUS[0]}
 
 echo -e "\n${CYAN}-----------------------------------------------------------${NC}"
