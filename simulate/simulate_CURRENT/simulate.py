@@ -1,8 +1,8 @@
 import random as rand
 import numpy as np
 
-from simulate.simulate_distribution_based.helper_funcs import *
-from simulate.simulate_distribution_based.rules import *
+from simulate.simulate_CURRENT.helper_funcs import *
+from simulate.simulate_CURRENT.rules import *
 
 def simulate(initial_state, steps, parameters, Print=100):
     state = initial_state

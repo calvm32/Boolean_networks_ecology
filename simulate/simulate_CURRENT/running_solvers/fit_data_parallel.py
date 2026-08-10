@@ -3,10 +3,19 @@ import numpy as np
 import copy
 from mpi4py import MPI
 
-from simulate.simulate_distribution_based.helper_funcs import *
-from simulate.simulate_distribution_based.rules import *
-from simulate.simulate_distribution_based.simulate import *
+from simulate.simulate_CURRENT.helper_funcs import *
+from simulate.simulate_CURRENT.rules import *
+from simulate.simulate_CURRENT.simulate import *
 from simulate.data import *
+
+import os
+
+OUTPUT_DIR = os.environ.get('SIM_OUTPUT_DIR', '.')
+FIGURES_DIR = os.path.join(OUTPUT_DIR, 'figures')
+
+# ==========================================================================================================================
+# ==========================================================================================================================
+# ==========================================================================================================================
 
 # --------------------
 # set up control group

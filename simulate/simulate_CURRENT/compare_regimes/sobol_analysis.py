@@ -4,9 +4,9 @@ import pandas as pd
 import random as rand
 import numpy as np
 
-from simulate.simulate_distribution_based.helper_funcs import *
-from simulate.simulate_distribution_based.rules import *
-from simulate.simulate_distribution_based.simulate import *
+from simulate.simulate_CURRENT.helper_funcs import *
+from simulate.simulate_CURRENT.rules import *
+from simulate.simulate_CURRENT.simulate import *
 
 import os
 

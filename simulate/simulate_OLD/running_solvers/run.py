@@ -1,8 +1,8 @@
 import random as rand
 import numpy as np
 
-from simulate.simulate_rough_original.helper_funcs import *
-from simulate.simulate_rough_original.rules import *
+from simulate.simulate_OLD.helper_funcs import *
+from simulate.simulate_OLD.rules import *
 
 # ------------------------------------------
 # hibernacula-INDEPENDENT initial conditions

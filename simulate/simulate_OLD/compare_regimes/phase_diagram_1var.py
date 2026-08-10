@@ -2,8 +2,8 @@ import random as rand
 import numpy as np
 import matplotlib.pyplot as plt
 
-from simulate.simulate_rough_original.helper_funcs import *
-from simulate.simulate_rough_original.rules import *
+from simulate.simulate_OLD.helper_funcs import *
+from simulate.simulate_OLD.rules import *
 
 # ------------------------------------------
 # hibernacula-INDEPENDENT initial conditions

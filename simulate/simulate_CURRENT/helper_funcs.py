@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from simulate.simulate_distribution_based.rules import *
+from simulate.simulate_CURRENT.rules import *
 
 import os
 
