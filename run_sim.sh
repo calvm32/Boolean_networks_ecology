@@ -7,7 +7,11 @@ set -e
 PROJECT_DIR=$(pwd)
 OUTPUT_BASE="results"
 SIM_DIR="simulate/simulate_CURRENT"
-IMAGE="${IMAGE:-my_environment.sif}" # Override via: export IMAGE="custom.sif"
+
+module load python/3.10
+python3 -m venv ~/envs/bn_ecology_env
+source ~/envs/bn_ecology_env/bin/activate
+pip install -r requirements.txt
 
 # Styling & Colors
 BOLD='\033[1m'
@@ -19,7 +23,7 @@ NC='\033[0m' # No Color
 
 echo -e "${CYAN}${BOLD}"
 echo "==================================================="
-echo "       BN_Ecology Simulation Execution Tool        "
+echo "BN_Ecology Simulation Execution Tool"
 echo "==================================================="
 echo -e "${NC}"
 
