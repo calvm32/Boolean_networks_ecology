@@ -4,14 +4,11 @@
 
 set -e
 
-# HPC Environment Setup
-module purge
-module load apptainer compiler/gcc/11 openmpi/4.1
-
 # Configuration & Paths
 PROJECT_DIR=$(pwd)
 OUTPUT_BASE="results"
 SIM_DIR="simulate/simulate_CURRENT"
+IMAGE="${IMAGE:-my_environment.sif}" # Set your .sif file path here if not defined in your environment
 
 # Styling & Colors
 BOLD='\033[1m'
@@ -28,10 +25,12 @@ echo "BN_Ecology Simulation Execution Tool"
 echo "==================================================="
 echo -e "${NC}"
 
-apptainer exec --bind "$PROJECT_DIR:$PROJECT_DIR" --pwd "$PROJECT_DIR" "$IMAGE" bash -c "pip install --user -e . && pip install --user -r requirements.txt"
-
-# System Core Detection (Runs via Apptainer so it reads container constraints)
-MAX_CORES=$(apptainer exec "$IMAGE" python3 -c "import os; print(os.cpu_count() or 1)")
+# System Core Detection (Uses Slurm allocation if in an active job, or system cores on login node)
+if [ -n "$SLURM_CPUS_ON_NODE" ]; then
+    MAX_CORES=$SLURM_CPUS_ON_NODE
+else
+    MAX_CORES=$(nproc 2>/devnull || echo 64)
+fi
 
 # Ensure output base directory exists
 mkdir -p "$OUTPUT_BASE"
@@ -64,7 +63,7 @@ done
 NUM_CORES=1
 if [[ "$SCRIPT_NAME" == *"parallel"* ]]; then
     echo -e "\n${MAGENTA}${BOLD}⚡ Parallel Script Detected:${NC} ${BOLD}$SCRIPT_NAME${NC}"
-    echo -e "  Available container CPU cores: ${BOLD}$MAX_CORES${NC}"
+    echo -e "  Available CPU cores: ${BOLD}$MAX_CORES${NC}"
     read -p "$(echo -e "${CYAN}  Enter number of cores to allocate [Default: $MAX_CORES]: ${NC}")" USER_CORES
     
     if [[ -z "$USER_CORES" ]]; then NUM_CORES=$MAX_CORES;
@@ -90,12 +89,12 @@ export OPENBLAS_NUM_THREADS="$NUM_CORES"
 
 # Summary Card
 echo -e "\n${GREEN}✓ Execution Environment Prepared${NC}"
-echo -e "  ┌─────────────────────────────────────────────────────────┐"
-echo -e "  │ ${BOLD}Script:${NC}    $SCRIPT_PATH"
-echo -e "  │ ${BOLD}Cores:${NC}     $NUM_CORES / $MAX_CORES CPU core(s) allocated"
-echo -e "  │ ${BOLD}Output:${NC}    $RUN_OUT_DIR"
-echo -e "  └─────────────────────────────────────────────────────────┘"
-echo -e "${CYAN}-----------------------------------------------------------${NC}\n"
+echo -e "==================================================="
+echo -e "   ${BOLD}Script:${NC}    $SCRIPT_PATH"
+echo -e "   ${BOLD}Cores:${NC}     $NUM_CORES / $MAX_CORES CPU core(s) allocated"
+echo -e "   ${BOLD}Output:${NC}    $RUN_OUT_DIR"
+echo -e "==================================================="
+echo -e "${CYAN}===================================================${NC}\n"
 
 # Execution & Logging
 LOG_FILE="$RUN_OUT_DIR/logs/terminal_output.log"
@@ -113,23 +112,31 @@ EOF
 
 echo -e "${YELLOW}Starting execution inside Apptainer... (Output streaming to log)${NC}\n"
 
-# This is the magic line. It runs your python script *inside* the container,
-# but streams the output back to your host terminal and log file.
-apptainer exec \
-    --bind "$PROJECT_DIR:$PROJECT_DIR" \
-    --pwd "$PROJECT_DIR" \
-    "$IMAGE" \
-    python3 "$SCRIPT_PATH" 2>&1 | tee "$LOG_FILE"
+# Run Apptainer on a compute node via Slurm (if on login node) or directly (if already in an interactive job)
+if [ -z "$SLURM_JOB_ID" ]; then
+    srun --cpus-per-task="$NUM_CORES" --mem="${NUM_CORES}G" bash -c "
+        module purge
+        module load apptainer compiler/gcc/11 openmpi/4.1
+        apptainer exec --bind \"$PROJECT_DIR:$PROJECT_DIR\" --pwd \"$PROJECT_DIR\" \"$IMAGE\" python3 \"$SCRIPT_PATH\"
+    " 2>&1 | tee "$LOG_FILE"
+else
+    module purge
+    module load apptainer compiler/gcc/11 openmpi/4.1
+    apptainer exec \
+        --bind "$PROJECT_DIR:$PROJECT_DIR" \
+        --pwd "$PROJECT_DIR" \
+        "$IMAGE" \
+        python3 "$SCRIPT_PATH" 2>&1 | tee "$LOG_FILE"
+fi
 
 # Completion Wrap-Up
-# Note: PIPESTATUS[0] captures the exit code of the python script, not the 'tee' command
 EXIT_CODE=${PIPESTATUS[0]}
 
-echo -e "\n${CYAN}-----------------------------------------------------------${NC}"
+echo -e "\n${CYAN}===================================================${NC}"
 if [ $EXIT_CODE -eq 0 ]; then
     echo -e "${GREEN}${BOLD}✓ Simulation finished successfully!${NC}"
 else
     echo -e "${RED}${BOLD}✗ Simulation failed with exit code $EXIT_CODE.${NC}"
 fi
 echo -e "  Results directory: ${BOLD}$RUN_OUT_DIR${NC}"
-echo -e "${CYAN}===========================================================${NC}\n"
+echo -e "${CYAN}===================================================${NC}\n"
