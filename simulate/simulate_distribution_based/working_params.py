@@ -67,7 +67,7 @@ res_gain = 0.02                             # resistance AFTER recovery
 # -----------------
 
 """
-
+USING RMS ERROR:
 New best: 379.54166666666663    'T_seasonal': 53.03145102211801, 'win_length': 171.8073545805218, 'win_start': 278.92671603576855, 'lambda_win': 0, 'lambda_sum': 0.00017711957391318124, 'res_gain': 0.02, 'res_max': 0.2, 'k_imm': 1, 'theta_imm': 1}
 New best: 146.33333333333334    'T_seasonal': 41.21787049830048, 'win_length': 190.3327411105248, 'win_start': 269.08553986430616, 'lambda_win': 0, 'lambda_sum': 0.00015441617617432672, 'res_gain': 0.02, 'res_max': 0.2, 'k_imm': 1, 'theta_imm': 1}
 New best: 132.375               'T_seasonal': 43.460387151848266, 'win_length': 197.57926135060328, 'win_start': 261.508501689169, 'lambda_win': 0, 'lambda_sum': 0.0001676431683071884, 'res_gain': 0.02, 'res_max': 0.2, 'k_imm': 1, 'theta_imm': 1}
@@ -77,4 +77,6 @@ New best: 131.08333333333331    'T_seasonal': 58.75370628407185, 'win_length': 1
 New best: 151.70833333333331    'T_seasonal': 59.21406004055691, 'win_length': 161.27930678762138, 'win_start': 289.9954597398685, 'lambda_win': 0, 'lambda_sum': 0.0002889506520826776, 'res_gain': 0.02, 'res_max': 0.2, 'k_imm': 1, 'theta_imm': 1}
 New best: 125.08333333333334    'T_seasonal': 64.81388922827558, 'win_length': 160.72298105475397, 'win_start': 287.58701553750285, 'lambda_win': 0, 'lambda_sum': 0.0002714267087703034, 'res_gain': 0.02, 'res_max': 0.2, 'k_imm': 1, 'theta_imm': 1}
 
+AFTER SWITCHING TO NLL ERROR:
+New best: 49.20221468909322     'T_seasonal': 55.77824894316202, 'win_length': 176.00451146163238, 'win_start': 278.9392384954147, 'lambda_win': 0, 'lambda_sum': 0.00021907584278455305, 'res_gain': 0.02, 'res_max': 0.2, 'k_imm': 1, 'theta_imm': 1, 'disp_r': 478.89160915990203}    
 """

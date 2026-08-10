@@ -45,7 +45,7 @@ bigbrown_cluster_sizeMAX = 9
 Hi_list = [[tricolor_num, tricolor_cluster_sizeMIN, tricolor_cluster_sizeMAX], 
            [bigbrown_num, bigbrown_cluster_sizeMIN, bigbrown_cluster_sizeMAX]] 
 
-fraction_infected = 0   # choose in [0, 1]
+fraction_infected = 0.1   # choose in [0, 1]
 
 num_infected = 0 # DO NOT CHANGE
 for i in range(len(Hi_list)):
@@ -111,6 +111,8 @@ def main():
     parameters = sample_params()
 
     history = simulate(make_initial_state(Hi_list, num_infected), steps=time, parameters=parameters)
+
+    print(history["SC"] / num_infected)
     plot_history_highlights(history, win_length, win_start, T_seasonal)
 
 if __name__ == "__main__":
