@@ -1,5 +1,5 @@
 #!/bin/bash
-# Boolean Networks Ecology Simulation Execution Tool
+# Boolean Networks Ecology Simulation Execution Tool (Pure Python)
 
 set -e
 
@@ -24,13 +24,11 @@ echo "==================================================="
 echo -e "${NC}"
 
 # Environment Setup (Runs ONCE)
-# This checks if the environment exists. If not, it builds it.
-# It will skip this entirely on future runs.
 
 if [ ! -d "$VENV_DIR" ]; then
     echo -e "${YELLOW}First time setup detected: Creating Python virtual environment...${NC}"
     module purge
-    module load python/3.10
+    module load python/3.10 compiler/gcc/11 2>/dev/null || module load python/3.10
     python3 -m venv "$VENV_DIR"
     source "$VENV_DIR/bin/activate"
     pip install -r requirements.txt
@@ -85,11 +83,9 @@ TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
 RUN_OUT_DIR="${OUTPUT_BASE}/${TIMESTAMP}_${SCRIPT_NAME}"
 mkdir -p "$RUN_OUT_DIR/data" "$RUN_OUT_DIR/figures" "$RUN_OUT_DIR/logs"
 
-# Generate SLURM Batch Script
-# This is where the #SBATCH tags actually get written into a new file,
-# ensuring the exact parameters are saved in your results folder forever.
-
 BATCH_FILE="$RUN_OUT_DIR/submit_${SCRIPT_NAME}.sh"
+
+# Generate SLURM Batch Script
 
 cat <<EOF > "$BATCH_FILE"
 #!/bin/bash
@@ -104,10 +100,13 @@ cat <<EOF > "$BATCH_FILE"
 
 # Setup compute node environment
 module purge
-module load python/3.10 gcc/11
+module load python/3.10 compiler/gcc/11 2>/dev/null || module load python/3.10
 
-# Activate the virtual environment we created earlier
+# Activate virtual environment
 source "${VENV_DIR}/bin/activate"
+
+# Add top-level project directory to Python search path
+export PYTHONPATH="${PROJECT_DIR}:\${PYTHONPATH}"
 
 # Export variables for Python multiprocessing
 export SIM_OUTPUT_DIR="${RUN_OUT_DIR}"
@@ -136,6 +135,7 @@ cat <<EOF > "$RUN_OUT_DIR/run_info.json"
 EOF
 
 # Queue Submission
+
 echo -e "\n${GREEN}✓ Execution Environment Prepared${NC}"
 echo -e "==================================================="
 echo -e "   ${BOLD}Script:${NC}    $SCRIPT_PATH"
