@@ -1,5 +1,4 @@
 #!/bin/bash
-
 # BN_Ecology Simulation Execution Tool
 
 set -e
@@ -8,7 +7,7 @@ set -e
 PROJECT_DIR=$(pwd)
 OUTPUT_BASE="results"
 SIM_DIR="simulate/simulate_CURRENT"
-IMAGE="${IMAGE:-my_environment.sif}" # Set your .sif file path here if not defined in your environment
+IMAGE="${IMAGE:-my_environment.sif}" # Override via: export IMAGE="custom.sif"
 
 # Styling & Colors
 BOLD='\033[1m'
@@ -16,26 +15,30 @@ CYAN='\033[0;36m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 RED='\033[0;31m'
-MAGENTA='\033[0;35m'
 NC='\033[0m' # No Color
 
 echo -e "${CYAN}${BOLD}"
 echo "==================================================="
-echo "BN_Ecology Simulation Execution Tool"
+echo "       BN_Ecology Simulation Execution Tool        "
 echo "==================================================="
 echo -e "${NC}"
 
-# System Core Detection (Uses Slurm allocation if in an active job, or system cores on login node)
-if [ -n "$SLURM_CPUS_ON_NODE" ]; then
-    MAX_CORES=$SLURM_CPUS_ON_NODE
-else
-    MAX_CORES=$(nproc 2>/devnull || echo 64)
+# Fix the /dev/null typo from the original script
+MAX_CORES=$(nproc 2> /dev/null || echo 64)
+
+# Prevent the Exit Code 255 error by verifying the image exists early
+if [ ! -f "$IMAGE" ]; then
+    echo -e "${RED}${BOLD}✗ Error: Container image not found!${NC}"
+    echo -e "Looking for: ${BOLD}$IMAGE${NC}\n"
+    echo -e "Please ensure the .sif file is in your current directory, or define it:"
+    echo -e "  ${YELLOW}export IMAGE=/path/to/your/container.sif${NC}\n"
+    exit 1
 fi
 
-# Ensure output base directory exists
 mkdir -p "$OUTPUT_BASE"
 
-# Find Runnable Scripts
+# Script Selection
+
 mapfile -t SCRIPTS < <(find "$SIM_DIR" -type f -name "*.py" ! -name "__init__.py" ! -name "helper_funcs.py" ! -name "rules*.py" ! -name "working_params.py" | sort)
 
 if [ ${#SCRIPTS[@]} -eq 0 ]; then
@@ -43,7 +46,6 @@ if [ ${#SCRIPTS[@]} -eq 0 ]; then
     exit 1
 fi
 
-# Interactive Script Selection
 echo -e "${YELLOW}Select a script to run:${NC}"
 PS3=$'\n\033[1;36mEnter option number: \033[0m'
 
@@ -59,84 +61,99 @@ select SCRIPT_PATH in "${SCRIPTS[@]}" "Quit"; do
     fi
 done
 
-# Parallel Execution & Core Selection
-NUM_CORES=1
-if [[ "$SCRIPT_NAME" == *"parallel"* ]]; then
-    echo -e "\n${MAGENTA}${BOLD}⚡ Parallel Script Detected:${NC} ${BOLD}$SCRIPT_NAME${NC}"
-    echo -e "  Available CPU cores: ${BOLD}$MAX_CORES${NC}"
-    read -p "$(echo -e "${CYAN}  Enter number of cores to allocate [Default: $MAX_CORES]: ${NC}")" USER_CORES
-    
-    if [[ -z "$USER_CORES" ]]; then NUM_CORES=$MAX_CORES;
-    elif [[ "$USER_CORES" =~ ^[0-9]+$ ]] && [ "$USER_CORES" -ge 1 ] && [ "$USER_CORES" -le "$MAX_CORES" ]; then NUM_CORES=$USER_CORES;
-    else NUM_CORES=$MAX_CORES; fi
-else
-    read -p "$(echo -e "\n${CYAN}Run with parallel workers? (Enter core count 1-$MAX_CORES, [Default: 1]): ${NC}")" USER_CORES
-    if [[ "$USER_CORES" =~ ^[0-9]+$ ]] && [ "$USER_CORES" -ge 1 ] && [ "$USER_CORES" -le "$MAX_CORES" ]; then NUM_CORES=$USER_CORES; fi
+# Resource Allocation
+
+echo -e "\n${MAGENTA}${BOLD}⚡ Resource Configuration${NC}"
+
+# Request Cores
+read -p "$(echo -e "${CYAN}  Enter number of cores to allocate (1-$MAX_CORES) [Default: 1]: ${NC}")" USER_CORES
+NUM_CORES=${USER_CORES:-1}
+if ! [[ "$NUM_CORES" =~ ^[0-9]+$ ]] || [ "$NUM_CORES" -lt 1 ]; then
+    NUM_CORES=1
 fi
 
-# Organize Output Directory & Environment
+# Request Walltime (Crucial for SLURM queuing)
+read -p "$(echo -e "${CYAN}  Enter maximum walltime (HH:MM:SS) [Default: 12:00:00]: ${NC}")" USER_TIME
+WALLTIME=${USER_TIME:-12:00:00}
+
+# Calculate Memory (Standard 4GB per core rule of thumb; adjust as needed)
+MEM_GB=$((NUM_CORES * 4))
+
+# Organization & Environment
+
 TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
 RUN_OUT_DIR="${OUTPUT_BASE}/${TIMESTAMP}_${SCRIPT_NAME}"
-
 mkdir -p "$RUN_OUT_DIR/data" "$RUN_OUT_DIR/figures" "$RUN_OUT_DIR/logs"
 
-# Export variables (Apptainer automatically passes these into the container!)
-export SIM_OUTPUT_DIR="$RUN_OUT_DIR"
-export SIM_NUM_CORES="$NUM_CORES"
-export OMP_NUM_THREADS="$NUM_CORES"
-export MKL_NUM_THREADS="$NUM_CORES"
-export OPENBLAS_NUM_THREADS="$NUM_CORES"
+BATCH_FILE="$RUN_OUT_DIR/submit_${SCRIPT_NAME}.sh"
 
-# Summary Card
-echo -e "\n${GREEN}✓ Execution Environment Prepared${NC}"
-echo -e "==================================================="
-echo -e "   ${BOLD}Script:${NC}    $SCRIPT_PATH"
-echo -e "   ${BOLD}Cores:${NC}     $NUM_CORES / $MAX_CORES CPU core(s) allocated"
-echo -e "   ${BOLD}Output:${NC}    $RUN_OUT_DIR"
-echo -e "==================================================="
-echo -e "${CYAN}===================================================${NC}\n"
+# Generate SLURM Batch Script
+# We generate this file dynamically so a permanent record of the exact 
+# run conditions is saved alongside the data for publication reproducibility.
 
-# Execution & Logging
-LOG_FILE="$RUN_OUT_DIR/logs/terminal_output.log"
+cat <<EOF > "$BATCH_FILE"
+#!/bin/bash
+#SBATCH --job-name=${SCRIPT_NAME}
+#SBATCH --output=${RUN_OUT_DIR}/logs/job.out
+#SBATCH --error=${RUN_OUT_DIR}/logs/job.err
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=${NUM_CORES}
+#SBATCH --time=${WALLTIME}
+#SBATCH --mem=${MEM_GB}G
 
+module purge
+module load apptainer compiler/gcc/11 openmpi/4.1
+
+set -e
+
+# Pass parameters into the Apptainer environment
+export SIM_OUTPUT_DIR="${RUN_OUT_DIR}"
+export SIM_NUM_CORES="${NUM_CORES}"
+export OMP_NUM_THREADS="${NUM_CORES}"
+export MKL_NUM_THREADS="${NUM_CORES}"
+export OPENBLAS_NUM_THREADS="${NUM_CORES}"
+
+echo "==================================================="
+echo "Starting Execution: ${SCRIPT_NAME}"
+echo "==================================================="
+
+apptainer exec \\
+    --bind "${PROJECT_DIR}:${PROJECT_DIR}" \\
+    --pwd "${PROJECT_DIR}" \\
+    "${IMAGE}" \\
+    python3 "${SCRIPT_PATH}"
+EOF
+
+# Generate JSON Run Record
 cat <<EOF > "$RUN_OUT_DIR/run_info.json"
 {
   "script": "$SCRIPT_PATH",
   "timestamp": "$TIMESTAMP",
   "allocated_cores": $NUM_CORES,
+  "walltime": "$WALLTIME",
+  "memory_gb": $MEM_GB,
   "container_image": "$IMAGE",
   "user": "$(whoami)",
   "hostname": "$(hostname)"
 }
 EOF
 
-echo -e "${YELLOW}Starting execution inside Apptainer... (Output streaming to log)${NC}\n"
+# Queue Submission
 
-# Run Apptainer on a compute node via Slurm (if on login node) or directly (if already in an interactive job)
+echo -e "\n${GREEN}✓ Execution Environment Prepared${NC}"
+echo -e "==================================================="
+echo -e "   ${BOLD}Script:${NC}    $SCRIPT_PATH"
+echo -e "   ${BOLD}Resources:${NC} $NUM_CORES core(s), $MEM_GB GB RAM, $WALLTIME limit"
+echo -e "   ${BOLD}Output:${NC}    $RUN_OUT_DIR"
+echo -e "==================================================="
+
 if [ -z "$SLURM_JOB_ID" ]; then
-    srun --cpus-per-task="$NUM_CORES" --mem="${NUM_CORES}G" bash -c "
-        module purge
-        module load apptainer compiler/gcc/11 openmpi/4.1
-        apptainer exec --bind \"$PROJECT_DIR:$PROJECT_DIR\" --pwd \"$PROJECT_DIR\" \"$IMAGE\" python3 \"$SCRIPT_PATH\"
-    " 2>&1 | tee "$LOG_FILE"
+    echo -e "${YELLOW}Submitting job to Slurm queue...${NC}"
+    sbatch "$BATCH_FILE"
+    echo -e "${CYAN}Use 'squeue -u \$(whoami)' to check job status.${NC}\n"
 else
-    module purge
-    module load apptainer compiler/gcc/11 openmpi/4.1
-    apptainer exec \
-        --bind "$PROJECT_DIR:$PROJECT_DIR" \
-        --pwd "$PROJECT_DIR" \
-        "$IMAGE" \
-        python3 "$SCRIPT_PATH" 2>&1 | tee "$LOG_FILE"
+    # If already running inside an interactive salloc/srun node
+    echo -e "${YELLOW}Running directly in current Slurm allocation...${NC}"
+    bash "$BATCH_FILE"
 fi
-
-# Completion Wrap-Up
-EXIT_CODE=${PIPESTATUS[0]}
-
-echo -e "\n${CYAN}===================================================${NC}"
-if [ $EXIT_CODE -eq 0 ]; then
-    echo -e "${GREEN}${BOLD}✓ Simulation finished successfully!${NC}"
-else
-    echo -e "${RED}${BOLD}✗ Simulation failed with exit code $EXIT_CODE.${NC}"
-fi
-echo -e "  Results directory: ${BOLD}$RUN_OUT_DIR${NC}"
-echo -e "${CYAN}===================================================${NC}\n"
