@@ -2,6 +2,15 @@ import matplotlib.pyplot as plt
 import numpy as np
 from simulate.simulate_distribution_based.rules import *
 
+import os
+
+OUTPUT_DIR = os.environ.get('SIM_OUTPUT_DIR', '.')
+FIGURES_DIR = os.path.join(OUTPUT_DIR, 'figures')
+
+# ==========================================================================================================================
+# ==========================================================================================================================
+# ==========================================================================================================================
+
 # ---------------------
 # setup before each run
 # ---------------------
@@ -169,7 +178,7 @@ def plot_history(history, sample=[]):
 
     plt.tight_layout()
     plt.grid(axis='x')
-    plt.savefig('figures/history_plot.pdf', format='pdf', bbox_inches='tight')
+    plt.savefig(os.path.join(FIGURES_DIR,'history_plot.pdf'), format='pdf', bbox_inches='tight')
     plt.show()
 
 
@@ -229,7 +238,7 @@ def plot_history_highlights(history, win_length, win_start, T_seasonal, sample=[
 
     plt.tight_layout()
     plt.grid(axis='x')
-    plt.savefig('figures/history_plot_highlighted.pdf', format='pdf', bbox_inches='tight')
+    plt.savefig(os.path.join(FIGURES_DIR,'history_plot_highlighted.pdf'), format='pdf', bbox_inches='tight')
     plt.show()
 
 
@@ -286,7 +295,7 @@ def plot_residual_error(history, win_length, win_start, T_seasonal, sample=[], x
 
     plt.tight_layout()
     plt.grid(axis='x')
-    plt.savefig('figures/history_error_plot.pdf', format='pdf', bbox_inches='tight')
+    plt.savefig(os.path.join(FIGURES_DIR,'history_error_plot.pdf'), format='pdf', bbox_inches='tight')
     plt.show()
 
 
@@ -344,7 +353,7 @@ def plot_wMAPE(history, win_length, win_start, T_seasonal, sample=[], xlim_max=N
 
     plt.tight_layout()
     plt.grid(axis='x')
-    plt.savefig('figures/history_error_plot.pdf', format='pdf', bbox_inches='tight')
+    plt.savefig(os.path.join(FIGURES_DIR,'history_error_plot.pdf'), format='pdf', bbox_inches='tight')
     plt.show()
 
 

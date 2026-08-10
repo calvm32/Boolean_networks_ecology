@@ -8,6 +8,15 @@ from simulate.simulate_distribution_based.helper_funcs import *
 from simulate.simulate_distribution_based.rules import *
 from simulate.simulate_distribution_based.simulate import *
 
+import os
+
+OUTPUT_DIR = os.environ.get('SIM_OUTPUT_DIR', '.')
+FIGURES_DIR = os.path.join(OUTPUT_DIR, 'figures')
+
+# ==========================================================================================================================
+# ==========================================================================================================================
+# ==========================================================================================================================
+
 avg_over = 10
 
 def sample_params():                                                                                                                                     
@@ -217,7 +226,7 @@ def main():
     
     fig.suptitle("Sobol' Global Sensitivity Analysis", fontsize=15, y=1.02)
     fig.tight_layout()
-    plt.savefig("figures/sobol_analysis_plot.pdf", bbox_inches="tight", dpi=300)
+    plt.savefig(os.path.join(FIGURES_DIR,"sobol_analysis_plot.pdf"), bbox_inches="tight", dpi=300)
     plt.show()
 
 

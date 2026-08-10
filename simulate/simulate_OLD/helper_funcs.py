@@ -2,6 +2,15 @@ import matplotlib.pyplot as plt
 import numpy as np
 from simulate.simulate_rough_original.rules import *
 
+import os
+
+OUTPUT_DIR = os.environ.get('SIM_OUTPUT_DIR', '.')
+FIGURES_DIR = os.path.join(OUTPUT_DIR, 'figures')
+
+# ==========================================================================================================================
+# ==========================================================================================================================
+# ==========================================================================================================================
+
 def step(state, parameters):
     agg = aggregate(state)
 

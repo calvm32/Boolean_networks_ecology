@@ -6,6 +6,15 @@ from simulate.simulate_distribution_based.helper_funcs import *
 from simulate.simulate_distribution_based.rules import *
 from simulate.simulate_distribution_based.simulate import *
 
+import os
+
+OUTPUT_DIR = os.environ.get('SIM_OUTPUT_DIR', '.')
+FIGURES_DIR = os.path.join(OUTPUT_DIR, 'figures')
+
+# ==========================================================================================================================
+# ==========================================================================================================================
+# ==========================================================================================================================
+
 def sample_params():                                                                                                                                     
     return {                                                                                                                                             
         "inf_alpha": inf_alpha,                                                                                               
@@ -139,7 +148,7 @@ def main():
         axes[i].set_ylabel(f"Population at day {time}")
 
     plt.tight_layout()
-    plt.savefig('figures/phase_diagram1.pdf', format='pdf', bbox_inches='tight')
+    plt.savefig(os.path.join(FIGURES_DIR,'phase_diagram1var.pdf'), format='pdf', bbox_inches='tight')
     plt.show()
 
 if __name__ == "__main__":

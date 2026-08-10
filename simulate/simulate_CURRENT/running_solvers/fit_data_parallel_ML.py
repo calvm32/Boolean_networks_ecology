@@ -9,12 +9,6 @@ from simulate.simulate_distribution_based.rules import *
 from simulate.simulate_distribution_based.simulate import *
 from simulate.data import *
 
-"""
-NOTICE: this code was generated using an LLM
-
-Uses PSO (particle swarm optimization) hyperparameter searching
-"""
-
 # --------------------
 # set up control group
 # --------------------
