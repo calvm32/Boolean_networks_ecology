@@ -3,6 +3,18 @@
 # BN_Ecology Simulation Execution Tool
 # Publication-quality output management & multi-core execution controller
 
+# Installs
+
+apptainer exec \
+    --bind $PROJECT_DIR:$PROJECT_DIR \
+    --pwd $PROJECT_DIR \
+    $IMAGE \
+    bash -c "
+        pip install --user -e .
+        pip install --user -r requirements.txt
+        export PATH=\$HOME/.local/bin:\$PATH
+    "
+
 module purge
 module load apptainer compiler/gcc/11 openmpi/4.1
 
@@ -18,7 +30,7 @@ MAGENTA='\033[0;35m'
 NC='\033[0m' # No Color
 
 # Configuration
-PYTHON_CMD="python"
+PYTHON_CMD="python3"
 BASE_DIR=$(pwd)
 SIM_DIR="simulate/simulate_CURRENT"  # or simulate/simulate_OLD
 OUTPUT_BASE="results"
@@ -41,7 +53,7 @@ mkdir -p "$OUTPUT_BASE"
 
 echo -e "${CYAN}${BOLD}"
 echo "==================================================="
-echo "       BN_Ecology Simulation Execution Tool        "
+echo "BN_Ecology Simulation Execution Tool"
 echo "==================================================="
 echo -e "${NC}"
 
