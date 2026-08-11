@@ -29,7 +29,7 @@ if [ ! -d "$VENV_DIR" ]; then
     echo -e "${YELLOW}First time setup detected: Creating Python virtual environment...${NC}"
     module purge
     # MINIMAL CHANGE: Added openmpi so mpi4py compiles against the cluster hardware
-    module load python/3.10 openmpi/4.1.5 compiler/gcc/11 2>/dev/null || module load python/3.10 openmpi/4.1.5
+    module load compiler/gcc/11 openmpi/4.1 python/3.10
     python3 -m venv "$VENV_DIR"
     source "$VENV_DIR/bin/activate"
     # MINIMAL CHANGE: Added --no-cache-dir so pip doesn't reuse the broken, cached mpi4py install
@@ -103,13 +103,13 @@ cat <<EOF > "$BATCH_FILE"
 # Setup compute node environment
 module purge
 # MINIMAL CHANGE: Ensured openmpi is loaded on the compute node
-module load python/3.10 openmpi/4.1.5 compiler/gcc/11 2>/dev/null || module load python/3.10 openmpi/4.1.5
+module load compiler/gcc/11 openmpi/4.1 python/3.10
 
 # Activate virtual environment
 source "${VENV_DIR}/bin/activate"
 
 # Add top-level project directory to Python search path
-export PYTHONPATH="${PROJECT_DIR}:\${PYTHONPATH}"
+export PYTHONPATH="${PROJECT_DIR}\${PYTHONPATH:+:\${PYTHONPATH}}"
 
 # Export variables for Python multiprocessing (keeping variables for backwards compatibility)
 export SIM_OUTPUT_DIR="${RUN_OUT_DIR}"
@@ -122,8 +122,7 @@ echo "==================================================="
 echo "Starting Execution: ${SCRIPT_NAME}"
 echo "==================================================="
 
-# MINIMAL CHANGE: Added srun so Slurm initializes the MPI environment across all requested nodes
-srun python3 "${PROJECT_DIR}/${SCRIPT_PATH}"
+mpirun python3 "${PROJECT_DIR}/${SCRIPT_PATH}"
 EOF
 
 # Generate JSON Run Record
