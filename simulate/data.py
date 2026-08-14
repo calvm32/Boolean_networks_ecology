@@ -43,22 +43,6 @@ def stumphouse_tunnel_data():
 
     return data
 
-
-#Illinois Dep of Natural Resources
-def Site_H():
-    data = [
-        {"year": 2007, "day": 15, "Tri_Hi": 4, "Misc_Hi": 0, "In": 0},
-        {"year": 2009, "day": 46, "Tri_Hi": 3, "Misc_Hi": 0, "In": 0},
-        {"year": 2010, "day": 46, "Tri_Hi": 4, "Misc_Hi": 0, "In": 0},
-        {"year": 2012, "day": 15, "Tri_Hi": 11, "Misc_Hi": 0, "In": 0},
-        {"year": 2013, "day": 15, "Tri_Hi": 9, "Misc_Hi": 0, "In": 0},
-        {"year": 2014, "day": 46, "Tri_Hi": 20, "Misc_Hi": 0, "In": 0},
-        {"year": 2015, "day": 15, "Tri_Hi": 34, "Misc_Hi": 0, "In": 0},
-        {"year": 2016, "day": 15, "Tri_Hi": 3, "Misc_Hi": 0, "In": 0},
-    ]
-
-    return data
-
 #Illinois Dep of Natural Resources
 def Site_I():
     data = [
@@ -72,22 +56,6 @@ def Site_I():
         {"year": 2015, "day": 46, "Tri_Hi": 417, "Misc_Hi": 0, "In": 0},
         {"year": 2016, "day": 46, "Tri_Hi": 468, "Misc_Hi": 0, "In": 0},
 
-    ]
-
-    return data
-
-#Illinois Dep of Natural Resources
-def Site_K():
-    data = [
-        {"year": 2009, "day": 15, "Tri_Hi": 3, "Misc_Hi": 0, "In": 0},
-        {"year": 2010, "day": 15, "Tri_Hi": 4, "Misc_Hi": 0, "In": 0},
-        {"year": 2012, "day": 15, "Tri_Hi": 13, "Misc_Hi": 0, "In": 0},
-        {"year": 2013, "day": 15, "Tri_Hi": 5, "Misc_Hi": 0, "In": 0},
-        {"year": 2014, "day": 46, "Tri_Hi": 10, "Misc_Hi": 0, "In": 0},
-        {"year": 2015, "day": 46, "Tri_Hi": 18, "Misc_Hi": 0, "In": 0},
-        {"year": 2016, "day": 46, "Tri_Hi": 0, "Misc_Hi": 0, "In": 0},
-        {"year": 2017, "day": 15, "Tri_Hi": 2, "Misc_Hi": 0, "In": 0},
-        {"year": 2019, "day": 46, "Tri_Hi": 2, "Misc_Hi": 0, "In": 0},
     ]
 
     return data
