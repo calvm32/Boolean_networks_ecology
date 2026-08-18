@@ -9,26 +9,6 @@ from simulate.simulate_CURRENT.rules import *
 from simulate.simulate_CURRENT.simulate import *
 from simulate.data import *
 
-# --------------------
-# set up control group
-# --------------------
-
-data = happy_jack_data()
-
-START_YEAR = data[0]["year"]
-SAMPLE_DAY = data[0]["day"]
-
-obs_times = []
-obs_Hi = []
-obs_In = []
-
-for d in data:
-    t = d["day"] + 365*(d["year"]-START_YEAR)
-    
-    obs_times.append(t)
-    obs_Hi.append(d["Tri_Hi"] + d["Misc_Hi"])
-    obs_In.append(d["In"])
-
 # ==========================================================================================================================
 # ==========================================================================================================================
 # ==========================================================================================================================
@@ -132,7 +112,7 @@ BOUNDS = {
     "win_start": (200.0, 350.0),
     "lambda_win": (0, 0.0001),
     "lambda_sum": (0.0001, 0.0004),
-    "disp_r": (0, 100),
+    "disp_r": (0.01, 100),
 }
 
 PARAM_KEYS = list(BOUNDS.keys())
@@ -151,24 +131,42 @@ def array_to_params(arr):
     
 def loss(parameters, runs=5):
     losses = []
-    r = parameters.get("disp_r")
+    r = parameters["disp_r"]
+
+    if not np.isfinite(r) or r <= 0:
+        return np.inf
 
     for _ in range(runs):
-        sim = simulate(make_initial_state(Hi_list, num_infected), steps=max(obs_times)+1, parameters=parameters, Print=False)
+        sim = simulate(
+            make_initial_state(Hi_list, num_infected),
+            steps=max(obs_times) + 1,
+            parameters=parameters,
+            Print=False
+        )
 
         nll = 0.0
+
         for i, t in enumerate(obs_times):
-            pred = sim["Hi"][t]
-            obs = obs_Hi[i]
+            pred = float(sim["Hi"][t])
+            obs = int(obs_Hi[i])
 
-            pred = max(pred, 1e-9) # remove log(0) domain errs if predicts extinction
-            p = r / (r + pred) # for variance = pred + (pred^2 / r)
+            if not np.isfinite(pred):
+                return np.inf
 
-            # log likelihood based on NB2
-            ll = (gammaln(obs + r) - gammaln(obs + 1) - gammaln(r) 
-                  + r * np.log(p) + obs * np.log(1 - p))
-            
-            nll -= ll # subtracted b/c we're trying to minimize
+            pred = max(pred, 1e-12)
+
+            ll = (
+                gammaln(obs + r)
+                - gammaln(obs + 1)
+                - gammaln(r)
+                + r * (np.log(r) - np.log(r + pred))
+                + obs * (np.log(pred) - np.log(r + pred))
+            )
+
+            if not np.isfinite(ll):
+                return np.inf
+
+            nll -= ll
 
         losses.append(nll)
 
@@ -204,7 +202,8 @@ def main():
         pbests = np.copy(positions)
         pbest_scores = np.full(num_particles, np.inf)
         
-        gbest = np.zeros(NUM_DIMS)
+        # Initialize gbest to a valid coordinate inside the search space bounds
+        gbest = np.copy(positions[0])
         gbest_score = np.inf
         
         print(f"Starting MPI Parallel PSO Optimization with {num_particles} particles on {size} nodes over {max_iterations} iterations...\n")
@@ -249,8 +248,10 @@ def main():
             
             # Update Velocities and Positions
             for i in range(num_particles):
-                r1, r2 = np.random.rand(), np.random.rand()
-                
+                # Generate a random coefficient for EVERY dimension independently
+                r1 = np.random.rand(NUM_DIMS)
+                r2 = np.random.rand(NUM_DIMS)
+                                
                 # PSO Velocity update formula
                 velocities[i] = (w * velocities[i] + 
                                  c1 * r1 * (pbests[i] - positions[i]) + 
@@ -302,4 +303,33 @@ def main():
                                 sample=[obs_times, obs_Hi])
 
 if __name__ == "__main__":
+
+    comm = MPI.COMM_WORLD
+    rank = comm.Get_rank()
+    size = comm.Get_size()
+
+    # --------------------
+    # set up control group
+    # --------------------
+
+    # only read on rank 0 to avoid severe I/O crashes, etc.
+    if rank == 0:
+        data = happy_jack_data()
+        obs_package = [] # obs_times, obs_Hi count, obs_In count
+        
+        START_YEAR = data[0]["year"]
+        for d in data:
+            t = d["day"] + 365*(d["year"]-START_YEAR)
+            obs_package.append((t, d["Tri_Hi"] + d["Misc_Hi"], d["In"]))
+    else:
+        obs_package = None
+
+    # Broadcast from rank 0 to all other ranks via memory
+    obs_package = comm.bcast(obs_package, root=0)
+
+    # Unpack on all nodes
+    obs_times = [item[0] for item in obs_package]
+    obs_Hi = [item[1] for item in obs_package]
+    obs_In = [item[2] for item in obs_package]
+
     main()
