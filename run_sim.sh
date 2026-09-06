@@ -69,7 +69,7 @@ done
 # Resource Allocation
 # -------------------
 
-echo -e "\n${CYAN}${BOLD}⚡ Resource Configuration${NC}"
+echo -e "\n${CYAN}${BOLD}Resource Configuration${NC}"
 
 # Split cores into nodes and tasks for correct MPI execution
 read -p "  Enter number of nodes [Default: 1]: " USER_NODES
@@ -87,7 +87,7 @@ MEM_GB=$((NUM_TASKS * 4))
 # Custom Run Identification
 # -------------------------
 
-echo -e "\n${CYAN}${BOLD}🏷️ Run Identification${NC}"
+echo -e "\n${CYAN}${BOLD}Run Identification${NC}"
 read -p "  Enter a custom name to append to the output folder (press Enter to skip): " CUSTOM_NAME
 # Sanitize the name by replacing spaces with underscores to prevent path issues
 CUSTOM_NAME=${CUSTOM_NAME// /_}
