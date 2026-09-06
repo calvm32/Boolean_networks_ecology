@@ -1,5 +1,5 @@
 #!/bin/bash
-# Boolean Networks Ecology Simulation Execution Tool (Pure Python)
+# Boolean Networks Ecology Simulation Execution Tool
 
 set -e
 
@@ -23,7 +23,9 @@ echo "Boolean Networks Ecology Simulation Execution Tool"
 echo "==================================================="
 echo -e "${NC}"
 
+# -----------------------------
 # Environment Setup (Runs ONCE)
+# -----------------------------
 
 if [ ! -d "$VENV_DIR" ]; then
     echo -e "${YELLOW}First time setup detected: Creating Python virtual environment...${NC}"
@@ -41,7 +43,6 @@ MAX_CORES=$(nproc 2> /dev/null || echo 64)
 mkdir -p "$OUTPUT_BASE"
 
 # Script Selection
-
 mapfile -t SCRIPTS < <(find "$SIM_DIR" -type f -name "*.py" ! -name "__init__.py" ! -name "helper_funcs.py" ! -name "rules*.py" ! -name "working_params.py" | sort)
 
 if [ ${#SCRIPTS[@]} -eq 0 ]; then
@@ -64,11 +65,13 @@ select SCRIPT_PATH in "${SCRIPTS[@]}" "Quit"; do
     fi
 done
 
+# -------------------
 # Resource Allocation
+# -------------------
 
 echo -e "\n${CYAN}${BOLD}⚡ Resource Configuration${NC}"
 
-# MINIMAL CHANGE: Split cores into nodes and tasks for correct MPI execution
+# Split cores into nodes and tasks for correct MPI execution
 read -p "  Enter number of nodes [Default: 1]: " USER_NODES
 NUM_NODES=${USER_NODES:-1}
 
@@ -80,15 +83,32 @@ WALLTIME=${USER_TIME:-12:00:00}
 
 MEM_GB=$((NUM_TASKS * 4))
 
-# Organization
+# -------------------------
+# Custom Run Identification
+# -------------------------
 
+echo -e "\n${CYAN}${BOLD}🏷️ Run Identification${NC}"
+read -p "  Enter a custom name to append to the output folder (press Enter to skip): " CUSTOM_NAME
+# Sanitize the name by replacing spaces with underscores to prevent path issues
+CUSTOM_NAME=${CUSTOM_NAME// /_}
+
+# Datae/time organization
 TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
-RUN_OUT_DIR="${OUTPUT_BASE}/${TIMESTAMP}_${SCRIPT_NAME}"
+
+# Determine final output directory name based on whether a custom name was provided
+if [ -n "$CUSTOM_NAME" ]; then
+    RUN_OUT_DIR="${OUTPUT_BASE}/${TIMESTAMP}_${SCRIPT_NAME}_${CUSTOM_NAME}"
+else
+    RUN_OUT_DIR="${OUTPUT_BASE}/${TIMESTAMP}_${SCRIPT_NAME}"
+fi
+
 mkdir -p "$RUN_OUT_DIR/data" "$RUN_OUT_DIR/figures" "$RUN_OUT_DIR/logs"
 
 BATCH_FILE="$RUN_OUT_DIR/submit_${SCRIPT_NAME}.sh"
 
+# ---------------------------
 # Generate SLURM Batch Script
+# ---------------------------
 
 cat <<EOF > "$BATCH_FILE"
 #!/bin/bash
@@ -130,6 +150,7 @@ cat <<EOF > "$RUN_OUT_DIR/run_info.json"
 {
   "script": "$SCRIPT_PATH",
   "timestamp": "$TIMESTAMP",
+  "custom_name": "$CUSTOM_NAME",
   "allocated_nodes": $NUM_NODES,
   "tasks_per_node": $NUM_TASKS,
   "walltime": "$WALLTIME",
@@ -138,7 +159,9 @@ cat <<EOF > "$RUN_OUT_DIR/run_info.json"
 }
 EOF
 
+# ----------------
 # Queue Submission
+# ----------------
 
 echo -e "\n${GREEN}✓ Execution Environment Prepared${NC}"
 echo -e "==================================================="
