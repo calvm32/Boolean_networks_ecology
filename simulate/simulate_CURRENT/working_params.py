@@ -84,7 +84,8 @@ New best: 49.20221468909322     'T_seasonal': 55.77824894316202, 'win_length': 1
 # -----------------
 # -----------------
 
-# SITE I:
+# Site_I:
 # GLOBAL BEST LOSS: 52.709596942061275
 # GLOBAL BEST PARAMS: {'inf_alpha': 5, 'inf_beta': 2, 'delta': 0.05, 'T_inf': 30, 'T_TBD': 4.1, 'T_AD': 0.06145833333333333, 'res_max': 0.2, 'k_imm': 1, 'theta_imm': 1, 'res_gain': 0.02, 
 #                               'T_seasonal': np.float64(40.04074294169094), 'win_length': np.float64(120.17282871131601), 'win_start': np.float64(293.01449379420217), 'lambda_win': np.float64(4.0017928869958956e-05), 'lambda_sum': np.float64(0.00039898965923656284), 'disp_r': np.float64(6.184852563646658)}
+

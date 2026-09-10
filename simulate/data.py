@@ -18,61 +18,7 @@ def happy_jack_data():
     return data
 
 # Indiana DNR Hibernaculum Colony Counts
-def Broughs_Tunnel():
-    data = [
-        {"year": 1975, "day": 1, "Tri_Hi": 3, "Misc_Hi": 0, "In": 0},
-        {"year": 1976, "day": 1, "Tri_Hi": 1, "Misc_Hi": 0, "In": 0},
-        {"year": 1977, "day": 1, "Tri_Hi": 3, "Misc_Hi": 0, "In": 0},
-        {"year": 1987, "day": 1, "Tri_Hi": 8, "Misc_Hi": 0, "In": 0},
-        {"year": 1989, "day": 1, "Tri_Hi": 1, "Misc_Hi": 0, "In": 0},
-        {"year": 1990, "day": 1, "Tri_Hi": 3, "Misc_Hi": 0, "In": 0},
-        {"year": 1991, "day": 1, "Tri_Hi": 2, "Misc_Hi": 0, "In": 0},
-        {"year": 1992, "day": 1, "Tri_Hi": 3, "Misc_Hi": 0, "In": 0},
-        {"year": 1993, "day": 1, "Tri_Hi": 4, "Misc_Hi": 0, "In": 0},
-        {"year": 1994, "day": 1, "Tri_Hi": 1, "Misc_Hi": 0, "In": 0},
-        {"year": 1995, "day": 1, "Tri_Hi": 4, "Misc_Hi": 0, "In": 0},
-        {"year": 1996, "day": 1, "Tri_Hi": 1, "Misc_Hi": 0, "In": 0},
-        {"year": 1997, "day": 1, "Tri_Hi": 8, "Misc_Hi": 0, "In": 0},
-        {"year": 1998, "day": 1, "Tri_Hi": 5, "Misc_Hi": 0, "In": 0},
-        # {"year": 2012, "day": 1, "Tri_Hi": 1, "Misc_Hi": 0, "In": 0},
-        # {"year": 2014, "day": 1, "Tri_Hi": 4, "Misc_Hi": 0, "In": 0},
-        # {"year": 2016, "day": 1, "Tri_Hi": 1, "Misc_Hi": 0, "In": 0},
-        # {"year": 2018, "day": 1, "Tri_Hi": 1, "Misc_Hi": 0, "In": 0},
-        # {"year": 2020, "day": 1, "Tri_Hi": 0, "Misc_Hi": 0, "In": 0},
-        # {"year": 2022, "day": 1, "Tri_Hi": 1, "Misc_Hi": 0, "In": 0},
-    ]
-
-    return data
-
-# Indiana DNR Hibernaculum Colony Counts
-def Twin_Domes():
-    data = [
-        {"year": 1981, "day": 1, "Tri_Hi": 0, "Misc_Hi": 0, "In": 0},
-        {"year": 1985, "day": 1, "Tri_Hi": 0, "Misc_Hi": 0, "In": 0},
-        {"year": 1987, "day": 1, "Tri_Hi": 0, "Misc_Hi": 0, "In": 0},
-        {"year": 1989, "day": 1, "Tri_Hi": 1, "Misc_Hi": 0, "In": 0},
-        {"year": 1991, "day": 1, "Tri_Hi": 8, "Misc_Hi": 0, "In": 0},
-        {"year": 1993, "day": 1, "Tri_Hi": 2, "Misc_Hi": 0, "In": 0},
-        {"year": 1995, "day": 1, "Tri_Hi": 10, "Misc_Hi": 0, "In": 0},
-        {"year": 1997, "day": 1, "Tri_Hi": 0, "Misc_Hi": 0, "In": 0},
-        {"year": 1999, "day": 1, "Tri_Hi": 0, "Misc_Hi": 0, "In": 0},
-        {"year": 2001, "day": 1, "Tri_Hi": 4, "Misc_Hi": 0, "In": 0},
-        {"year": 2003, "day": 1, "Tri_Hi": 4, "Misc_Hi": 0, "In": 0},
-        {"year": 2005, "day": 1, "Tri_Hi": 29, "Misc_Hi": 0, "In": 0},
-        {"year": 2007, "day": 1, "Tri_Hi": 7, "Misc_Hi": 0, "In": 0},
-        {"year": 2009, "day": 1, "Tri_Hi": 4, "Misc_Hi": 0, "In": 0},
-        {"year": 2011, "day": 1, "Tri_Hi": 4, "Misc_Hi": 0, "In": 0},
-        {"year": 2013, "day": 1, "Tri_Hi": 8, "Misc_Hi": 0, "In": 0},
-        # {"year": 2015, "day": 1, "Tri_Hi": 1, "Misc_Hi": 0, "In": 0},
-        # {"year": 2017, "day": 1, "Tri_Hi": 0, "Misc_Hi": 0, "In": 0},
-        # {"year": 2019, "day": 1, "Tri_Hi": 1, "Misc_Hi": 0, "In": 0},
-        # {"year": 2022, "day": 1, "Tri_Hi": 7, "Misc_Hi": 0, "In": 0},
-    ]
-
-    return data
-
-# Indiana DNR Hibernaculum Colony Counts
-def Wyandotte_historic_ent_():
+def Wyandotte_historic_ent_(): # DONE BY NICK
     data = [
         {"year": 1981, "day": 1, "Tri_Hi": 2, "Misc_Hi": 0, "In": 0},
         {"year": 1985, "day": 1, "Tri_Hi": 1, "Misc_Hi": 0, "In": 0},
@@ -150,34 +96,6 @@ def Rays():
         # {"year": 2017, "day": 1, "Tri_Hi": 10, "Misc_Hi": 0, "In": 0},
         # {"year": 2019, "day": 1, "Tri_Hi": 1, "Misc_Hi": 0, "In": 0},
         # {"year": 2022, "day": 1, "Tri_Hi": 7, "Misc_Hi": 0, "In": 0},
-    ]
-
-    return data
-
-# Indiana DNR Hibernaculum Colony Counts
-def Grotto():
-    data = [
-        {"year": 1981, "day": 1, "Tri_Hi": 2, "Misc_Hi": 0, "In": 0},
-        {"year": 1982, "day": 1, "Tri_Hi": 44, "Misc_Hi": 0, "In": 0},
-        {"year": 1985, "day": 1, "Tri_Hi": 8, "Misc_Hi": 0, "In": 0},
-        {"year": 1987, "day": 1, "Tri_Hi": 1, "Misc_Hi": 0, "In": 0},
-        {"year": 1989, "day": 1, "Tri_Hi": 0, "Misc_Hi": 0, "In": 0},
-        {"year": 1991, "day": 1, "Tri_Hi": 5, "Misc_Hi": 0, "In": 0},
-        {"year": 1993, "day": 1, "Tri_Hi": 8, "Misc_Hi": 0, "In": 0},
-        {"year": 1995, "day": 1, "Tri_Hi": 32, "Misc_Hi": 0, "In": 0},
-        {"year": 1997, "day": 1, "Tri_Hi": 44, "Misc_Hi": 0, "In": 0},
-        {"year": 1999, "day": 1, "Tri_Hi": 100, "Misc_Hi": 0, "In": 0},
-        {"year": 2001, "day": 1, "Tri_Hi": 57, "Misc_Hi": 0, "In": 0},
-        {"year": 2003, "day": 1, "Tri_Hi": 85, "Misc_Hi": 0, "In": 0},
-        {"year": 2005, "day": 1, "Tri_Hi": 84, "Misc_Hi": 0, "In": 0},
-        {"year": 2007, "day": 1, "Tri_Hi": 99, "Misc_Hi": 0, "In": 0},
-        {"year": 2009, "day": 1, "Tri_Hi": 116, "Misc_Hi": 0, "In": 0},
-        {"year": 2011, "day": 1, "Tri_Hi": 134, "Misc_Hi": 0, "In": 0},
-        # {"year": 2013, "day": 1, "Tri_Hi": 5, "Misc_Hi": 0, "In": 0},
-        # {"year": 2015, "day": 1, "Tri_Hi": 1, "Misc_Hi": 0, "In": 0},
-        # {"year": 2017, "day": 1, "Tri_Hi": 2, "Misc_Hi": 0, "In": 0},
-        # {"year": 2019, "day": 1, "Tri_Hi": 2, "Misc_Hi": 0, "In": 0},
-        # {"year": 2022, "day": 1, "Tri_Hi": 4, "Misc_Hi": 0, "In": 0},
     ]
 
     return data
@@ -304,23 +222,6 @@ def River():
     return data
 
 # Indiana DNR Hibernaculum Colony Counts
-def Sullivan():
-    data = [
-        {"year": 1982, "day": 1, "Tri_Hi": 0, "Misc_Hi": 0, "In": 0},
-        {"year": 2004, "day": 1, "Tri_Hi": 83, "Misc_Hi": 0, "In": 0},
-        {"year": 2005, "day": 1, "Tri_Hi": 18, "Misc_Hi": 0, "In": 0},
-        {"year": 2007, "day": 1, "Tri_Hi": 19, "Misc_Hi": 0, "In": 0},
-        {"year": 2012, "day": 1, "Tri_Hi": 170, "Misc_Hi": 0, "In": 0},
-        # {"year": 2014, "day": 1, "Tri_Hi": 25, "Misc_Hi": 0, "In": 0},
-        # {"year": 2016, "day": 1, "Tri_Hi": 12, "Misc_Hi": 0, "In": 0},
-        # {"year": 2018, "day": 1, "Tri_Hi": 21, "Misc_Hi": 0, "In": 0},
-        # {"year": 2020, "day": 1, "Tri_Hi": 19, "Misc_Hi": 0, "In": 0},
-        # {"year": 2022, "day": 1, "Tri_Hi": 20, "Misc_Hi": 0, "In": 0},
-    ]
-
-    return data
-
-# Indiana DNR Hibernaculum Colony Counts
 def Clyfty():
     data = [
         {"year": 1982, "day": 1, "Tri_Hi": 46, "Misc_Hi": 0, "In": 0},
@@ -422,26 +323,6 @@ def Jug_Hole_Harrison_():
     return data
 
 # Indiana DNR Hibernaculum Colony Counts
-def Parkers_Pit():
-    data = [
-        {"year": 1987, "day": 1, "Tri_Hi": 18, "Misc_Hi": 0, "In": 0},
-        {"year": 1989, "day": 1, "Tri_Hi": 6, "Misc_Hi": 0, "In": 0},
-        {"year": 1991, "day": 1, "Tri_Hi": 14, "Misc_Hi": 0, "In": 0},
-        {"year": 1993, "day": 1, "Tri_Hi": 7, "Misc_Hi": 0, "In": 0},
-        {"year": 1995, "day": 1, "Tri_Hi": 4, "Misc_Hi": 0, "In": 0},
-        {"year": 1997, "day": 1, "Tri_Hi": 6, "Misc_Hi": 0, "In": 0},
-        {"year": 1999, "day": 1, "Tri_Hi": 5, "Misc_Hi": 0, "In": 0},
-        {"year": 2001, "day": 1, "Tri_Hi": 4, "Misc_Hi": 0, "In": 0},
-        {"year": 2003, "day": 1, "Tri_Hi": 5, "Misc_Hi": 0, "In": 0},
-        {"year": 2005, "day": 1, "Tri_Hi": 8, "Misc_Hi": 0, "In": 0},
-        {"year": 2007, "day": 1, "Tri_Hi": 13, "Misc_Hi": 0, "In": 0},
-        {"year": 2009, "day": 1, "Tri_Hi": 2, "Misc_Hi": 0, "In": 0},
-        # {"year": 2022, "day": 1, "Tri_Hi": 15, "Misc_Hi": 0, "In": 0},
-    ]
-
-    return data
-
-# Indiana DNR Hibernaculum Colony Counts
 def King_Blair_Brinegar():
     data = [
         {"year": 1987, "day": 1, "Tri_Hi": 205, "Misc_Hi": 0, "In": 0},
@@ -483,29 +364,6 @@ def Leonard_Spring():
     return data
 
 # Indiana DNR Hibernaculum Colony Counts
-def Wallier():
-    data = [
-        {"year": 1991, "day": 1, "Tri_Hi": 7, "Misc_Hi": 0, "In": 0},
-        {"year": 1993, "day": 1, "Tri_Hi": 18, "Misc_Hi": 0, "In": 0},
-        {"year": 1995, "day": 1, "Tri_Hi": 9, "Misc_Hi": 0, "In": 0},
-        {"year": 1997, "day": 1, "Tri_Hi": 18, "Misc_Hi": 0, "In": 0},
-        {"year": 1999, "day": 1, "Tri_Hi": 6, "Misc_Hi": 0, "In": 0},
-        {"year": 2001, "day": 1, "Tri_Hi": 8, "Misc_Hi": 0, "In": 0},
-        {"year": 2003, "day": 1, "Tri_Hi": 19, "Misc_Hi": 0, "In": 0},
-        {"year": 2005, "day": 1, "Tri_Hi": 7, "Misc_Hi": 0, "In": 0},
-        {"year": 2007, "day": 1, "Tri_Hi": 16, "Misc_Hi": 0, "In": 0},
-        {"year": 2009, "day": 1, "Tri_Hi": 20, "Misc_Hi": 0, "In": 0},
-        {"year": 2011, "day": 1, "Tri_Hi": 27, "Misc_Hi": 0, "In": 0},
-        # {"year": 2013, "day": 1, "Tri_Hi": 10, "Misc_Hi": 0, "In": 0},
-        # {"year": 2015, "day": 1, "Tri_Hi": 1, "Misc_Hi": 0, "In": 0},
-        # {"year": 2017, "day": 1, "Tri_Hi": 4, "Misc_Hi": 0, "In": 0},
-        # {"year": 2019, "day": 1, "Tri_Hi": 0, "Misc_Hi": 0, "In": 0},
-        # {"year": 2022, "day": 1, "Tri_Hi": 6, "Misc_Hi": 0, "In": 0},
-    ]
-
-    return data
-
-# Indiana DNR Hibernaculum Colony Counts
 def Binkley_historic_ent_():
     data = [
         {"year": 1997, "day": 1, "Tri_Hi": 17, "Misc_Hi": 0, "In": 0},
@@ -532,22 +390,6 @@ def Richs_Cave():
         {"year": 2015, "day": 34, "Tri_Hi": 67, "Misc_Hi": 0, "In": 0},
         # {"year": 2022, "day": 45, "Tri_Hi": 45, "Misc_Hi": 0, "In": 0},
         # {"year": 2023, "day": 51, "Tri_Hi": 8, "Misc_Hi": 0, "In": 0},
-    ]
-
-    return data
-
-# Shawnee National Forest
-def Brasher_Cave():
-    data = [
-        {"year": 1999, "day": 346, "Tri_Hi": 3, "Misc_Hi": 0, "In": 0},
-        {"year": 1999, "day": 352, "Tri_Hi": 4, "Misc_Hi": 0, "In": 0},
-        {"year": 2000, "day": 52, "Tri_Hi": 6, "Misc_Hi": 0, "In": 0},
-        {"year": 2001, "day": 19, "Tri_Hi": 9, "Misc_Hi": 0, "In": 0},
-        {"year": 2003, "day": 22, "Tri_Hi": 15, "Misc_Hi": 0, "In": 0},
-        {"year": 2007, "day": 50, "Tri_Hi": 18, "Misc_Hi": 0, "In": 0},
-        {"year": 2013, "day": 1, "Tri_Hi": 71, "Misc_Hi": 0, "In": 0},
-        # {"year": 2015, "day": 36, "Tri_Hi": 2, "Misc_Hi": 0, "In": 0},
-        # {"year": 2022, "day": 29, "Tri_Hi": 7, "Misc_Hi": 0, "In": 0},
     ]
 
     return data
@@ -624,22 +466,6 @@ def Site_BB():
         {"year": 2007, "day": 50, "Tri_Hi": 90, "Misc_Hi": 0, "In": 0},
         {"year": 2009, "day": 50, "Tri_Hi": 133, "Misc_Hi": 0, "In": 0},
         {"year": 2010, "day": 50, "Tri_Hi": 290, "Misc_Hi": 0, "In": 0},
-    ]
-
-    return data
-
-# Illinois Department of Natural Resources
-def Site_H():
-    data = [
-        {"year": 2004, "day": 45, "Tri_Hi": 2, "Misc_Hi": 0, "In": 0},
-        {"year": 2007, "day": 15, "Tri_Hi": 4, "Misc_Hi": 0, "In": 0},
-        {"year": 2009, "day": 45, "Tri_Hi": 3, "Misc_Hi": 0, "In": 0},
-        {"year": 2010, "day": 45, "Tri_Hi": 4, "Misc_Hi": 0, "In": 0},
-        {"year": 2012, "day": 15, "Tri_Hi": 11, "Misc_Hi": 0, "In": 0},
-        # {"year": 2013, "day": 15, "Tri_Hi": 9, "Misc_Hi": 0, "In": 0},
-        # {"year": 2014, "day": 45, "Tri_Hi": 20, "Misc_Hi": 0, "In": 0},
-        # {"year": 2015, "day": 15, "Tri_Hi": 34, "Misc_Hi": 0, "In": 0},
-        # {"year": 2016, "day": 15, "Tri_Hi": 3, "Misc_Hi": 0, "In": 0},
     ]
 
     return data
@@ -730,26 +556,6 @@ def MSHC():
     ]
 
     return data
-    return data
-
-# Wisconsin DNR Colony Counts
-def GVDTVC():
-    data = [
-        {"year": 2011, "day": 31, "Tri_Hi": 1, "Misc_Hi": 0, "In": 0},
-        {"year": 2012, "day": 31, "Tri_Hi": 1, "Misc_Hi": 0, "In": 0},
-        {"year": 2013, "day": 31, "Tri_Hi": 3, "Misc_Hi": 0, "In": 0},
-        {"year": 2014, "day": 31, "Tri_Hi": 5, "Misc_Hi": 0, "In": 0},
-        {"year": 2015, "day": 31, "Tri_Hi": 8, "Misc_Hi": 0, "In": 0},
-        # {"year": 2016, "day": 31, "Tri_Hi": 3, "Misc_Hi": 0, "In": 0},
-        # {"year": 2017, "day": 31, "Tri_Hi": 1, "Misc_Hi": 0, "In": 0},
-        # {"year": 2018, "day": 31, "Tri_Hi": 2, "Misc_Hi": 0, "In": 0},
-        # {"year": 2019, "day": 31, "Tri_Hi": 4, "Misc_Hi": 0, "In": 0},
-        # {"year": 2020, "day": 31, "Tri_Hi": 6, "Misc_Hi": 0, "In": 0},
-        # {"year": 2021, "day": 344, "Tri_Hi": 6, "Misc_Hi": 0, "In": 0},
-        # {"year": 2023, "day": 62, "Tri_Hi": 3, "Misc_Hi": 0, "In": 0},
-    ]
-
-    return data
 
 # Wisconsin DNR Colony Counts
 def RGSC():
@@ -824,22 +630,6 @@ def EST3():
         # {"year": 2019, "day": 65, "Tri_Hi": 4, "Misc_Hi": 0, "In": 0},
         # {"year": 2022, "day": 64, "Tri_Hi": 0, "Misc_Hi": 0, "In": 0},
         # {"year": 2023, "day": 56, "Tri_Hi": 1, "Misc_Hi": 0, "In": 0},
-    ]
-
-    return data
-
-# Wisconsin DNR Colony Counts
-def MCNH():
-    data = [
-        {"year": 2011, "day": 31, "Tri_Hi": 4, "Misc_Hi": 0, "In": 0},
-        {"year": 2012, "day": 31, "Tri_Hi": 4, "Misc_Hi": 0, "In": 0},
-        {"year": 2013, "day": 31, "Tri_Hi": 6, "Misc_Hi": 0, "In": 0},
-        {"year": 2014, "day": 31, "Tri_Hi": 8, "Misc_Hi": 0, "In": 0},
-        {"year": 2015, "day": 31, "Tri_Hi": 17, "Misc_Hi": 0, "In": 0},
-        {"year": 2016, "day": 31, "Tri_Hi": 20, "Misc_Hi": 0, "In": 0},
-        # {"year": 2017, "day": 31, "Tri_Hi": 13, "Misc_Hi": 0, "In": 0},
-        # {"year": 2018, "day": 31, "Tri_Hi": 0, "Misc_Hi": 0, "In": 0},
-        # {"year": 2019, "day": 31, "Tri_Hi": 0, "Misc_Hi": 0, "In": 0},
     ]
 
     return data
