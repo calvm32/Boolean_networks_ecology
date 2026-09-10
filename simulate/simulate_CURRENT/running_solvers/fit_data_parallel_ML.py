@@ -322,7 +322,7 @@ if __name__ == "__main__":
 
     # only read on rank 0 to avoid severe I/O crashes, etc.
     if rank == 0:
-        data = Site_I()
+        data = Site_J()
         obs_package = [] # obs_times, obs_Hi count, obs_In count
         
         START_YEAR = data[0]["year"]
