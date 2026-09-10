@@ -3,6 +3,7 @@ import numpy as np
 import copy
 from mpi4py import MPI
 from scipy.special import gammaln
+import time
 
 from simulate.simulate_CURRENT.helper_funcs import *
 from simulate.simulate_CURRENT.rules import *
@@ -12,6 +13,8 @@ from simulate.data import *
 # ==========================================================================================================================
 # ==========================================================================================================================
 # ==========================================================================================================================
+
+start = time.perf_counter()
 
 # -------------------------
 # set up initial population
@@ -110,7 +113,7 @@ BOUNDS = {
     "T_seasonal": (40.0, 80.0),
     "win_length": (120.0, 240.0),
     "win_start": (200.0, 350.0),
-    "lambda_win": (0, 0.0001),
+    "lambda_win": (0, 0.00001),
     "lambda_sum": (0.0001, 0.0004),
     "disp_r": (0.01, 100),
 }
@@ -287,6 +290,11 @@ def main():
     
     if rank == 0:
         best_final_params = array_to_params(gbest)
+
+        end = time.perf_counter()
+
+        elapsed_seconds = end - start
+        print(f"Wall-clock time: {elapsed_seconds} seconds")
         
         print("\n=============================================")
         print("OPTIMIZATION COMPLETE")
