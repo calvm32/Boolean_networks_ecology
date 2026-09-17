@@ -316,13 +316,16 @@ if __name__ == "__main__":
     rank = comm.Get_rank()
     size = comm.Get_size()
 
-    # --------------------
+# --------------------
     # set up control group
     # --------------------
 
     # only read on rank 0 to avoid severe I/O crashes, etc.
     if rank == 0:
-        data = Site_J()
+        import os
+        site_name = os.environ.get("SITE_NAME", "Site_J")
+        print(f"Executing optimization for dataset: {site_name}")
+        data = globals()[site_name]()
         obs_package = [] # obs_times, obs_Hi count, obs_In count
         
         START_YEAR = data[0]["year"]

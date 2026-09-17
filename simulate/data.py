@@ -1,21 +1,21 @@
 # nebraska mine 1
-def happy_jack_data():
-    data = [
-        {"year": 2014, "day": 106, "Tri_Hi": 62, "Misc_Hi": 0, "In": 0},
-        {"year": 2015, "day": 109, "Tri_Hi": 52, "Misc_Hi": 0, "In": 0},
-        {"year": 2016, "day": 116, "Tri_Hi": 72, "Misc_Hi": 0, "In": 0},
-        {"year": 2017, "day": 96, "Tri_Hi": 101, "Misc_Hi": 0, "In": 0},
-        {"year": 2018, "day": 102, "Tri_Hi": 73, "Misc_Hi": 0, "In": 0},
-        {"year": 2019, "day": 102, "Tri_Hi": 96, "Misc_Hi": 0, "In": 0},
-        {"year": 2021, "day": 92, "Tri_Hi": 108, "Misc_Hi": 2, "In": 0},
-        {"year": 2022, "day": 102, "Tri_Hi": 128, "Misc_Hi": 0, "In": 0},
-        {"year": 2023, "day": 96, "Tri_Hi": 128, "Misc_Hi": 5, "In": 0},
-        {"year": 2024, "day": 107, "Tri_Hi": 95, "Misc_Hi": 0, "In": 0},
-        {"year": 2025, "day": 106, "Tri_Hi": 86, "Misc_Hi": 0, "In": 0},
-        {"year": 2026, "day": 102, "Tri_Hi": 117, "Misc_Hi": 0, "In": 0},
-    ]
+# def happy_jack_data():
+#     data = [
+#         {"year": 2014, "day": 106, "Tri_Hi": 62, "Misc_Hi": 0, "In": 0},
+#         {"year": 2015, "day": 109, "Tri_Hi": 52, "Misc_Hi": 0, "In": 0},
+#         {"year": 2016, "day": 116, "Tri_Hi": 72, "Misc_Hi": 0, "In": 0},
+#         {"year": 2017, "day": 96, "Tri_Hi": 101, "Misc_Hi": 0, "In": 0},
+#         {"year": 2018, "day": 102, "Tri_Hi": 73, "Misc_Hi": 0, "In": 0},
+#         {"year": 2019, "day": 102, "Tri_Hi": 96, "Misc_Hi": 0, "In": 0},
+#         {"year": 2021, "day": 92, "Tri_Hi": 108, "Misc_Hi": 2, "In": 0},
+#         {"year": 2022, "day": 102, "Tri_Hi": 128, "Misc_Hi": 0, "In": 0},
+#         {"year": 2023, "day": 96, "Tri_Hi": 128, "Misc_Hi": 5, "In": 0},
+#         {"year": 2024, "day": 107, "Tri_Hi": 95, "Misc_Hi": 0, "In": 0},
+#         {"year": 2025, "day": 106, "Tri_Hi": 86, "Misc_Hi": 0, "In": 0},
+#         {"year": 2026, "day": 102, "Tri_Hi": 117, "Misc_Hi": 0, "In": 0},
+#     ]
     
-    return data
+#     return data
 
 # Indiana DNR Hibernaculum Colony Counts
 def Wyandotte_historic_ent_(): # DONE BY NICK
