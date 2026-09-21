@@ -4,6 +4,8 @@ import copy
 from mpi4py import MPI
 from scipy.special import gammaln
 import time as timer
+import os
+import sys
 
 from simulate.simulate_CURRENT.helper_funcs import *
 from simulate.simulate_CURRENT.rules import *
@@ -316,16 +318,33 @@ if __name__ == "__main__":
     rank = comm.Get_rank()
     size = comm.Get_size()
 
-# --------------------
+    # --------------------
+    # set up control group
+    # --------------------
+
+    # --------------------
     # set up control group
     # --------------------
 
     # only read on rank 0 to avoid severe I/O crashes, etc.
     if rank == 0:
-        import os
-        site_name = os.environ.get("SITE_NAME", "Site_J")
+        
+        # Read the site name assigned by the Slurm Array script
+        site_name = os.environ.get("SITE_NAME")
+        
+        if not site_name:
+            print("Error: SITE_NAME environment variable not set.")
+            sys.exit(1)
+            
         print(f"Executing optimization for dataset: {site_name}")
-        data = globals()[site_name]()
+        
+        # Dynamically call the site function from globals
+        if site_name in globals():
+            data = globals()[site_name]()
+        else:
+            print(f"Error: Function {site_name} not found in simulate.data")
+            sys.exit(1)
+            
         obs_package = [] # obs_times, obs_Hi count, obs_In count
         
         START_YEAR = data[0]["year"]

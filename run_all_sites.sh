@@ -7,10 +7,10 @@ PROJECT_DIR=$(pwd)
 DATA_FILE="simulate/data.py"
 OUTPUT_BASE="results"
 VENV_DIR="$HOME/envs/bn_ecology_env"
-SCRIPT_PATH="simulate/simulate_CURRENT/running_solvers/fit_data_parallel_ML.py"
+SCRIPT_PATH="simulate/simulate_CURRENT/running_solvers/fit_data_parallel_ML_SLURM.py"
 
-# Extract all site function names from simulate/data.py
-SITE_LIST=($(grep -E '^def Site_' "$DATA_FILE" | sed -E 's/def (Site_[A-Za-z0-9_]+).*/\1/'))
+# Extract ALL function names defined in data.py
+SITE_LIST=($(grep -E '^[[:space:]]*def[[:space:]]+[a-zA-Z0-9_]+[[:space:]]*\(' "$DATA_FILE" | sed -E 's/^[[:space:]]*def[[:space:]]+([a-zA-Z0-9_]+).*/\1/' | grep -v "__init__"))
 NUM_SITES=${#SITE_LIST[@]}
 
 if [ "$NUM_SITES" -eq 0 ]; then
@@ -41,8 +41,8 @@ cat <<EOF > "$SLURM_SCRIPT"
 #SBATCH --error=${BATCH_DIR}/logs/site_%A_%a.err
 #SBATCH --array=1-${NUM_SITES}%10
 #SBATCH --nodes=1
-#SBATCH --ntasks-per-node=16
-#SBATCH --time=20:00:00
+#SBATCH --ntasks-per-node=32 
+#SBATCH --time=02:00:00
 #SBATCH --mem=16G
 
 # Determine site name for this array task
@@ -67,7 +67,8 @@ echo "Starting Task \${SLURM_ARRAY_TASK_ID}/${NUM_SITES}: \${SITE_NAME}"
 echo "Running on host: \$(hostname)"
 echo "==================================================="
 
-mpirun -np 16 python3 "${PROJECT_DIR}/${SCRIPT_PATH}"
+# Update the -np flag to match --ntasks-per-node above
+mpirun -np 32 python3 "${PROJECT_DIR}/${SCRIPT_PATH}"
 EOF
 
 # Submit to Slurm
