@@ -6,6 +6,8 @@ from scipy.special import gammaln
 import time as timer
 import os
 import sys
+import json
+import matplotlib.pyplot as plt
 
 from simulate.simulate_CURRENT.helper_funcs import *
 from simulate.simulate_CURRENT.rules import *
@@ -124,7 +126,6 @@ PARAM_KEYS = list(BOUNDS.keys())
 NUM_DIMS = len(PARAM_KEYS)
 
 def array_to_params(arr):
-    # Converts a numpy array from the ML optimizer back into the simulation parameter dictionary
     params = copy.deepcopy(FIXED_PARAMS)
     for i, key in enumerate(PARAM_KEYS):
         params[key] = arr[i]
@@ -133,7 +134,7 @@ def array_to_params(arr):
 # ==========================================================================================================================
 # ==========================================================================================================================
 # ==========================================================================================================================
-    
+
 def loss(parameters, runs=5):
     losses = []
     r = parameters["disp_r"]
@@ -181,35 +182,33 @@ def loss(parameters, runs=5):
 # MPI-Parallelized PSO Engine
 # ---------------------------
 
-def main():
+def main(site_name, output_dir):
     comm = MPI.COMM_WORLD
     rank = comm.Get_rank()
     size = comm.Get_size()
 
     # PSO Hyperparameters
-    num_particles = max(size * 4, 40) # Ensure we have enough particles to saturate all cores
+    num_particles = max(size * 4, 40)
     max_iterations = 1000
-    w = 0.7298   # Inertia weight
-    c1 = 1.49618 # Cognitive coefficient (Personal Best)
-    c2 = 1.49618 # Social coefficient (Global Best)
+    w = 0.7298   
+    c1 = 1.49618 
+    c2 = 1.49618 
 
-    # Early stopping settings
-    patience = 30         # Stop if no improvement after X iterations
-    min_delta = 1e-3      # Minimum loss improvement required
+    # stopping criteria
+    patience = 30         
+    min_delta = 1e-3      
+    
+    # 9:40hrs bc Slurm kills at 10hrs
+    MAX_RUNTIME_SECONDS = (9 * 3600) + (40 * 60) 
 
-    # counters
     best_loss = float('inf')
     best_params = None
     no_improve_counter = 0
 
-    # --------------------------
-    # Initialize Swarm Variables
-    # --------------------------
     if rank == 0:
         positions = np.zeros((num_particles, NUM_DIMS))
         velocities = np.zeros((num_particles, NUM_DIMS))
         
-        # Randomly initialize positions and velocities within bounds
         for i, key in enumerate(PARAM_KEYS):
             lower, upper = BOUNDS[key]
             positions[:, i] = np.random.uniform(lower, upper, num_particles)
@@ -218,36 +217,27 @@ def main():
         pbests = np.copy(positions)
         pbest_scores = np.full(num_particles, np.inf)
         
-        # Initialize gbest to a valid coordinate inside the search space bounds
         gbest = np.copy(positions[0])
         gbest_score = np.inf
         
-        print(f"Starting MPI Parallel PSO Optimization with {num_particles} particles on {size} nodes over {max_iterations} iterations...\n")
+        print(f"Starting MPI Parallel PSO for site: {site_name}")
+        print(f"Particles: {num_particles}, Nodes: {size}, Max Iterations: {max_iterations}...\n")
     else:
         positions = None
 
-    # -----------------
-    # Optimization Loop
-    # -----------------
     for it in range(max_iterations):
-        # Linearly decay inertia weight from 0.9 down to 0.4
         w = 0.9 - ((0.9 - 0.4) * (it / max_iterations))
-        
-        # Broadcast the current particle positions to all compute nodes
         positions = comm.bcast(positions, root=0)
         
-        # Evaluate the loss function in parallel
         local_results = []
         for i in range(rank, num_particles, size):
             params = array_to_params(positions[i])
             particle_loss = loss(params)
             local_results.append((i, particle_loss))
             
-        # Gather results back to the root node
         gathered_results = comm.gather(local_results, root=0)
-        stop_flag = False # to synchronize early stopping
+        stop_flag = False 
 
-        # Update Swarm memory and evaluate early stopping
         if rank == 0:
             for res_list in gathered_results:
                 for i, score in res_list:
@@ -259,28 +249,29 @@ def main():
                         gbest_score = score
                         gbest = np.copy(positions[i])
 
-            # Check for improvement
             if best_loss - gbest_score > min_delta:
                 best_loss = gbest_score
                 best_params = array_to_params(gbest)
-                no_improve_counter = 0  # Reset counter
+                no_improve_counter = 0  
             else:
                 no_improve_counter += 1
             
             print(f"Iteration {it+1:3d}/{max_iterations} | Best Loss: {gbest_score:.4f} | Best Params: {array_to_params(gbest)}")
             
-            # Check if early stopping criteria met
+            # stopping criteria
+            elapsed_time = timer.perf_counter() - start
             if no_improve_counter >= patience:
+                print(f"\n[EARLY STOPPING] Loss failed to improve by > {min_delta} for {patience} iterations.")
+                stop_flag = True
+            elif elapsed_time > MAX_RUNTIME_SECONDS:
+                print(f"\n[TIME LIMIT APPROACHING] Elapsed time ({elapsed_time/3600:.2f} hrs) near Slurm limit. Terminating early to save results...")
                 stop_flag = True
 
-        # Broadcast the stop decision to ALL ranks to prevent MPI deadlocks
+        # Synchronize stopping decision across all ranks
         stop_flag = comm.bcast(stop_flag, root=0)
         if stop_flag:
-            if rank == 0:
-                print(f"\n[EARLY STOPPING] Loss failed to improve by > {min_delta} for {patience} consecutive iterations.")
             break
 
-        # Update Velocities and Positions
         if rank == 0:
             for i in range(num_particles):
                 r1 = np.random.rand(NUM_DIMS)
@@ -292,7 +283,6 @@ def main():
                 
                 positions[i] += velocities[i]
                 
-                # Enforce bounds
                 for j, key in enumerate(PARAM_KEYS):
                     lower, upper = BOUNDS[key]
                     if positions[i][j] < lower:
@@ -302,7 +292,6 @@ def main():
                         positions[i][j] = upper
                         velocities[i][j] *= -0.5
                         
-                # Mutation Operator
                 mutation_rate = 0.05 
                 if np.random.rand() < mutation_rate:
                     for j, key in enumerate(PARAM_KEYS):
@@ -311,29 +300,50 @@ def main():
                         velocities[i][j] = np.random.uniform(-0.1*(upper-lower), 0.1*(upper-lower))
                         
     # -----------------------
-    # Finish and Plot Results
+    # Finish and Save Results
     # -----------------------
     if rank == 0:
         best_final_params = array_to_params(gbest)
-
         end = timer.perf_counter()
-
         elapsed_seconds = end - start
-        print(f"Wall-clock time: {elapsed_seconds} seconds")
+        
+        json_params = {k: float(v) for k, v in best_final_params.items()}
         
         print("\n=============================================")
-        print("OPTIMIZATION COMPLETE")
-        print(f"GLOBAL BEST LOSS: {gbest_score}")
-        print(f"GLOBAL BEST PARAMS: {best_final_params}")
+        print(f"OPTIMIZATION COMPLETE FOR SITE: {site_name}")
+        print(f"WALL-CLOCK TIME: {elapsed_seconds:.2f} seconds")
+        print(f"GLOBAL BEST LOSS: {gbest_score:.4f}")
+        print(f"GLOBAL BEST PARAMS: {json_params}")
         print("=============================================\n")
 
-        # Run one final simulation with the best parameters and plot it
+        # Write the parameters and loss to json
+        results_data = {
+            "site_name": site_name,
+            "best_loss": float(gbest_score),
+            "wall_clock_seconds": elapsed_seconds,
+            "best_params": json_params
+        }
+        
+        json_path = os.path.join(output_dir, f"{site_name}_results.json")
+        with open(json_path, "w") as f:
+            json.dump(results_data, f, indent=4)
+            
+        print(f"[SAVED] Parameter data saved successfully to:\n{json_path}")
+
+        # Re-simulate + save plot
         best_sim = simulate(make_initial_state(Hi_list, num_infected), steps=4500, parameters=best_final_params, Print=False)
+        fig_path = os.path.join(output_dir, f"{site_name}_fit.png")
+        
         plot_history_highlights(best_sim, 
                                 best_final_params['win_length'], 
                                 best_final_params['win_start'], 
                                 best_final_params['T_seasonal'], 
                                 sample=[obs_times, obs_Hi])
+                                
+        plt.savefig(fig_path, dpi=300, bbox_inches='tight')
+        plt.close()
+        print(f"[SAVED] Plot saved successfully to:\n{fig_path}\n")
+
 
 if __name__ == "__main__":
 
@@ -341,34 +351,29 @@ if __name__ == "__main__":
     rank = comm.Get_rank()
     size = comm.Get_size()
 
-    # --------------------
-    # set up control group
-    # --------------------
+    site_name = None
+    output_dir = "."
 
-    # --------------------
-    # set up control group
-    # --------------------
-
-    # only read on rank 0 to avoid severe I/O crashes, etc.
     if rank == 0:
         
-        # Read the site name assigned by the Slurm Array script
+        # Read the environment variables populated by bash script
         site_name = os.environ.get("SITE_NAME")
+        output_dir = os.environ.get("SIM_OUTPUT_DIR", ".")
         
         if not site_name:
             print("Error: SITE_NAME environment variable not set.")
             sys.exit(1)
             
-        print(f"Executing optimization for dataset: {site_name}")
+        print(f"Dataset targeted: {site_name}")
+        print(f"Output directory mapped: {output_dir}")
         
-        # Dynamically call the site function from globals
         if site_name in globals():
             data = globals()[site_name]()
         else:
             print(f"Error: Function {site_name} not found in simulate.data")
             sys.exit(1)
             
-        obs_package = [] # obs_times, obs_Hi count, obs_In count
+        obs_package = []
         
         START_YEAR = data[0]["year"]
         for d in data:
@@ -377,12 +382,15 @@ if __name__ == "__main__":
     else:
         obs_package = None
 
-    # Broadcast from rank 0 to all other ranks via memory
+    # Broadcast environment info and dataset to all worker nodes
+    site_name = comm.bcast(site_name, root=0)
+    output_dir = comm.bcast(output_dir, root=0)
     obs_package = comm.bcast(obs_package, root=0)
 
-    # Unpack on all nodes
+    # Unpack identically
     obs_times = [item[0] for item in obs_package]
     obs_Hi = [item[1] for item in obs_package]
     obs_In = [item[2] for item in obs_package]
 
-    main()
+    # Run execution loop passing in site routing context
+    main(site_name, output_dir)
