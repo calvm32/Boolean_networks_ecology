@@ -193,7 +193,18 @@ def main():
     c1 = 1.49618 # Cognitive coefficient (Personal Best)
     c2 = 1.49618 # Social coefficient (Global Best)
 
-    # Initialize Swarm Variables (Root only)
+    # Early stopping settings
+    patience = 30         # Stop if no improvement after X iterations
+    min_delta = 1e-3      # Minimum loss improvement required
+
+    # counters
+    best_loss = float('inf')
+    best_params = None
+    no_improve_counter = 0
+
+    # --------------------------
+    # Initialize Swarm Variables
+    # --------------------------
     if rank == 0:
         positions = np.zeros((num_particles, NUM_DIMS))
         velocities = np.zeros((num_particles, NUM_DIMS))
@@ -215,7 +226,9 @@ def main():
     else:
         positions = None
 
+    # -----------------
     # Optimization Loop
+    # -----------------
     for it in range(max_iterations):
         # Linearly decay inertia weight from 0.9 down to 0.4
         w = 0.9 - ((0.9 - 0.4) * (it / max_iterations))
@@ -224,7 +237,6 @@ def main():
         positions = comm.bcast(positions, root=0)
         
         # Evaluate the loss function in parallel
-        # Each node handles a slice of the particles, stepping by `size`
         local_results = []
         for i in range(rank, num_particles, size):
             params = array_to_params(positions[i])
@@ -233,36 +245,51 @@ def main():
             
         # Gather results back to the root node
         gathered_results = comm.gather(local_results, root=0)
-        
-        # Update the Swarm memory and velocities (Root only)
+        stop_flag = False # to synchronize early stopping
+
+        # Update Swarm memory and evaluate early stopping
         if rank == 0:
-            # Flatten the gathered results
             for res_list in gathered_results:
                 for i, score in res_list:
-                    # Update Personal Best
                     if score < pbest_scores[i]:
                         pbest_scores[i] = score
                         pbests[i] = np.copy(positions[i])
                         
-                    # Update Global Best
                     if score < gbest_score:
                         gbest_score = score
                         gbest = np.copy(positions[i])
+
+            # Check for improvement
+            if best_loss - gbest_score > min_delta:
+                best_loss = gbest_score
+                best_params = array_to_params(gbest)
+                no_improve_counter = 0  # Reset counter
+            else:
+                no_improve_counter += 1
             
             print(f"Iteration {it+1:3d}/{max_iterations} | Best Loss: {gbest_score:.4f} | Best Params: {array_to_params(gbest)}")
             
-            # Update Velocities and Positions
+            # Check if early stopping criteria met
+            if no_improve_counter >= patience:
+                stop_flag = True
+
+        # Broadcast the stop decision to ALL ranks to prevent MPI deadlocks
+        stop_flag = comm.bcast(stop_flag, root=0)
+        if stop_flag:
+            if rank == 0:
+                print(f"\n[EARLY STOPPING] Loss failed to improve by > {min_delta} for {patience} consecutive iterations.")
+            break
+
+        # Update Velocities and Positions
+        if rank == 0:
             for i in range(num_particles):
-                # Generate a random coefficient for EVERY dimension independently
                 r1 = np.random.rand(NUM_DIMS)
                 r2 = np.random.rand(NUM_DIMS)
                                 
-                # PSO Velocity update formula
                 velocities[i] = (w * velocities[i] + 
                                  c1 * r1 * (pbests[i] - positions[i]) + 
                                  c2 * r2 * (gbest - positions[i]))
                 
-                # Position update
                 positions[i] += velocities[i]
                 
                 # Enforce bounds
@@ -270,26 +297,22 @@ def main():
                     lower, upper = BOUNDS[key]
                     if positions[i][j] < lower:
                         positions[i][j] = lower
-                        velocities[i][j] *= -0.5 # bounce back slightly
+                        velocities[i][j] *= -0.5
                     elif positions[i][j] > upper:
                         positions[i][j] = upper
                         velocities[i][j] *= -0.5
                         
                 # Mutation Operator
-                # 5% chance to randomly teleport a particle to a new spot
-                # to prevent the swarm from getting stuck in a local minimum.
                 mutation_rate = 0.05 
                 if np.random.rand() < mutation_rate:
                     for j, key in enumerate(PARAM_KEYS):
                         lower, upper = BOUNDS[key]
                         positions[i][j] = np.random.uniform(lower, upper)
-                        # Give it a fresh random velocity to explore the new area
                         velocities[i][j] = np.random.uniform(-0.1*(upper-lower), 0.1*(upper-lower))
                         
     # -----------------------
     # Finish and Plot Results
     # -----------------------
-    
     if rank == 0:
         best_final_params = array_to_params(gbest)
 

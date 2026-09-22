@@ -42,7 +42,7 @@ cat <<EOF > "$SLURM_SCRIPT"
 #SBATCH --array=1-${NUM_SITES}%10
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=32 
-#SBATCH --time=02:00:00
+#SBATCH --time=10:00:00
 #SBATCH --mem=16G
 
 # Determine site name for this array task
