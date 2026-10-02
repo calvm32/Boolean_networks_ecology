@@ -1,0 +1,23 @@
+{
+    "site_name": "RGSC",
+    "best_loss": 15.91282583060173,
+    "wall_clock_seconds": 1031.2245362130925,
+    "best_params": {
+        "inf_alpha": 5.0,
+        "inf_beta": 2.0,
+        "delta": 0.05,
+        "T_inf": 30.0,
+        "T_TBD": 4.1,
+        "T_AD": 0.06145833333333333,
+        "res_max": 0.2,
+        "k_imm": 1.0,
+        "theta_imm": 1.0,
+        "res_gain": 0.02,
+        "T_seasonal": 79.73190625904428,
+        "win_length": 120.0,
+        "win_start": 224.3715285061008,
+        "lambda_win": 9.481292174981747e-06,
+        "lambda_sum": 0.0003455467664377332,
+        "disp_r": 90.32653961751876
+    }
+}

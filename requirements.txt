@@ -2,3 +2,6 @@ numpy
 matplotlib
 SALib
 mpi4py
+geopandas
+pandas
+shapely

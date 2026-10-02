@@ -1,0 +1,23 @@
+{
+    "site_name": "BCM",
+    "best_loss": 27.40713442881696,
+    "wall_clock_seconds": 557.068014751887,
+    "best_params": {
+        "inf_alpha": 5.0,
+        "inf_beta": 2.0,
+        "delta": 0.05,
+        "T_inf": 30.0,
+        "T_TBD": 4.1,
+        "T_AD": 0.06145833333333333,
+        "res_max": 0.2,
+        "k_imm": 1.0,
+        "theta_imm": 1.0,
+        "res_gain": 0.02,
+        "T_seasonal": 72.89695063283733,
+        "win_length": 120.0,
+        "win_start": 241.9060783354233,
+        "lambda_win": 1.2347735851415314e-06,
+        "lambda_sum": 0.00024564578707633993,
+        "disp_r": 5.85874481372357
+    }
+}

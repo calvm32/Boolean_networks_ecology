@@ -1,0 +1,23 @@
+{
+    "site_name": "Site_N",
+    "best_loss": 47.05212962472929,
+    "wall_clock_seconds": 1154.580779292155,
+    "best_params": {
+        "inf_alpha": 5.0,
+        "inf_beta": 2.0,
+        "delta": 0.05,
+        "T_inf": 30.0,
+        "T_TBD": 4.1,
+        "T_AD": 0.06145833333333333,
+        "res_max": 0.2,
+        "k_imm": 1.0,
+        "theta_imm": 1.0,
+        "res_gain": 0.02,
+        "T_seasonal": 43.763427448382984,
+        "win_length": 120.0,
+        "win_start": 313.74899683063677,
+        "lambda_win": 8.209135535243578e-06,
+        "lambda_sum": 0.00039673958221949946,
+        "disp_r": 0.5988018230374013
+    }
+}

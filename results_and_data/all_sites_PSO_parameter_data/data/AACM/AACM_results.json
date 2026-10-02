@@ -1,0 +1,23 @@
+{
+    "site_name": "AACM",
+    "best_loss": 23.573114771282853,
+    "wall_clock_seconds": 386.93920478597283,
+    "best_params": {
+        "inf_alpha": 5.0,
+        "inf_beta": 2.0,
+        "delta": 0.05,
+        "T_inf": 30.0,
+        "T_TBD": 4.1,
+        "T_AD": 0.06145833333333333,
+        "res_max": 0.2,
+        "k_imm": 1.0,
+        "theta_imm": 1.0,
+        "res_gain": 0.02,
+        "T_seasonal": 80.0,
+        "win_length": 158.9713573485927,
+        "win_start": 202.88283246983013,
+        "lambda_win": 6.204139907198879e-06,
+        "lambda_sum": 0.0001,
+        "disp_r": 34.072414999310126
+    }
+}

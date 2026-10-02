@@ -1,0 +1,23 @@
+{
+    "site_name": "Wyandotte_historic_ent_",
+    "best_loss": 58.04135280779025,
+    "wall_clock_seconds": 16721.93611461995,
+    "best_params": {
+        "inf_alpha": 5.0,
+        "inf_beta": 2.0,
+        "delta": 0.05,
+        "T_inf": 30.0,
+        "T_TBD": 4.1,
+        "T_AD": 0.06145833333333333,
+        "res_max": 0.2,
+        "k_imm": 1.0,
+        "theta_imm": 1.0,
+        "res_gain": 0.02,
+        "T_seasonal": 79.82570033701434,
+        "win_length": 240.0,
+        "win_start": 349.9270954751236,
+        "lambda_win": 1e-05,
+        "lambda_sum": 0.0001,
+        "disp_r": 1.3177677234299883
+    }
+}

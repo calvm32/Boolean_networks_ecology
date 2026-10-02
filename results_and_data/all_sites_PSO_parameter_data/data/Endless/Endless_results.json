@@ -1,0 +1,23 @@
+{
+    "site_name": "Endless",
+    "best_loss": 66.43560502917578,
+    "wall_clock_seconds": 13396.53639879194,
+    "best_params": {
+        "inf_alpha": 5.0,
+        "inf_beta": 2.0,
+        "delta": 0.05,
+        "T_inf": 30.0,
+        "T_TBD": 4.1,
+        "T_AD": 0.06145833333333333,
+        "res_max": 0.2,
+        "k_imm": 1.0,
+        "theta_imm": 1.0,
+        "res_gain": 0.02,
+        "T_seasonal": 51.61409449541452,
+        "win_length": 192.4042825377356,
+        "win_start": 347.6317497942569,
+        "lambda_win": 6.0471762563657155e-06,
+        "lambda_sum": 0.00028302859774029823,
+        "disp_r": 8.474168367367277
+    }
+}

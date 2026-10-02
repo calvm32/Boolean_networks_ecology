@@ -1,0 +1,23 @@
+{
+    "site_name": "Coon",
+    "best_loss": 95.28604084982224,
+    "wall_clock_seconds": 6392.7831590950955,
+    "best_params": {
+        "inf_alpha": 5.0,
+        "inf_beta": 2.0,
+        "delta": 0.05,
+        "T_inf": 30.0,
+        "T_TBD": 4.1,
+        "T_AD": 0.06145833333333333,
+        "res_max": 0.2,
+        "k_imm": 1.0,
+        "theta_imm": 1.0,
+        "res_gain": 0.02,
+        "T_seasonal": 58.254287751576506,
+        "win_length": 208.18921744355916,
+        "win_start": 286.1070646890235,
+        "lambda_win": 9.151147478061507e-06,
+        "lambda_sum": 0.00023131405014344006,
+        "disp_r": 1.4556386685347573
+    }
+}

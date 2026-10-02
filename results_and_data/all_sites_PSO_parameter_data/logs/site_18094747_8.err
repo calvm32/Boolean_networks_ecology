@@ -1,0 +1,35 @@
+/home/velcsov/cheldt/BN_ecology/simulate/simulate_CURRENT/helper_funcs.py:239: UserWarning: The figure layout has changed to tight
+  plt.tight_layout()
+Traceback (most recent call last):
+  File "/home/velcsov/cheldt/BN_ecology/simulate/simulate_CURRENT/running_solvers/fit_data_parallel_ML_SLURM.py", line 396, in <module>
+    main(site_name, output_dir)
+  File "/home/velcsov/cheldt/BN_ecology/simulate/simulate_CURRENT/running_solvers/fit_data_parallel_ML_SLURM.py", line 337, in main
+    plot_history_highlights(best_sim, 
+  File "/home/velcsov/cheldt/BN_ecology/simulate/simulate_CURRENT/helper_funcs.py", line 241, in plot_history_highlights
+    plt.savefig(os.path.join(FIGURES_DIR,'history_plot_highlighted.pdf'), format='pdf', bbox_inches='tight')
+  File "/home/velcsov/cheldt/envs/bn_ecology_env/lib/python3.10/site-packages/matplotlib/pyplot.py", line 1250, in savefig
+    res = fig.savefig(*args, **kwargs)  # type: ignore[func-returns-value]
+  File "/home/velcsov/cheldt/envs/bn_ecology_env/lib/python3.10/site-packages/matplotlib/figure.py", line 3497, in savefig
+    self.canvas.print_figure(fname, **kwargs)
+  File "/home/velcsov/cheldt/envs/bn_ecology_env/lib/python3.10/site-packages/matplotlib/backend_bases.py", line 2186, in print_figure
+    result = print_method(
+  File "/home/velcsov/cheldt/envs/bn_ecology_env/lib/python3.10/site-packages/matplotlib/backend_bases.py", line 2042, in <lambda>
+    print_method = functools.wraps(meth)(lambda *args, **kwargs: meth(
+  File "/home/velcsov/cheldt/envs/bn_ecology_env/lib/python3.10/site-packages/matplotlib/backends/backend_pdf.py", line 2779, in print_pdf
+    file = PdfFile(filename, metadata=metadata)
+  File "/home/velcsov/cheldt/envs/bn_ecology_env/lib/python3.10/site-packages/matplotlib/backends/backend_pdf.py", line 687, in __init__
+    fh, opened = cbook.to_filehandle(filename, "wb", return_opened=True)
+  File "/home/velcsov/cheldt/envs/bn_ecology_env/lib/python3.10/site-packages/matplotlib/cbook.py", line 546, in to_filehandle
+    fh = open(fname, flag, encoding=encoding)
+FileNotFoundError: [Errno 2] No such file or directory: 'results_and_data/batch_20260922_180909/data/River/figures/history_plot_highlighted.pdf'
+--------------------------------------------------------------------------
+Primary job  terminated normally, but 1 process returned
+a non-zero exit code. Per user-direction, the job has been aborted.
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+mpirun detected that one or more processes exited with non-zero status, thus causing
+the job to be terminated. The first process to do so was:
+
+  Process name: [[16017,1],0]
+  Exit code:    1
+--------------------------------------------------------------------------

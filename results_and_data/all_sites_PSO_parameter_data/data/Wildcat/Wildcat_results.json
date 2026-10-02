@@ -1,0 +1,23 @@
+{
+    "site_name": "Wildcat",
+    "best_loss": 49.740362721949246,
+    "wall_clock_seconds": 7704.588047238067,
+    "best_params": {
+        "inf_alpha": 5.0,
+        "inf_beta": 2.0,
+        "delta": 0.05,
+        "T_inf": 30.0,
+        "T_TBD": 4.1,
+        "T_AD": 0.06145833333333333,
+        "res_max": 0.2,
+        "k_imm": 1.0,
+        "theta_imm": 1.0,
+        "res_gain": 0.02,
+        "T_seasonal": 66.70864932118695,
+        "win_length": 240.0,
+        "win_start": 347.90393464758654,
+        "lambda_win": 4.0517141885393153e-07,
+        "lambda_sum": 0.0002876777313753175,
+        "disp_r": 2.6727385582443333
+    }
+}

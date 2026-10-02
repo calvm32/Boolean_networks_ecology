@@ -1,0 +1,23 @@
+{
+    "site_name": "MSHC",
+    "best_loss": 15.44327396772797,
+    "wall_clock_seconds": 681.8069345441181,
+    "best_params": {
+        "inf_alpha": 5.0,
+        "inf_beta": 2.0,
+        "delta": 0.05,
+        "T_inf": 30.0,
+        "T_TBD": 4.1,
+        "T_AD": 0.06145833333333333,
+        "res_max": 0.2,
+        "k_imm": 1.0,
+        "theta_imm": 1.0,
+        "res_gain": 0.02,
+        "T_seasonal": 40.0,
+        "win_length": 120.0,
+        "win_start": 240.65552687499746,
+        "lambda_win": 6.813774593845007e-06,
+        "lambda_sum": 0.0004,
+        "disp_r": 8.381231291239796
+    }
+}
