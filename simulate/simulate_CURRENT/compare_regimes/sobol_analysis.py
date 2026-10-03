@@ -7,11 +7,12 @@ import numpy as np
 from simulate.simulate_CURRENT.helper_funcs import *
 from simulate.simulate_CURRENT.rules import *
 from simulate.simulate_CURRENT.simulate import *
+from simulate.simulate_CURRENT.working_params import *
 
 import os
 
-OUTPUT_DIR = os.environ.get('SIM_OUTPUT_DIR', '.')
-FIGURES_DIR = os.path.join(OUTPUT_DIR, 'figures')
+OUTPUT_DIR = os.environ.get('results_and_data', '.')
+FIGURES_DIR = OUTPUT_DIR #os.path.join(OUTPUT_DIR, 'figures')
 
 # ==========================================================================================================================
 # ==========================================================================================================================
@@ -46,6 +47,8 @@ def sample_params():
 # set up initial population
 # -------------------------
 
+num_infected = 5
+
 # first select number of bats belonging to each species
 tricolor_num = 100
 tricolor_cluster_sizeMIN = 1
@@ -58,12 +61,6 @@ bigbrown_cluster_sizeMAX = 9
 # hibernating non-infected bats of each species
 Hi_list = [[tricolor_num, tricolor_cluster_sizeMIN, tricolor_cluster_sizeMAX], 
            [bigbrown_num, bigbrown_cluster_sizeMIN, bigbrown_cluster_sizeMAX]] 
-
-fraction_infected = 0.01 # in [0, 1]
-
-num_infected = 0 # DO NOT CHANGE
-for i in range(len(Hi_list)):
-    num_infected += int(Hi_list[i][0]*fraction_infected) # DO NOT CHANGE
 
 # NOTICE : the remaining populations (Ot, Im) all start with 0 inhabitants
 # NOTICE : resistance starts at 0 for every bat
@@ -86,21 +83,10 @@ T_inf = 30                                  # approximate time in dayseach bat s
                                             # considered in [10, 40]
 
 # BOUT and SEASONAL HIBERNATING PATHWAYS
-T_TBD = 4.1                                 # CONFIDENT # length of torpor bout in days, 
+T_TBD = 4.1                                 # CONSTANT FOR TRICOLORED # length of torpor bout in days, 
                                             # considered in [3.9, 4.3] for tricolored bats
-T_AD = 88.5/1440                            # CONFIDENT # length of arousal bout in days, 
+T_AD = 88.5/1440                            # CONSTANT FOR TRICOLORED # length of arousal bout in days, 
                                             # considered in [1.74166, 5.63333] for tricolored bats
-T_seasonal = 40                             # CONFIDENT # approx. transition time in days between hibernating and not
-                                            # considered in 10-40 maybe?
-win_length = 95                             # CONFIDENT # length of winter season in days in Nebraska mines
-                                            # considered in 5-7 months, depending on transition period T_seasonal
-win_start = 297                             # CONFIDENT # approximate day in calendar year that Te : 1 -> 0
-
-# BAT IN/OUT FLUX
-lambda_win = 0                              # CONFIDENT # population growth value during winter, 
-                                            # considered in [0, 0.01] 
-lambda_sum = 0.00013942579094               # CONFIDENT # population growth value during summer,
-                                            # considered in [0.01, 0.1] 
 
 # -----------------
 # types of immunity
@@ -110,6 +96,12 @@ res_max = 0.2                               # hereditary resistance of newborn, 
 k_imm, theta_imm = 1, 1                     # number of days spent in recovery before re-infection is possible
                                             # corresp. w/ Gamma(k_imm, theta_imm)
 res_gain = 0.02                             # resistance AFTER recovery
+
+# ---------------------------------
+# latitudinally-averaged parameters
+# ---------------------------------
+
+T_seasonal, win_length, win_start, lambda_sum, lambda_win = latitude1_NorthMidwest() # or latitude2_SouthMidwest()
 
 # ----------
 # initialize
@@ -136,22 +128,24 @@ def main():
     # parameter space THAT GETS CHANGED
     # w/ ecologically meaningful ranges
     problem = {
-        "num_vars": 6,
+        "num_vars": 8,
         "names": ["inf_alpha", "inf_beta", "delta",
-                "T_inf", "T_TBD", "win_length"],
+                "T_inf", "res_max", "k_imm", "theta_imm", "res_gain"],
         "bounds": [
             [1, 5],         # inf_alpha
             [2, 10],        # inf_beta
             [0.005, 0.05],  # delta
             [10, 40],       # T_inf
-            [3.9, 4.3],     # T_TBD
-            [150, 210],     # win_length
+            [0, 0.8],       # res_max
+            [0.1, 10],     # k_imm
+            [0, 30],     # theta_imm
+            [0, 1],     # res_gain
         ],
     }
 
     # Generate Saltelli samples: (N * (2*num_vars + 2) total runs)
     # N=128 -> 128 * 18 = 2304 runs; N=64 -> 1152 runs (fast for testing)
-    N = 64
+    N = 512
     param_values = saltelli.sample(problem, N, calc_second_order=False)
 
     # Run the model for each sample row
@@ -197,6 +191,40 @@ def main():
     Si_S = sobol.analyze(problem, Y_Sfinal, calc_second_order=False, print_to_console=False)
     Si_M = sobol.analyze(problem, Y_Mfinal, calc_second_order=False, print_to_console=False)
     Si_R0 = sobol.analyze(problem, Y_R0,    calc_second_order=False, print_to_console=False)
+
+    # save data to csv
+    sobol_data = {
+        "Parameter": problem["names"],
+        
+        # R0 indices
+        "R0_S1": Si_R0["S1"],
+        "R0_S1_conf": Si_R0["S1_conf"],
+        "R0_ST": Si_R0["ST"],
+        "R0_ST_conf": Si_R0["ST_conf"],
+        
+        # P_max (Peak Prevalence) indices
+        "Pmax_S1": Si_P["S1"],
+        "Pmax_S1_conf": Si_P["S1_conf"],
+        "Pmax_ST": Si_P["ST"],
+        "Pmax_ST_conf": Si_P["ST_conf"],
+        
+        # S_final (Final Persistence) indices
+        "Sfinal_S1": Si_S["S1"],
+        "Sfinal_S1_conf": Si_S["S1_conf"],
+        "Sfinal_ST": Si_S["ST"],
+        "Sfinal_ST_conf": Si_S["ST_conf"],
+        
+        # M_final (Final Mortality) indices
+        "Mfinal_S1": Si_M["S1"],
+        "Mfinal_S1_conf": Si_M["S1_conf"],
+        "Mfinal_ST": Si_M["ST"],
+        "Mfinal_ST_conf": Si_M["ST_conf"],
+    }
+    
+    df_sobol = pd.DataFrame(sobol_data)
+    csv_path = os.path.join(OUTPUT_DIR, "sobol_analysis_data.csv")
+    df_sobol.to_csv(csv_path, index=False)
+    print(f"\nSaved Sobol numerical data to: {csv_path}\n")
 
     # Plot: grouped bar chart (S1 and ST side by side per parameter)
     def plot_sobol(Si, problem, title, ax):

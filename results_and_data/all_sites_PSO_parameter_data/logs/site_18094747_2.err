@@ -21,7 +21,7 @@ Traceback (most recent call last):
     fh, opened = cbook.to_filehandle(filename, "wb", return_opened=True)
   File "/home/velcsov/cheldt/envs/bn_ecology_env/lib/python3.10/site-packages/matplotlib/cbook.py", line 546, in to_filehandle
     fh = open(fname, flag, encoding=encoding)
-FileNotFoundError: [Errno 2] No such file or directory: 'results_and_data/batch_20260922_180909/data/Batwing/figures/history_plot_highlighted.pdf'
+FileNotFoundError: [Errno 2] No such file or directory: 'results_and_data/batch_20260922_180909/data/Batwing/results_and_data/history_plot_highlighted.pdf'
 --------------------------------------------------------------------------
 Primary job  terminated normally, but 1 process returned
 a non-zero exit code. Per user-direction, the job has been aborted.

@@ -4,6 +4,7 @@ import numpy as np
 from simulate.simulate_CURRENT.helper_funcs import *
 from simulate.simulate_CURRENT.rules import *
 from simulate.simulate_CURRENT.simulate import *
+from simulate.simulate_CURRENT.working_params import *
 
 import os
 
@@ -77,21 +78,10 @@ T_inf = 30                                  # approximate time in dayseach bat s
                                             # considered in [10, 40]
 
 # BOUT and SEASONAL HIBERNATING PATHWAYS
-T_TBD = 4.1                                 # CONFIDENT # length of torpor bout in days, 
+T_TBD = 4.1                                 # CONSTANT FOR TRICOLORED # length of torpor bout in days, 
                                             # considered in [3.9, 4.3] for tricolored bats
-T_AD = 88.5/1440                            # CONFIDENT # length of arousal bout in days, 
+T_AD = 88.5/1440                            # CONSTANT FOR TRICOLORED # length of arousal bout in days, 
                                             # considered in [1.74166, 5.63333] for tricolored bats
-T_seasonal = 40                             # CONFIDENT # approx. transition time in days between hibernating and not
-                                            # considered in 10-40 maybe?
-win_length = 95                             # CONFIDENT # length of winter season in days in Nebraska mines
-                                            # considered in 5-7 months, depending on transition period T_seasonal
-win_start = 297                             # CONFIDENT # approximate day in calendar year that Te : 1 -> 0
-
-# BAT IN/OUT FLUX
-lambda_win = 0                              # CONFIDENT # population growth value during winter, 
-                                            # considered in [0, 0.01] 
-lambda_sum = 0.00013942579094               # CONFIDENT # population growth value during summer,
-                                            # considered in [0.01, 0.1] 
 
 # -----------------
 # types of immunity
@@ -101,6 +91,12 @@ res_max = 0.2                               # hereditary resistance of newborn, 
 k_imm, theta_imm = 1, 1                     # number of days spent in recovery before re-infection is possible
                                             # corresp. w/ Gamma(k_imm, theta_imm)
 res_gain = 0.02                             # resistance AFTER recovery
+
+# ---------------------------------
+# latitudinally-averaged parameters
+# ---------------------------------
+
+T_seasonal, win_length, win_start, lambda_sum, lambda_win = latitude1_NorthMidwest() # or latitude2_SouthMidwest()
 
 # ----------
 # initialize

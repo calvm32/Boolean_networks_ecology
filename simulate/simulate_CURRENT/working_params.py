@@ -1,3 +1,7 @@
+# ------------------------------------------
+# INFORMATION ABOUT PARAMETERS + BASIC SETUP
+# ------------------------------------------
+
 # -------------------------
 # set up initial population
 # -------------------------
@@ -15,8 +19,6 @@ bigbrown_cluster_sizeMAX = 9
 Hi_list = [[tricolor_num, tricolor_cluster_sizeMIN, tricolor_cluster_sizeMAX], 
            [bigbrown_num, bigbrown_cluster_sizeMIN, bigbrown_cluster_sizeMAX]] 
 
-fraction_infected = 0   # choose in [0, 1]
-
 # NOTICE : the remaining populations (Ot, Im) all start with 0 inhabitants
 # NOTICE : resistance starts at 0 for every bat
 
@@ -32,26 +34,16 @@ inf_alpha, inf_beta = 5, 2                  # infected variables for beta distri
                                             # high: alpha = 5, beta = 2
 
 delta = 0.05                                # P. destructans decay rate, considered in [0.005, 0.03]
+
 # DEATH OR RECOVERY PATHWAYS
 T_inf = 30                                  # approximate time in dayseach bat spends infirm before recovering or dying, 
                                             # considered in [10, 40]
 
 # BOUT and SEASONAL HIBERNATING PATHWAYS
-T_TBD = 4.1                                 # CONFIDENT # length of torpor bout in days, 
+T_TBD = 4.1                                 # CONSTANT FOR TRICOLORED # length of torpor bout in days, 
                                             # considered in [3.9, 4.3] for tricolored bats
-T_AD = 88.5/1440                            # CONFIDENT # length of arousal bout in days, 
+T_AD = 88.5/1440                            # CONSTANT FOR TRICOLORED # length of arousal bout in days, 
                                             # considered in [1.74166, 5.63333] for tricolored bats
-T_seasonal = 59                             # CONFIDENT # approx. transition time in days between hibernating and not
-                                            # considered in 10-40 maybe?
-win_length = 161                            # CONFIDENT # length of winter season in days in Nebraska mines
-                                            # considered in 5-7 months, depending on transition period T_seasonal
-win_start = 290                             # CONFIDENT # approximate day in calendar year that Te : 1 -> 0
-
-# BAT IN/OUT FLUX
-lambda_win = 0                              # CONFIDENT # population growth value during winter, 
-                                            # considered in [0, 0.01] 
-lambda_sum = 0.00028895065208               # CONFIDENT # population growth value during summer,
-                                            # considered in [0.01, 0.1] 
 
 # -----------------
 # types of immunity
@@ -62,30 +54,24 @@ k_imm, theta_imm = 1, 1                     # number of days spent in recovery b
                                             # corresp. w/ Gamma(k_imm, theta_imm)
 res_gain = 0.02                             # resistance AFTER recovery
 
+# --------------------------------------------
+# PARAMETERS AVERAGED ACROSS LATITUDINAL BANDS
+# --------------------------------------------
 
-# -----------------
-# -----------------
+def latitude1_NorthMidwest():
+    T_seasonal = 62.17533648
+    win_length = 145.5106324
+    win_start = 234.2635485
+    lambda_sum = 0.000278539
+    lambda_win = 0.0
 
-"""
-USING RMS ERROR:
-New best: 379.54166666666663    'T_seasonal': 53.03145102211801, 'win_length': 171.8073545805218, 'win_start': 278.92671603576855, 'lambda_win': 0, 'lambda_sum': 0.00017711957391318124, 'res_gain': 0.02, 'res_max': 0.2, 'k_imm': 1, 'theta_imm': 1}
-New best: 146.33333333333334    'T_seasonal': 41.21787049830048, 'win_length': 190.3327411105248, 'win_start': 269.08553986430616, 'lambda_win': 0, 'lambda_sum': 0.00015441617617432672, 'res_gain': 0.02, 'res_max': 0.2, 'k_imm': 1, 'theta_imm': 1}
-New best: 132.375               'T_seasonal': 43.460387151848266, 'win_length': 197.57926135060328, 'win_start': 261.508501689169, 'lambda_win': 0, 'lambda_sum': 0.0001676431683071884, 'res_gain': 0.02, 'res_max': 0.2, 'k_imm': 1, 'theta_imm': 1}
-New best: 127.54166             'T_seasonal': np.float64(47.40178558756894), 'win_length': np.float64(170.03850624815655), 'win_start': np.float64(287.8314551381096), 'lambda_sum': np.float64(0.0001605245540170072)}
-New best: 116.375               'T_seasonal': np.float64(59.21406004055691), 'win_length': np.float64(161.27930678762138), 'win_start': np.float64(289.9954597398685), 'lambda_sum': np.float64(0.0002889506520826776)}
-New best: 131.08333333333331    'T_seasonal': 58.75370628407185, 'win_length': 155.30960681369473, 'win_start': 293.137360917269, 'lambda_win': 0, 'lambda_sum': 0.000271915055457734, 'res_gain': 0.02, 'res_max': 0.2, 'k_imm': 1, 'theta_imm': 1}
-New best: 151.70833333333331    'T_seasonal': 59.21406004055691, 'win_length': 161.27930678762138, 'win_start': 289.9954597398685, 'lambda_win': 0, 'lambda_sum': 0.0002889506520826776, 'res_gain': 0.02, 'res_max': 0.2, 'k_imm': 1, 'theta_imm': 1}
-New best: 125.08333333333334    'T_seasonal': 64.81388922827558, 'win_length': 160.72298105475397, 'win_start': 287.58701553750285, 'lambda_win': 0, 'lambda_sum': 0.0002714267087703034, 'res_gain': 0.02, 'res_max': 0.2, 'k_imm': 1, 'theta_imm': 1}
+    return T_seasonal, win_length, win_start, lambda_sum, lambda_win
 
-AFTER SWITCHING TO NLL ERROR:
-New best: 49.20221468909322     'T_seasonal': 55.77824894316202, 'win_length': 176.00451146163238, 'win_start': 278.9392384954147, 'lambda_win': 0, 'lambda_sum': 0.00021907584278455305, 'res_gain': 0.02, 'res_max': 0.2, 'k_imm': 1, 'theta_imm': 1, 'disp_r': 478.89160915990203}    
-"""
-
-# -----------------
-# -----------------
-
-# Site_I:
-# GLOBAL BEST LOSS: 52.709596942061275
-# GLOBAL BEST PARAMS: {'inf_alpha': 5, 'inf_beta': 2, 'delta': 0.05, 'T_inf': 30, 'T_TBD': 4.1, 'T_AD': 0.06145833333333333, 'res_max': 0.2, 'k_imm': 1, 'theta_imm': 1, 'res_gain': 0.02, 
-#                               'T_seasonal': np.float64(40.04074294169094), 'win_length': np.float64(120.17282871131601), 'win_start': np.float64(293.01449379420217), 'lambda_win': np.float64(4.0017928869958956e-05), 'lambda_sum': np.float64(0.00039898965923656284), 'disp_r': np.float64(6.184852563646658)}
-
+def latitude2_SouthMidwest():
+    T_seasonal = 67.34556012
+    win_length = 181.7076381
+    win_start = 316.6543375
+    lambda_sum = 0.000236905
+    lambda_win = 0.0
+    
+    return T_seasonal, win_length, win_start, lambda_sum, lambda_win

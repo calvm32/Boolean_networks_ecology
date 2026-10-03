@@ -4,6 +4,7 @@ import numpy as np
 from simulate.simulate_CURRENT.helper_funcs import *
 from simulate.simulate_CURRENT.rules import *
 from simulate.simulate_CURRENT.simulate import *
+from simulate.simulate_CURRENT.working_params import *
 
 import os
 
@@ -54,7 +55,7 @@ bigbrown_cluster_sizeMAX = 9
 Hi_list = [[tricolor_num, tricolor_cluster_sizeMIN, tricolor_cluster_sizeMAX], 
            [bigbrown_num, bigbrown_cluster_sizeMIN, bigbrown_cluster_sizeMAX]] 
 
-fraction_infected = 0.1   # choose in [0, 1]
+fraction_infected = 0   # choose in [0, 1]
 
 num_infected = 0 # DO NOT CHANGE
 for i in range(len(Hi_list)):
