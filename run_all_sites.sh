@@ -5,7 +5,7 @@ set -e
 
 PROJECT_DIR=$(pwd)
 DATA_FILE="simulate/data.py"
-OUTPUT_BASE="results"
+OUTPUT_BASE="results_and_data"
 VENV_DIR="$HOME/envs/bn_ecology_env"
 SCRIPT_PATH="simulate/simulate_CURRENT/running_solvers/fit_data_parallel_ML_SLURM.py"
 

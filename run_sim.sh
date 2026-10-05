@@ -5,7 +5,7 @@ set -e
 
 # Configuration & Paths
 PROJECT_DIR=$(pwd)
-OUTPUT_BASE="results"
+OUTPUT_BASE="results_and_data"
 SIM_DIR="simulate/simulate_CURRENT"
 VENV_DIR="$HOME/envs/bn_ecology_env"
 
