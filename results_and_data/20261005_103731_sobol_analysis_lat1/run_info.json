@@ -1,0 +1,10 @@
+{
+  "script": "simulate/simulate_CURRENT/compare_regimes/sobol_analysis.py",
+  "timestamp": "20261005_103731",
+  "custom_name": "lat1",
+  "allocated_nodes": 4,
+  "tasks_per_node": 20,
+  "walltime": "6:00:00",
+  "memory_gb": 80,
+  "user": "cheldt"
+}
