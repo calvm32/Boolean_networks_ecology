@@ -18,7 +18,7 @@
 #     return data
 
 # Indiana DNR Hibernaculum Colony Counts
-def Wyandotte_historic_ent_(): # DONE BY NICK
+def Wyandotte_historic_ent_():
     data = [
         {"year": 1981, "day": 1, "Tri_Hi": 2, "Misc_Hi": 0, "In": 0},
         {"year": 1985, "day": 1, "Tri_Hi": 1, "Misc_Hi": 0, "In": 0},

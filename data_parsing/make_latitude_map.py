@@ -4,6 +4,7 @@ from shapely import wkt
 from shapely.geometry import LineString
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
+import numpy as np
 
 # Path to data folder CHANGE AS NEEDED
 df = pd.read_csv("results_and_data/all_sites_PSO_parameter_data/all_sites_with_coordinates.csv")
@@ -43,8 +44,10 @@ midwest = midwest.to_crs("EPSG:5070")
 gdf = gdf.to_crs("EPSG:5070")
 
 # Create a horizontal line across the map at exactly 40 degrees Latitude
+# Many points along 40° N so the line follows the curve of the parallel after reprojection
+lons = np.linspace(-105, -80, 200)
 line_40_deg = gpd.GeoDataFrame(
-    geometry=[LineString([(-105, 40), (-80, 40)])], 
+    geometry=[LineString([(lon, 40) for lon in lons])],
     crs="EPSG:4326"
 ).to_crs("EPSG:5070")
 
@@ -69,7 +72,7 @@ for idx, row in midwest.iterrows():
 # Plot the 40-degree dividing line
 line_40_deg.plot(ax=ax, color='gray', linestyle='--', linewidth=1.5, zorder=1)
 ax.text(line_40_deg.geometry.bounds.minx.iloc[0], line_40_deg.geometry.bounds.miny.iloc[0], 
-        ' 40° N Latitude', color='gray', verticalalignment='bottom')
+        '40° N Latitude', color='gray', verticalalignment='top')
 
 # Plot your 10x10km polygons!
 gdf.plot(ax=ax, color=gdf['color'], edgecolor='black', linewidth=0.5, alpha=0.8, zorder=5)

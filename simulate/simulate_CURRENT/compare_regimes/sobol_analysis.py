@@ -145,7 +145,7 @@ def main():
 
     # Generate Saltelli samples: (N * (2*num_vars + 2) total runs)
     # N=128 -> 128 * 18 = 2304 runs; N=64 -> 1152 runs (fast for testing)
-    N = 512
+    N = 2**18
     param_values = saltelli.sample(problem, N, calc_second_order=False)
 
     # Run the model for each sample row
