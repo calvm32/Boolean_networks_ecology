@@ -2,6 +2,7 @@ import random as rand
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
+import matplotlib.ticker as ticker
 
 from simulate.simulate_CURRENT.helper_funcs import *
 from simulate.simulate_CURRENT.rules import *
@@ -11,7 +12,7 @@ from simulate.simulate_CURRENT.working_params import *
 import os
 
 OUTPUT_DIR = os.environ.get('SIM_OUTPUT_DIR', '.')
-FIGURES_DIR = os.path.join(OUTPUT_DIR, 'figures')
+FIGURES_DIR = os.path.join(OUTPUT_DIR, 'results_and_data')
 
 # ==========================================================================================================================
 # ==========================================================================================================================
@@ -60,6 +61,8 @@ Hi_list = [[tricolor_num, tricolor_cluster_sizeMIN, tricolor_cluster_sizeMAX],
 # NOTICE : the remaining populations (Ot, Im) all start with 0 inhabitants
 # NOTICE : resistance starts at 0 for every bat
 
+num_infected = 1
+
 # ---------------------------
 # system-governing parameters
 # ---------------------------
@@ -103,12 +106,17 @@ T_seasonal, win_length, win_start, lambda_sum, lambda_win = latitude1_NorthMidwe
 # ----------------------------------
 
 times_list = [180, 365, 3*365, 10*365, 20*365, 40*365]
-num_params = 10
+num_params = 64 # how many samples in the given range
 
-# dead vs inf
-param_change = ["inf_alpha", "inf_beta"]
-parameters_list = [np.linspace(0.1,10,num_params), np.linspace(0.1,10,num_params)]
-title = "inf_alphavbeta"
+# longterm survival: delta vs. k_imm = final persistance heatmap
+# param_change = ["delta", "k_imm"]
+# parameters_list = [np.linspace(0.001,0.04,num_params), np.linspace(0.1,10,num_params)]
+
+# outbreak severity: inf_alpha vs. T_inf = acute phase
+param_change = ["inf_alpha", "T_inf"]
+parameters_list = [np.linspace(1,8,num_params), np.linspace(10,45,num_params)]
+
+title = "Phase Diagram"
 
 # --------------
 # actual testing
@@ -162,13 +170,21 @@ def main():
         ax = axes[i]
         ax.plot_surface(X, Y, Z, cmap='viridis')
 
-        ax.set_xlabel(f"{param_change[0]}")
-        ax.set_ylabel(f"{param_change[1]}")
-        ax.set_zlabel(f"Population at day {time}")
-        ax.set_title(f"Population at day {time}", pad=15)
+        ax.set_xlabel(f"{param_change[0]}", labelpad=10)
+        ax.set_ylabel(f"{param_change[1]}", labelpad=10)
+        ax.set_zlabel(f"Population", labelpad=12)
+        ax.set_title(f"Population at year {time // 365} (day {time})", pad=15)
+
+        # DYNAMIC TICK SPACING (Fixes Overlap)
+        ax.xaxis.set_major_locator(ticker.MaxNLocator(nbins=4))
+        ax.yaxis.set_major_locator(ticker.MaxNLocator(nbins=4))
+        ax.zaxis.set_major_locator(ticker.MaxNLocator(nbins=4))
+        
+        # format tick labels to avoid long decimal clutter
+        ax.xaxis.set_major_formatter(ticker.FormatStrFormatter('%.3f'))
 
     for ax in axes:
-        ax.zaxis.labelpad = 10
+        ax.zaxis.labelpad = 12
         ax.xaxis.labelpad = 10
         ax.yaxis.labelpad = 10
     
@@ -179,7 +195,7 @@ def main():
         wspace=0.2
     )
 
-    plt.savefig(os.path.join(FIGURES_DIR,'phase_diagram2var.pdf'), format='pdf', bbox_inches='tight')
+    plt.savefig(os.path.join(FIGURES_DIR,'outbreakseverity:infalpha_vs_Tinf_LAT1NMW.pdf'), format='pdf', bbox_inches='tight')
     plt.show()
 
 if __name__ == "__main__":

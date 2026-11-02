@@ -10,7 +10,7 @@ from simulate.simulate_OLD.rules import *
 import os
 
 OUTPUT_DIR = os.environ.get('SIM_OUTPUT_DIR', '.')
-FIGURES_DIR = os.path.join(OUTPUT_DIR, 'figures')
+FIGURES_DIR = os.path.join(OUTPUT_DIR, 'results_and_data')
 
 # ==========================================================================================================================
 # ==========================================================================================================================

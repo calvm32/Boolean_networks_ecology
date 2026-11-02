@@ -5,7 +5,7 @@ from simulate.simulate_CURRENT.rules import *
 import os
 
 OUTPUT_DIR = os.environ.get('SIM_OUTPUT_DIR', '.')
-FIGURES_DIR = os.path.join(OUTPUT_DIR, 'figures')
+FIGURES_DIR = os.path.join(OUTPUT_DIR, 'results_and_data')
 
 # ==========================================================================================================================
 # ==========================================================================================================================
@@ -106,7 +106,7 @@ def compute_metrics(history, Hi_list, num_infected):
     # -------------------------------------------------------
     # 5. R0 reproduction number: secondary inf. by single bat
     # -------------------------------------------------------
-    exact_R0 = history["SC"] / num_infected
+    exact_R0 = history.get("SC", 0) / num_infected if num_infected > 0 else 0
     
     return {
         "N_min": N_min,

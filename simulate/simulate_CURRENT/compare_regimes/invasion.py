@@ -9,7 +9,7 @@ from simulate.simulate_CURRENT.working_params import *
 import os
 
 OUTPUT_DIR = os.environ.get('SIM_OUTPUT_DIR', '.')
-FIGURES_DIR = os.path.join(OUTPUT_DIR, 'figures')
+FIGURES_DIR = os.path.join(OUTPUT_DIR, 'results_and_data')
 
 # ==========================================================================================================================
 # ==========================================================================================================================
@@ -96,14 +96,14 @@ res_gain = 0.02                             # resistance AFTER recovery
 # latitudinally-averaged parameters
 # ---------------------------------
 
-T_seasonal, win_length, win_start, lambda_sum, lambda_win = latitude1_NorthMidwest() # or latitude2_SouthMidwest()
+T_seasonal, win_length, win_start, lambda_sum, lambda_win = latitude2_SouthMidwest() # or latitude2_SouthMidwest()
 
 # ----------
 # initialize
 # ----------
 
 time = 3650 # total days
-init_fractions = [0.01, 0.03, 0.05, 0.10]
+init_fractions = [0.01, 0.05, 0.10, 0.25]
 
 # ==========================================================================================================================
 # ==========================================================================================================================
@@ -122,12 +122,15 @@ def main():
     parameters = sample_params()
 
     fig, axes = plt.subplots(1, 2, figsize=(12, 4.5))
-    cmap = plt.cm.get_cmap("YlOrRd", len(init_fractions))
+    cmap = plt.colormaps["YlOrRd"].resampled(len(init_fractions))
     
     for idx, frac in enumerate(init_fractions):
-        num_infected = int(Hi_list[i][0]*frac)
+        num_infected = int(tricolor_num * frac)
 
-        history_avg = history_avg_zeros.copy()
+        history_avg = {
+            key: np.zeros(time, dtype=float)
+            for key in ("Hi", "Ot", "In", "Im", "De")
+        }
 
         for i in range(avg_over):
 
@@ -156,7 +159,7 @@ def main():
 
     fig.suptitle("Invasion Scenarios: Effect of Initial Infection Size")
     fig.tight_layout()
-    plt.savefig(os.path.join(FIGURES_DIR,'invasion_scenarios.pdf'), bbox_inches="tight", dpi=300)
+    plt.savefig(os.path.join(FIGURES_DIR,'invasionscenario:delta0.05_LAT2SMW.pdf'), bbox_inches="tight", dpi=300)
     plt.show()
 
 

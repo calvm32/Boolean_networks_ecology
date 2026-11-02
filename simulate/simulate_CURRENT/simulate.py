@@ -27,9 +27,9 @@ def simulate(initial_state, steps, parameters, Print=100):
         history["In"][t] = counts["In"]
         history["Im"][t] = counts["Im"]
         history["De"][t] = counts["De"]
-        history["SC"] = counts["SC"]
 
         state = step(state, parameters, t)
+        history["SC"] = state["SC"]
 
         if Print != False and (t % Print == 0):
             print(f"done w/ simulation at step {t}")

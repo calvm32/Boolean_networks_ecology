@@ -137,9 +137,9 @@ def main():
             [0.005, 0.05],  # delta
             [10, 40],       # T_inf
             [0, 0.8],       # res_max
-            [0.1, 10],     # k_imm
-            [0, 30],     # theta_imm
-            [0, 1],     # res_gain
+            [0.1, 10],      # k_imm
+            [0, 30],        # theta_imm
+            [0, 1],         # res_gain
         ],
     }
 
