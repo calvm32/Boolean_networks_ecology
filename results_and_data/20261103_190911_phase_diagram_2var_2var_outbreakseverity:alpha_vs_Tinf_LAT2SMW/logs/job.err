@@ -1,0 +1,51 @@
+Traceback (most recent call last):
+  File "/home/velcsov/cheldt/BN_ecology/simulate/simulate_CURRENT/compare_regimes/phase_diagram_2var.py", line 202, in <module>
+Traceback (most recent call last):
+  File "/home/velcsov/cheldt/BN_ecology/simulate/simulate_CURRENT/compare_regimes/phase_diagram_2var.py", line 202, in <module>
+    main()
+  File "/home/velcsov/cheldt/BN_ecology/simulate/simulate_CURRENT/compare_regimes/phase_diagram_2var.py", line 198, in main
+    main()
+  File "/home/velcsov/cheldt/BN_ecology/simulate/simulate_CURRENT/compare_regimes/phase_diagram_2var.py", line 198, in main
+    plt.savefig(os.path.join(FIGURES_DIR,'outbreakseverity:infalpha_vs_Tinf_LAT2SMW.pdf'), format='pdf', bbox_inches='tight')
+  File "/home/velcsov/cheldt/envs/bn_ecology_env/lib/python3.10/site-packages/matplotlib/pyplot.py", line 1250, in savefig
+    plt.savefig(os.path.join(FIGURES_DIR,'outbreakseverity:infalpha_vs_Tinf_LAT2SMW.pdf'), format='pdf', bbox_inches='tight')
+  File "/home/velcsov/cheldt/envs/bn_ecology_env/lib/python3.10/site-packages/matplotlib/pyplot.py", line 1250, in savefig
+    res = fig.savefig(*args, **kwargs)  # type: ignore[func-returns-value]
+  File "/home/velcsov/cheldt/envs/bn_ecology_env/lib/python3.10/site-packages/matplotlib/figure.py", line 3497, in savefig
+    res = fig.savefig(*args, **kwargs)  # type: ignore[func-returns-value]
+  File "/home/velcsov/cheldt/envs/bn_ecology_env/lib/python3.10/site-packages/matplotlib/figure.py", line 3497, in savefig
+    self.canvas.print_figure(fname, **kwargs)
+  File "/home/velcsov/cheldt/envs/bn_ecology_env/lib/python3.10/site-packages/matplotlib/backend_bases.py", line 2186, in print_figure
+    self.canvas.print_figure(fname, **kwargs)
+  File "/home/velcsov/cheldt/envs/bn_ecology_env/lib/python3.10/site-packages/matplotlib/backend_bases.py", line 2186, in print_figure
+    result = print_method(
+  File "/home/velcsov/cheldt/envs/bn_ecology_env/lib/python3.10/site-packages/matplotlib/backend_bases.py", line 2042, in <lambda>
+    result = print_method(
+  File "/home/velcsov/cheldt/envs/bn_ecology_env/lib/python3.10/site-packages/matplotlib/backend_bases.py", line 2042, in <lambda>
+    print_method = functools.wraps(meth)(lambda *args, **kwargs: meth(
+  File "/home/velcsov/cheldt/envs/bn_ecology_env/lib/python3.10/site-packages/matplotlib/backends/backend_pdf.py", line 2779, in print_pdf
+    print_method = functools.wraps(meth)(lambda *args, **kwargs: meth(
+  File "/home/velcsov/cheldt/envs/bn_ecology_env/lib/python3.10/site-packages/matplotlib/backends/backend_pdf.py", line 2779, in print_pdf
+    file = PdfFile(filename, metadata=metadata)
+  File "/home/velcsov/cheldt/envs/bn_ecology_env/lib/python3.10/site-packages/matplotlib/backends/backend_pdf.py", line 687, in __init__
+    file = PdfFile(filename, metadata=metadata)
+  File "/home/velcsov/cheldt/envs/bn_ecology_env/lib/python3.10/site-packages/matplotlib/backends/backend_pdf.py", line 687, in __init__
+    fh, opened = cbook.to_filehandle(filename, "wb", return_opened=True)
+  File "/home/velcsov/cheldt/envs/bn_ecology_env/lib/python3.10/site-packages/matplotlib/cbook.py", line 546, in to_filehandle
+    fh, opened = cbook.to_filehandle(filename, "wb", return_opened=True)
+  File "/home/velcsov/cheldt/envs/bn_ecology_env/lib/python3.10/site-packages/matplotlib/cbook.py", line 546, in to_filehandle
+    fh = open(fname, flag, encoding=encoding)
+FileNotFoundError: [Errno 2] No such file or directory: 'results_and_data/20261103_190911_phase_diagram_2var_2var_outbreakseverity:alpha_vs_Tinf_LAT2SMW/results_and_data/outbreakseverity:infalpha_vs_Tinf_LAT2SMW.pdf'
+    fh = open(fname, flag, encoding=encoding)
+FileNotFoundError: [Errno 2] No such file or directory: 'results_and_data/20261103_190911_phase_diagram_2var_2var_outbreakseverity:alpha_vs_Tinf_LAT2SMW/results_and_data/outbreakseverity:infalpha_vs_Tinf_LAT2SMW.pdf'
+--------------------------------------------------------------------------
+Primary job  terminated normally, but 1 process returned
+a non-zero exit code. Per user-direction, the job has been aborted.
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+mpirun detected that one or more processes exited with non-zero status, thus causing
+the job to be terminated. The first process to do so was:
+
+  Process name: [[9554,1],94]
+  Exit code:    1
+--------------------------------------------------------------------------
