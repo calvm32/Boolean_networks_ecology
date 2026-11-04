@@ -99,7 +99,7 @@ res_gain = 0.02                             # resistance AFTER recovery
 # latitudinally-averaged parameters
 # ---------------------------------
 
-T_seasonal, win_length, win_start, lambda_sum, lambda_win = latitude1_NorthMidwest() # or latitude2_SouthMidwest()
+T_seasonal, win_length, win_start, lambda_sum, lambda_win = latitude2_SouthMidwest() # or latitude2_SouthMidwest()
 
 # ----------------------------------
 # phase diagram comparison variables
@@ -195,7 +195,7 @@ def main():
         wspace=0.2
     )
 
-    plt.savefig(os.path.join(FIGURES_DIR,'outbreakseverity:infalpha_vs_Tinf_LAT1NMW.pdf'), format='pdf', bbox_inches='tight')
+    plt.savefig(os.path.join(FIGURES_DIR,'outbreakseverity:infalpha_vs_Tinf_LAT2SMW.pdf'), format='pdf', bbox_inches='tight')
     plt.show()
 
 if __name__ == "__main__":

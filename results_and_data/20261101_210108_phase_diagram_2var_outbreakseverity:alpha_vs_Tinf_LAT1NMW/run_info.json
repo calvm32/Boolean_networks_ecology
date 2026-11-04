@@ -1,0 +1,10 @@
+{
+  "script": "simulate/simulate_CURRENT/compare_regimes/phase_diagram_2var.py",
+  "timestamp": "20261101_210108",
+  "custom_name": "outbreakseverity:alpha_vs_Tinf_LAT1NMW",
+  "allocated_nodes": 4,
+  "tasks_per_node": 20,
+  "walltime": "2:00:00",
+  "memory_gb": 80,
+  "user": "cheldt"
+}
