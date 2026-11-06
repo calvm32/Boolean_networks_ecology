@@ -6,7 +6,7 @@ set -e
 # Configuration & Paths
 PROJECT_DIR=$(pwd)
 OUTPUT_BASE="results_and_data"
-SIM_DIR="simulate/simulate_CURRENT"
+SIM_DIR="simulate"
 VENV_DIR="$HOME/envs/bn_ecology_env"
 
 # Styling & Colors

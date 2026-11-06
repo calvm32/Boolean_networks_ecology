@@ -7,7 +7,7 @@ PROJECT_DIR=$(pwd)
 DATA_FILE="simulate/data.py"
 OUTPUT_BASE="results_and_data"
 VENV_DIR="$HOME/envs/bn_ecology_env"
-SCRIPT_PATH="simulate/simulate_CURRENT/running_solvers/fit_data_parallel_ML_SLURM.py"
+SCRIPT_PATH="simulate/running_solvers/fit_data_parallel_ML_SLURM.py"
 
 # Extract ALL function names defined in data.py
 SITE_LIST=($(grep -E '^[[:space:]]*def[[:space:]]+[a-zA-Z0-9_]+[[:space:]]*\(' "$DATA_FILE" | sed -E 's/^[[:space:]]*def[[:space:]]+([a-zA-Z0-9_]+).*/\1/' | grep -v "__init__"))

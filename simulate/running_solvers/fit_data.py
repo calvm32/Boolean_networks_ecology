@@ -1,0 +1,177 @@
+import random as rand
+import numpy as np
+import copy
+
+from simulate.helper_funcs import *
+from simulate.rules import *
+from simulate.simulate import *
+from simulate.working_params import *
+from simulate.data import *
+
+import os
+
+OUTPUT_DIR = os.environ.get('SIM_OUTPUT_DIR', '.')
+FIGURES_DIR = os.path.join(OUTPUT_DIR, 'results_and_data')
+
+# ==========================================================================================================================
+# ==========================================================================================================================
+# ==========================================================================================================================
+
+num_runs = 150
+
+# --------------------
+# set up control group
+# --------------------
+
+data = happy_jack_data()
+
+START_YEAR = data[0]["year"]
+SAMPLE_DAY = data[0]["day"]
+
+obs_times = []
+obs_Hi = []
+obs_In = []
+
+for d in data:
+    t = d["day"] + 365*(d["year"]-START_YEAR)
+    
+    obs_times.append(t)
+    obs_Hi.append(d["Tri_Hi"] + d["Misc_Hi"])
+    obs_In.append(d["In"])
+
+def sample_params():                                                                                                                                     
+    return {                                                                                                                                             
+        "inf_alpha": inf_alpha,                                                                                               
+        "inf_beta": inf_beta,                                               
+        "delta": delta,                                                     
+        "T_inf": T_inf,                                                     
+        "T_TBD": T_TBD,                                                     
+        "T_AD": T_AD,                                                       
+        "T_seasonal": T_seasonal,                                                                                                               
+        "win_length": win_length,                                                                                                              
+        "win_start": win_start,                                                                                                              
+        "lambda_win": lambda_win,                                           
+        "lambda_sum": lambda_sum,                                                                                                    
+        "res_gain": res_gain,                                                                                                              
+        "res_max": res_max,                                                                                                    
+        "k_imm": k_imm,   
+        "theta_imm": theta_imm,                                                                                          
+    }    
+
+# ==========================================================================================================================
+# ==========================================================================================================================
+# ==========================================================================================================================
+
+# -------------------------
+# set up initial population
+# -------------------------
+
+# first select number of bats belonging to each species
+tricolor_num = 100
+tricolor_cluster_sizeMIN = 1
+tricolor_cluster_sizeMAX = 2
+
+bigbrown_num = 0
+bigbrown_cluster_sizeMIN = 1
+bigbrown_cluster_sizeMAX = 9
+
+# hibernating non-infected bats of each species
+Hi_list = [[tricolor_num, tricolor_cluster_sizeMIN, tricolor_cluster_sizeMAX], 
+           [bigbrown_num, bigbrown_cluster_sizeMIN, bigbrown_cluster_sizeMAX]] 
+
+# NOTICE : the remaining populations (Ot, Im) all start with 0 inhabitants
+# NOTICE : resistance starts at 0 for every bat
+
+# ---------------------------
+# system-governing parameters
+# ---------------------------
+
+# INFECTION PATHWAYS
+inf_alpha, inf_beta = 5, 2                  # infected variables for beta distribution
+                                            # chance a hibernating bat gets infected (given that PD is on) on any given day
+                                            # low: alpha = 1, beta = 10
+                                            # moderate: alpha = 2, beta = 5
+                                            # high: alpha = 5, beta = 2
+
+delta = 0.05                                # P. destructans decay rate, considered in [0.005, 0.03]
+
+# DEATH OR RECOVERY PATHWAYS
+T_inf = 30                                  # approximate time in dayseach bat spends infirm before recovering or dying, 
+                                            # considered in [10, 40]
+
+# BOUT and SEASONAL HIBERNATING PATHWAYS
+T_TBD = 4.1                                 # CONSTANT FOR TRICOLORED # length of torpor bout in days, 
+                                            # considered in [3.9, 4.3] for tricolored bats
+T_AD = 88.5/1440                            # CONSTANT FOR TRICOLORED # length of arousal bout in days, 
+                                            # considered in [1.74166, 5.63333] for tricolored bats
+
+# -----------------
+# types of immunity
+# -----------------
+
+res_max = 0.2                               # hereditary resistance of newborn, corresp. w/ rand.normalvariate(0, X)
+k_imm, theta_imm = 1, 1                     # number of days spent in recovery before re-infection is possible
+                                            # corresp. w/ Gamma(k_imm, theta_imm)
+res_gain = 0.02                             # resistance AFTER recovery
+
+# ---------------------------------
+# latitudinally-averaged parameters
+# ---------------------------------
+
+T_seasonal, win_length, win_start, lambda_sum, lambda_win = latitude1_NorthMidwest() # or latitude2_SouthMidwest()
+
+# ----------
+# initialize
+# ----------
+
+time = 3650             # total days
+
+# ==========================================================================================================================
+# ==========================================================================================================================
+# ==========================================================================================================================
+    
+def loss(parameters, runs=2):
+    losses = []
+
+    for _ in range(runs):
+        sim = simulate(make_initial_state(Hi_list, num_infected), steps=max(obs_times)+1, parameters=parameters, Print=False)
+
+        error = 0.0
+        for i, t in enumerate(obs_times):
+            pred_Hi = sim["Hi"][t]
+            #pred_In = sim["In"][t]
+
+            error += (pred_Hi - obs_Hi[i])**2
+            #error += (pred_In - obs_In[i])**2
+
+        losses.append(error / len(obs_times))
+
+    return np.mean(losses)
+
+# ----------
+# run things
+# ----------
+
+def main():
+    parameters = sample_params()
+    best = None
+    best_loss = float("inf")
+    n_iter = num_runs
+
+    for i in range(n_iter):
+        params = sample_params()
+        L = abs(loss(params))
+        
+        if L < best_loss:
+            best_loss = L
+            best = params
+            print("New best:", best_loss, best)
+        
+        print(f"checked {i}")
+
+    best_sim = simulate(make_initial_state(Hi_list, num_infected), steps = 4500, parameters=best, Print=False)
+    plot_error(best_sim, win_length, win_start, T_seasonal, sample=[obs_times, obs_Hi])
+
+
+if __name__ == "__main__":
+    main()
