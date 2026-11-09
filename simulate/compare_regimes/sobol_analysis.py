@@ -148,8 +148,8 @@ def main():
         ],
     }
 
-    N = 1000
-    param_values = sobol_sample.sample(problem, N*(problem[num_vars]+2), calc_second_order=False)
+    num_samples = 2**14
+    param_values = sobol_sample.sample(problem, num_samples, calc_second_order=False)
 
     Y_Pmax = np.zeros(len(param_values))
     Y_Sfinal = np.zeros(len(param_values))
