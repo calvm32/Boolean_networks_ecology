@@ -22,6 +22,8 @@ FIGURES_DIR = os.path.join(OUTPUT_DIR, 'results_and_data')
 # set up control group
 # --------------------
 
+num_infected = 0
+
 data = happy_jack_data()
 
 START_YEAR = data[0]["year"]

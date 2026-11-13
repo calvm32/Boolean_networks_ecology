@@ -25,6 +25,8 @@ start = timer.perf_counter()
 # set up initial population
 # -------------------------
 
+num_infected = 0
+
 # first select number of bats belonging to each species
 tricolor_num = 100
 tricolor_cluster_sizeMIN = 1
