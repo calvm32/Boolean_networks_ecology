@@ -183,7 +183,7 @@ def update_individuals(state, env, parameters, t):
         p_dead = (1 - np.exp(-mu_i))*(1 + Re)
         p_recover =  1/T_inf
 
-        T_im = int(np.random.gamma(shape=k_imm, scale=theta_imm))
+        T_im = round(np.random.gamma(shape=k_imm, scale=theta_imm))
 
         if In and not Te and not Re:
             De += 1
