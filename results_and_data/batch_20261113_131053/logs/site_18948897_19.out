@@ -1,0 +1,9 @@
+===================================================
+Starting Task 19/35: Site_Z
+Running on host: c1510.swan.hcc.unl.edu
+===================================================
+Dataset targeted: Site_Z
+Output directory mapped: results_and_data/batch_20261113_131053/data/Site_Z
+Starting MPI Parallel PSO for site: Site_Z
+Particles: 128, Nodes: 32, Max Iterations: 1000...
+

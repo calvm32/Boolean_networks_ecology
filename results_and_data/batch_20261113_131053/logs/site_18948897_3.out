@@ -1,0 +1,9 @@
+===================================================
+Starting Task 3/35: Rays
+Running on host: c1510.swan.hcc.unl.edu
+===================================================
+Dataset targeted: Rays
+Output directory mapped: results_and_data/batch_20261113_131053/data/Rays
+Starting MPI Parallel PSO for site: Rays
+Particles: 128, Nodes: 32, Max Iterations: 1000...
+

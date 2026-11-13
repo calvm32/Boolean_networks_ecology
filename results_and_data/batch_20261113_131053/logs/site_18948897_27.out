@@ -1,0 +1,9 @@
+===================================================
+Starting Task 27/35: RGSC
+Running on host: c1510.swan.hcc.unl.edu
+===================================================
+Dataset targeted: RGSC
+Output directory mapped: results_and_data/batch_20261113_131053/data/RGSC
+Starting MPI Parallel PSO for site: RGSC
+Particles: 128, Nodes: 32, Max Iterations: 1000...
+

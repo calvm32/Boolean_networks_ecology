@@ -1,0 +1,9 @@
+===================================================
+Starting Task 35/35: STJM
+Running on host: c1510.swan.hcc.unl.edu
+===================================================
+Dataset targeted: STJM
+Output directory mapped: results_and_data/batch_20261113_131053/data/STJM
+Starting MPI Parallel PSO for site: STJM
+Particles: 128, Nodes: 32, Max Iterations: 1000...
+

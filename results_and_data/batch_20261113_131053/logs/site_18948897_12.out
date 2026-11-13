@@ -1,0 +1,9 @@
+===================================================
+Starting Task 12/35: Jug_Hole_Harrison_
+Running on host: c1409.swan.hcc.unl.edu
+===================================================
+Dataset targeted: Jug_Hole_Harrison_
+Output directory mapped: results_and_data/batch_20261113_131053/data/Jug_Hole_Harrison_
+Starting MPI Parallel PSO for site: Jug_Hole_Harrison_
+Particles: 128, Nodes: 32, Max Iterations: 1000...
+

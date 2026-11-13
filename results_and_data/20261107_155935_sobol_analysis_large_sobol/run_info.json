@@ -1,0 +1,10 @@
+{
+  "script": "simulate/compare_regimes/sobol_analysis.py",
+  "timestamp": "20261107_155935",
+  "custom_name": "large_sobol",
+  "allocated_nodes": 20,
+  "tasks_per_node": 32,
+  "walltime": "48:00:00",
+  "memory_gb": 128,
+  "user": "cheldt"
+}
