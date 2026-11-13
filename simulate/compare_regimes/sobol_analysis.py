@@ -106,6 +106,7 @@ res_gain = 0.02                             # resistance AFTER recovery
 # ---------------------------------
 
 T_seasonal, win_length, win_start, lambda_sum, lambda_win = latitude1_NorthMidwest() # or latitude2_SouthMidwest()
+NAME_APPEND = "lat1NMW"
 
 # ----------
 # initialize
@@ -233,7 +234,7 @@ def main():
     plot_sobol(Si_S, problem, r"Sensitivity: Final Persistence ($S_{\text{final}}$)", axes[2])
     plot_sobol(Si_M, problem, r"Sensitivity: Final Mortality ($M_{\text{final}}$)", axes[3])
     
-    plt.savefig(os.path.join(FIGURES_DIR, "sobol_analysis_plot.pdf"), bbox_inches="tight")
+    plt.savefig(os.path.join(FIGURES_DIR, 'sobol_analysis:' + NAME_APPEND + '.pdf'), bbox_inches="tight")
     plt.show()
 
 if __name__ == "__main__":

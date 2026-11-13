@@ -99,10 +99,10 @@ def update_individuals(state, env, parameters, t):
         K_i = np.random.poisson(lambda_i)
 
         p_i = np.random.beta(parameters["inf_alpha"], parameters["inf_beta"])
-        p_bat = (1 - (1-p_i)**K_i) * (1-res_num)
+        p_bat = (1 - (1-p_i)**K_i)
         p_bat = min(1, p_bat)
 
-        p_infected = 1 - (1-p_bat)*(1-p_env)
+        p_infected = (1 - (1-p_bat)*(1-p_env))*(1-res_num)
 
         # if infected, determine how long until recovery or death
         mu_mean = 1/T_inf
@@ -149,20 +149,27 @@ def update_individuals(state, env, parameters, t):
     # ----------
     for i in range(len(Ot_old)):
         Ot, res_num, cluster_num, _, check, _, _ = state["Ot"][i]
-        r = rand.uniform(0, 1)
-
-        # bout hibernation
-        # check if hibernated before, i.e. if the next hibernating rule is p_bouts and not p_seasonal
-        p_bouts = 1/T_AD
+        r1 = rand.uniform(0, 1)
+        r2 = rand.uniform(0, 1)
 
         if Ot and not Te and not Re:
             De += 1
-        elif not Te and Ot and check and r <= p_bouts:
-            Hi_next.append([1, res_num, cluster_num, 0, 0, 0, 0]) 
-        elif not Te and Ot and r <= p_seasonal:
-            Hi_next.append([1, res_num, cluster_num, 0, 0, 0, 0]) 
+        elif not Te and Ot and check: # from hib. to arousal
+            p_bouts_ot = min(1, 1/T_AD) if T_AD > 0 else 1
+            
+            if r1 <= p_bouts_ot:
+                Hi_next.append([1, res_num, cluster_num, 0, 0, 0, 0])
+            else:
+                Ot_next.append([Ot, res_num, cluster_num, 0, 0, check, 0])           
+        elif not Te and Ot: # from aroused to hibernating
+            p_seas = min(1, 1/T_seasonal) if T_seasonal > 0 else 1
+            
+            if r2 <= p_seas:
+                Hi_next.append([1, res_num, cluster_num, 0, 0, 0, 0])
+            else:
+                Ot_next.append([Ot, res_num, cluster_num, 0, 0, check, 0])
         else:
-            Ot_next.append([Ot, res_num, cluster_num, 0, 0, 0, 0])
+            Ot_next.append([Ot, res_num, cluster_num, 0, 0, check, 0])
 
     # ---------
     # Update In

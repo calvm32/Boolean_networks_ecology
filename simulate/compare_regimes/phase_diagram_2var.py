@@ -111,7 +111,7 @@ T_seasonal, win_length, win_start, lambda_sum, lambda_win = latitude2_SouthMidwe
 # ----------------------------------
 
 times_list = [365, 3*365, 10*365, 20*365] # must be even and in ascending order
-num_params = 12 #32 # how many samples in the given range
+num_params = 32 # how many samples in the given range
 num_seeds = 5   # number of stochastic realizations per cell
 
 # longterm survival: delta vs. k_imm = final persistance heatmap
@@ -121,8 +121,7 @@ num_seeds = 5   # number of stochastic realizations per cell
 # outbreak severity: inf_alpha vs. T_inf = acute phase
 param_change = ["inf_alpha", "T_inf"]
 parameters_list = [np.linspace(1,8,num_params), np.linspace(10,45,num_params)]
-
-title = "Phase Diagram"
+NAME_APPEND = "outbreak_severity:infalpha_vs_Tinf_lat1NMW"
 
 # --------------
 # actual testing
@@ -172,7 +171,7 @@ def main():
     rows = 2
     cols = len(times_list) // rows
 
-    # --- 1. 3D Total Population Surface Plots ---
+    # 1. 3D Total Population Surface Plots
     fig1, axes1 = plt.subplots(nrows=rows, ncols=cols, figsize=(14, 10), subplot_kw={'projection': '3d'}, constrained_layout=True)
     axes1 = axes1.ravel()
     Z_pop = np.zeros(X.shape)
@@ -191,16 +190,16 @@ def main():
         ax.set_xlabel(r"Infection Parameter ($\alpha_{\mathrm{inf}}$)", labelpad=8)
         ax.set_ylabel(r"Infectious Period ($T_{\mathrm{inf}}$)", labelpad=8)
         ax.set_zlabel("Population Count", labelpad=8)
-        ax.set_title(f"Total Population at Year {time // 365} (Day {time})", pad=10, fontweight='bold')
+        ax.set_title(f"Total Population at Year {time // 365}", pad=10, fontweight='bold')
 
         ax.xaxis.set_major_locator(ticker.MaxNLocator(nbins=4))
         ax.yaxis.set_major_locator(ticker.MaxNLocator(nbins=4))
         ax.zaxis.set_major_locator(ticker.MaxNLocator(nbins=4))
 
-    plt.savefig(os.path.join(FIGURES_DIR, 'outbreak_total_population_3d.pdf'), bbox_inches='tight')
+    plt.savefig(os.path.join(FIGURES_DIR, 'phase_diagram:' + NAME_APPEND + '.pdf'), bbox_inches='tight')
     plt.show()
 
-    # --- 2. 2D Likelihood of Survival Heatmap ---
+    # 2. 2D Likelihood of Survival Heatmap
     fig2, axes2 = plt.subplots(nrows=rows, ncols=cols, figsize=(14, 8), constrained_layout=True)
     axes2 = axes2.ravel()
     Z_like = np.zeros(X.shape)
@@ -219,13 +218,13 @@ def main():
 
         ax.set_xlabel(r"Infection Parameter ($\alpha_{\mathrm{inf}}$)")
         ax.set_ylabel(r"Infectious Period ($T_{\mathrm{inf}}$)")
-        ax.set_title(f"Likelihood of Survival at Year {time // 365} (Day {time})", fontweight='bold')
+        ax.set_title(f"Likelihood of Survival at Year {time // 365}", fontweight='bold')
         ax.grid(False)
 
     cbar = fig2.colorbar(mesh, ax=axes2.tolist(), orientation='horizontal', fraction=0.04, pad=0.08)
     cbar.set_label(r"Likelihood of Survival Ratio ($E[N(t)] / N_0$)", fontsize=10)
 
-    plt.savefig(os.path.join(FIGURES_DIR, 'outbreak_survival_likelihood_heatmap.pdf'), bbox_inches='tight')
+    plt.savefig(os.path.join(FIGURES_DIR, 'phase_survival_heatmap:' + NAME_APPEND + '.pdf'), bbox_inches='tight')
     plt.show()
 
 if __name__ == "__main__":

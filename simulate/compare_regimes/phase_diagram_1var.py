@@ -107,14 +107,13 @@ T_seasonal, win_length, win_start, lambda_sum, lambda_win = latitude1_NorthMidwe
 # phase diagram comparison variables
 # ----------------------------------
 
-times_list = [180, 365, 3*365, 10*365, 20*365]
+times_list = [365, 3*365, 10*365, 20*365]
 num_params = 10 #100
 
-# outbreak severity: inf_alpha vs. T_inf = acute phase
+# outbreak severity: inf_alpha
 param_change = "inf_alpha"
 parameters_list = np.linspace(1,8,num_params)
-
-title = "Phase Diagram"
+NAME_APPEND = "infalpha_Tinf_lat1NMW"
 
 totals_list = []
 
@@ -127,7 +126,7 @@ def main():
     parameters = sample_params()
     totals_list = []
 
-    for val in parameters_array:
+    for val in parameters_list:
         parameters[param_change] = float(val)
         history = simulate(make_initial_state(Hi_list, num_infected), steps=times_list[-1], parameters=parameters, Print=False)
         total = np.array(history["Hi"]) + np.array(history["Ot"]) + np.array(history["In"]) + np.array(history["Im"])
@@ -139,14 +138,14 @@ def main():
     for i, time in enumerate(times_list):
         totals_at_time = [total[time-1] for total in totals_list]
         
-        axes[i].plot(parameters_array, totals_at_time, color=COLORS["Hi"], marker='o', markersize=3, linewidth=1.8)
+        axes[i].plot(parameters_list, totals_at_time, color=COLORS["Hi"], marker='o', markersize=3, linewidth=1.8)
         axes[i].set_xlabel(r"Parameter: $\alpha_{\mathrm{inf}}$")
         axes[i].set_ylabel(f"Population at Day {time}")
         axes[i].yaxis.set_major_locator(ticker.MaxNLocator(integer=True))
-        axes[i].set_title(f"Time Horizon: Day {time}", fontweight='bold')
+        axes[i].set_title(f"Time Horizon: Year {time // 365}", fontweight='bold')
         axes[i].grid(True)
 
-    plt.savefig(os.path.join(FIGURES_DIR, 'outbreakseverity_1var_sweep.pdf'), bbox_inches='tight')
+    plt.savefig(os.path.join(FIGURES_DIR, 'phase_diagram:' + NAME_APPEND + '.pdf'), bbox_inches='tight')
     plt.show()
 
 if __name__ == "__main__":
