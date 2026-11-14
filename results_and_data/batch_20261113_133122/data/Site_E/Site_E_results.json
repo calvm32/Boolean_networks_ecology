@@ -1,0 +1,23 @@
+{
+    "site_name": "Site_E",
+    "best_loss": 19.343602364464218,
+    "wall_clock_seconds": 845.069273066707,
+    "best_params": {
+        "inf_alpha": 5.0,
+        "inf_beta": 2.0,
+        "delta": 0.05,
+        "T_inf": 30.0,
+        "T_TBD": 4.1,
+        "T_AD": 0.06145833333333333,
+        "res_max": 0.2,
+        "k_imm": 1.0,
+        "theta_imm": 1.0,
+        "res_gain": 0.02,
+        "T_seasonal": 40.0,
+        "win_length": 146.31835431183683,
+        "win_start": 200.0,
+        "lambda_win": 3.259593973421614e-06,
+        "lambda_sum": 0.0004,
+        "disp_r": 2.7073023908526235
+    }
+}

@@ -1,0 +1,23 @@
+{
+    "site_name": "HAIC",
+    "best_loss": 19.101896062437017,
+    "wall_clock_seconds": 606.6468593226746,
+    "best_params": {
+        "inf_alpha": 5.0,
+        "inf_beta": 2.0,
+        "delta": 0.05,
+        "T_inf": 30.0,
+        "T_TBD": 4.1,
+        "T_AD": 0.06145833333333333,
+        "res_max": 0.2,
+        "k_imm": 1.0,
+        "theta_imm": 1.0,
+        "res_gain": 0.02,
+        "T_seasonal": 40.4080421333967,
+        "win_length": 126.16306450988472,
+        "win_start": 238.82428340527687,
+        "lambda_win": 1.745160344192493e-06,
+        "lambda_sum": 0.00022042129627596895,
+        "disp_r": 100.0
+    }
+}
