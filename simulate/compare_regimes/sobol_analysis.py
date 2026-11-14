@@ -112,7 +112,7 @@ NAME_APPEND = "lat1NMW"
 # initialize
 # ----------
 
-time = 365*20 # total days
+time = 365*10 # total days
 
 # ==========================================================================================================================
 # ==========================================================================================================================
@@ -149,7 +149,7 @@ def main():
         ],
     }
 
-    num_samples = 2**14
+    num_samples = 2**12
     param_values = sobol_sample.sample(problem, num_samples, calc_second_order=False)
 
     Y_Pmax = np.zeros(len(param_values))
