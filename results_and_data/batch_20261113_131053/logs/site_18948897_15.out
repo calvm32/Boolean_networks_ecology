@@ -1,9 +1,0 @@
-===================================================
-Starting Task 15/35: Binkley_historic_ent_
-Running on host: c1510.swan.hcc.unl.edu
-===================================================
-Dataset targeted: Binkley_historic_ent_
-Output directory mapped: results_and_data/batch_20261113_131053/data/Binkley_historic_ent_
-Starting MPI Parallel PSO for site: Binkley_historic_ent_
-Particles: 128, Nodes: 32, Max Iterations: 1000...
-

@@ -106,7 +106,7 @@ T_seasonal, win_length, win_start, lambda_sum, lambda_win = latitude1_NorthMidwe
 # initialize
 # ----------
 
-time = 365*20 # total days
+time = 10# 365*20 # total days
 init_fractions = [0.01, 0.05, 0.10, 0.25]
 NAME_APPEND = "delta0.01_lat1NMW"
 
@@ -125,17 +125,16 @@ history_avg_zeros = {
 
 def main():
     parameters = sample_params()
-
-    fig, axes = plt.subplots(1, 2, figsize=(13, 5), constrained_layout=True)
     cmap = plt.colormaps["OrRd"].resampled(len(init_fractions) + 2)
     
+    # Pre-run simulation data gathering across fractions
+    prevalence_runs = []
+    persistence_runs = []
+    t = np.arange(time)
+
     for idx, frac in enumerate(init_fractions):
         num_infected = int(tricolor_num * frac)
-
-        history_avg = {
-            key: np.zeros(time, dtype=float)
-            for key in ("Hi", "Ot", "In", "Im", "De")
-        }
+        history_avg = {key: np.zeros(time, dtype=float) for key in ("Hi", "Ot", "In", "Im", "De")}
 
         for i in range(avg_over):
             history = simulate(make_initial_state(Hi_list, num_infected), steps=time, parameters=parameters, Print=False)
@@ -146,25 +145,34 @@ def main():
             history_avg[key] /= avg_over   
         
         m = compute_metrics(history_avg, Hi_list, num_infected)
-        t = np.arange(time)
+        prevalence_runs.append((frac, m["_P"]))
+        persistence_runs.append((frac, m["_S"]))
+
+    # 1. Disease Prevalence Figure
+    fig1, ax1 = plt.subplots(figsize=(6.0, 4.2))
+    for idx, (frac, p_data) in enumerate(prevalence_runs):
         color = cmap(idx + 2)
+        ax1.plot(t, p_data, color=color, linewidth=1.6, label=f"{int(frac*100)}% Initial Infection")
+    ax1.set_title(r"Disease Prevalence $P(t)$", fontweight='bold')
+    ax1.set_xlabel("Time Step (Days)")
+    ax1.set_ylabel("Prevalence Ratio")
+    ax1.legend(frameon=True, facecolor='white', edgecolor='#cccccc', framealpha=0.9, fontsize=8)
+    ax1.grid(True, alpha=0.5)
+    fig1.savefig(os.path.join(FIGURES_DIR, f'invasion_prevalence_{NAME_APPEND}.pdf'), bbox_inches="tight", pad_inches=0.1)
+    plt.close(fig1)
 
-        axes[0].plot(t, m["_P"], color=color, linewidth=1.6,
-                     label=f"{int(frac*100)}% Initial Infection")
-        axes[1].plot(t, m["_S"], color=color, linewidth=1.6,
-                     label=f"{int(frac*100)}% Initial Infection")
-
-    axes[0].set_title(r"Disease Prevalence $P(t)$", fontweight='bold')
-    axes[1].set_title(r"Population Persistence $S(t)$", fontweight='bold')
-
-    for ax, ylabel in zip(axes, ["Prevalence Ratio", "Persistence Ratio"]):
-        ax.set_xlabel("Time Step (Days)")
-        ax.set_ylabel(ylabel)
-        ax.legend(frameon=True, facecolor='white', edgecolor='#cccccc', framealpha=0.9)
-        ax.grid(True)
-
-    plt.savefig(os.path.join(FIGURES_DIR, 'invasionscenario' + NAME_APPEND + '.pdf'), bbox_inches="tight")
-    plt.show()
+    # 2. Population Persistence Figure
+    fig2, ax2 = plt.subplots(figsize=(6.0, 4.2))
+    for idx, (frac, s_data) in enumerate(persistence_runs):
+        color = cmap(idx + 2)
+        ax2.plot(t, s_data, color=color, linewidth=1.6, label=f"{int(frac*100)}% Initial Infection")
+    ax2.set_title(r"Population Persistence $S(t)$", fontweight='bold')
+    ax2.set_xlabel("Time Step (Days)")
+    ax2.set_ylabel("Persistence Ratio")
+    ax2.legend(frameon=True, facecolor='white', edgecolor='#cccccc', framealpha=0.9, fontsize=8)
+    ax2.grid(True, alpha=0.5)
+    fig2.savefig(os.path.join(FIGURES_DIR, f'invasion_persistence_{NAME_APPEND}.pdf'), bbox_inches="tight", pad_inches=0.1)
+    plt.close(fig2)
 
 if __name__ == "__main__":
     main()

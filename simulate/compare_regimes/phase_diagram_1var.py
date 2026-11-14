@@ -108,7 +108,7 @@ T_seasonal, win_length, win_start, lambda_sum, lambda_win = latitude1_NorthMidwe
 # ----------------------------------
 
 times_list = [365, 3*365, 10*365, 20*365]
-num_params = 10 #100
+num_params = 2^8
 
 # outbreak severity: inf_alpha
 param_change = "inf_alpha"
@@ -132,21 +132,22 @@ def main():
         total = np.array(history["Hi"]) + np.array(history["Ot"]) + np.array(history["In"]) + np.array(history["Im"])
         totals_list.append(total)
 
-    fig, axes = plt.subplots(nrows=2, ncols=3, figsize=(13, 8), constrained_layout=True)
-    axes = axes.ravel()
-
     for i, time in enumerate(times_list):
+        year = time // 365
         totals_at_time = [total[time-1] for total in totals_list]
         
-        axes[i].plot(parameters_list, totals_at_time, color=COLORS["Hi"], marker='o', markersize=3, linewidth=1.8)
-        axes[i].set_xlabel(r"Parameter: $\alpha_{\mathrm{inf}}$")
-        axes[i].set_ylabel(f"Population at Day {time}")
-        axes[i].yaxis.set_major_locator(ticker.MaxNLocator(integer=True))
-        axes[i].set_title(f"Time Horizon: Year {time // 365}", fontweight='bold')
-        axes[i].grid(True)
+        fig, ax = plt.subplots(figsize=(5.5, 4.2))
+        
+        ax.plot(parameters_list, totals_at_time, color=COLORS["Hi"], marker='o', markersize=3.5, linewidth=1.8)
+        ax.set_xlabel(r"Parameter: $\alpha_{\mathrm{inf}}$")
+        ax.set_ylabel(f"Population at Day {time}")
+        ax.yaxis.set_major_locator(ticker.MaxNLocator(integer=True))
+        ax.set_title(f"Time Horizon: Year {year}", fontweight='bold')
+        ax.grid(True, alpha=0.5)
 
-    plt.savefig(os.path.join(FIGURES_DIR, 'phase_diagram:' + NAME_APPEND + '.pdf'), bbox_inches='tight')
-    plt.show()
+        out_path = os.path.join(FIGURES_DIR, f'phase_diagram_1var_{NAME_APPEND}_yr{year}.pdf')
+        fig.savefig(out_path, bbox_inches='tight', pad_inches=0.1)
+        plt.close(fig)
 
 if __name__ == "__main__":
     main()

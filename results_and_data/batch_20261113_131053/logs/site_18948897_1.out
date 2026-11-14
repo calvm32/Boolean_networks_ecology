@@ -1,9 +1,0 @@
-===================================================
-Starting Task 1/35: Wyandotte_historic_ent_
-Running on host: c1510.swan.hcc.unl.edu
-===================================================
-Dataset targeted: Wyandotte_historic_ent_
-Output directory mapped: results_and_data/batch_20261113_131053/data/Wyandotte_historic_ent_
-Starting MPI Parallel PSO for site: Wyandotte_historic_ent_
-Particles: 128, Nodes: 32, Max Iterations: 1000...
-

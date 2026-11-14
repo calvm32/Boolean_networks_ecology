@@ -4,7 +4,7 @@ from pathlib import Path
 
 # Path to data folder CHANGE AS NEEDED
 DATA_DIR = Path(__file__).parent.parent / "results_and_data/all_sites_PSO_parameter_data/data"
-OUTPUT_CSV = "results_and_data/run_all_sites_PSO/all_sites_parameters.csv"
+OUTPUT_CSV = "results_and_data/all_sites_PSO_parameter_data/all_sites_parameters.csv"
 
 def aggregate_json_results():
     records = []

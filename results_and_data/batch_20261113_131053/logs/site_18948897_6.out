@@ -1,9 +1,0 @@
-===================================================
-Starting Task 6/35: Wildcat
-Running on host: c0709.swan.hcc.unl.edu
-===================================================
-Dataset targeted: Wildcat
-Output directory mapped: results_and_data/batch_20261113_131053/data/Wildcat
-Starting MPI Parallel PSO for site: Wildcat
-Particles: 128, Nodes: 32, Max Iterations: 1000...
-

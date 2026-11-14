@@ -205,13 +205,15 @@ def main():
     }
     
     df_sobol = pd.DataFrame(sobol_data)
-    csv_path = os.path.join(OUTPUT_DIR, "sobol_analysis_data.csv")
+    csv_path = os.path.join(FIGURES_DIR, "sobol_analysis_data.csv")
     df_sobol.to_csv(csv_path, index=False)
 
-    def plot_sobol(Si, problem, title, ax):
+    def plot_single_sobol(Si, problem, title, filename):
         names = problem["names"]
         x = np.arange(len(names))
         width = 0.38
+        
+        fig, ax = plt.subplots(figsize=(6.5, 4.5))
         
         ax.bar(x - width/2, Si["S1"], width, label=r"First-order ($S_1$)",
                color=COLORS["Sobol_S1"], yerr=Si["S1_conf"], capsize=3, error_kw={"lw":0.8, "color":"#333333"})
@@ -226,16 +228,15 @@ def main():
         ax.set_ylim(0, 1.05)
         ax.grid(axis="y", alpha=0.5)
 
-    fig, axes = plt.subplots(2, 2, figsize=(14, 10), constrained_layout=True)
-    axes = axes.flatten()
+        out_path = os.path.join(FIGURES_DIR, filename)
+        fig.savefig(out_path, bbox_inches="tight", pad_inches=0.1)
+        plt.close(fig)
 
-    plot_sobol(Si_R0, problem, r"Sensitivity: Empirical $R_0$", axes[0])
-    plot_sobol(Si_P, problem, r"Sensitivity: Peak Prevalence ($P_{\max}$)", axes[1])
-    plot_sobol(Si_S, problem, r"Sensitivity: Final Persistence ($S_{\text{final}}$)", axes[2])
-    plot_sobol(Si_M, problem, r"Sensitivity: Final Mortality ($M_{\text{final}}$)", axes[3])
+    plot_single_sobol(Si_R0, problem, r"Sensitivity: Empirical $R_0$", f'sobol_R0_{NAME_APPEND}.pdf')
+    plot_single_sobol(Si_P, problem, r"Sensitivity: Peak Prevalence ($P_{\max}$)", f'sobol_Pmax_{NAME_APPEND}.pdf')
+    plot_single_sobol(Si_S, problem, r"Sensitivity: Final Persistence ($S_{\text{final}}$)", f'sobol_Sfinal_{NAME_APPEND}.pdf')
+    plot_single_sobol(Si_M, problem, r"Sensitivity: Final Mortality ($M_{\text{final}}$)", f'sobol_Mfinal_{NAME_APPEND}.pdf')
     
-    plt.savefig(os.path.join(FIGURES_DIR, 'sobol_analysis:' + NAME_APPEND + '.pdf'), bbox_inches="tight")
-    plt.show()
 
 if __name__ == "__main__":
     main()

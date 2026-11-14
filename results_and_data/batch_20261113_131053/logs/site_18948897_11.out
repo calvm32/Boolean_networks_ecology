@@ -1,9 +1,0 @@
-===================================================
-Starting Task 11/35: Buckner
-Running on host: c1510.swan.hcc.unl.edu
-===================================================
-Dataset targeted: Buckner
-Output directory mapped: results_and_data/batch_20261113_131053/data/Buckner
-Starting MPI Parallel PSO for site: Buckner
-Particles: 128, Nodes: 32, Max Iterations: 1000...
-

@@ -1,9 +1,0 @@
-===================================================
-Starting Task 10/35: Saltpeter_Monroe_
-Running on host: c0709.swan.hcc.unl.edu
-===================================================
-Dataset targeted: Saltpeter_Monroe_
-Output directory mapped: results_and_data/batch_20261113_131053/data/Saltpeter_Monroe_
-Starting MPI Parallel PSO for site: Saltpeter_Monroe_
-Particles: 128, Nodes: 32, Max Iterations: 1000...
-

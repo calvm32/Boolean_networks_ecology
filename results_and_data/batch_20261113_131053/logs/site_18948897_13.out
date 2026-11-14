@@ -1,9 +1,0 @@
-===================================================
-Starting Task 13/35: King_Blair_Brinegar
-Running on host: c1510.swan.hcc.unl.edu
-===================================================
-Dataset targeted: King_Blair_Brinegar
-Output directory mapped: results_and_data/batch_20261113_131053/data/King_Blair_Brinegar
-Starting MPI Parallel PSO for site: King_Blair_Brinegar
-Particles: 128, Nodes: 32, Max Iterations: 1000...
-

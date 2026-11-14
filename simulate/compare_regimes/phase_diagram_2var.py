@@ -112,7 +112,7 @@ T_seasonal, win_length, win_start, lambda_sum, lambda_win = latitude2_SouthMidwe
 
 times_list = [365, 3*365, 10*365, 20*365] # must be even and in ascending order
 num_params = 32 # how many samples in the given range
-num_seeds = 5   # number of stochastic realizations per cell
+num_seeds = 4   # number of stochastic realizations per cell (avgd later)
 
 # longterm survival: delta vs. k_imm = final persistance heatmap
 # param_change = ["delta", "k_imm"]
@@ -171,33 +171,46 @@ def main():
     rows = 2
     cols = len(times_list) // rows
 
-    # 1. 3D Total Population Surface Plots
-    fig1, axes1 = plt.subplots(nrows=rows, ncols=cols, figsize=(14, 10), subplot_kw={'projection': '3d'}, constrained_layout=True)
-    axes1 = axes1.ravel()
+    # 1. 3D Total Population Surface Plots (4 Separate PDFs)
     Z_pop = np.zeros(X.shape)
 
     for idx, time in enumerate(times_list):
+        year = time // 365
         Z_pop.fill(0)
         for i in range(len(parameters_list[0])):
             for j in range(len(parameters_list[1])):
                 start_idx = max(0, time - 365)
                 Z_pop[i, j] = np.mean(totals_list[i, j, start_idx:time])
 
-        ax = axes1[idx]
+        fig1 = plt.figure(figsize=(6.5, 5.0))
+        ax = fig1.add_subplot(111, projection='3d')
+
         Z_smooth = gaussian_filter(Z_pop, sigma=0.3)
         ax.plot_surface(X, Y, Z_smooth, cmap='viridis', edgecolor='none', alpha=0.92, antialiased=True)
 
-        ax.set_xlabel(r"Infection Parameter ($\alpha_{\mathrm{inf}}$)", labelpad=8)
-        ax.set_ylabel(r"Infectious Period ($T_{\mathrm{inf}}$)", labelpad=8)
-        ax.set_zlabel("Population Count", labelpad=8)
-        ax.set_title(f"Total Population at Year {time // 365}", pad=10, fontweight='bold')
+        ax.set_xlabel(r"Infection Parameter ($\alpha_{\mathrm{inf}}$)", labelpad=10)
+        ax.set_ylabel(r"Infectious Period ($T_{\mathrm{inf}}$)", labelpad=10)
+        ax.set_zlabel("Population Count", labelpad=6)
+        ax.set_title(f"Total Population at Year {year}", pad=-12, fontweight='bold')
+
+        ax.tick_params(axis='x', pad=3)
+        ax.tick_params(axis='y', pad=3)
+        ax.tick_params(axis='z', pad=3)
 
         ax.xaxis.set_major_locator(ticker.MaxNLocator(nbins=4))
         ax.yaxis.set_major_locator(ticker.MaxNLocator(nbins=4))
         ax.zaxis.set_major_locator(ticker.MaxNLocator(nbins=4))
 
-    plt.savefig(os.path.join(FIGURES_DIR, 'phase_diagram:' + NAME_APPEND + '.pdf'), bbox_inches='tight')
-    plt.show()
+        # Fixed margins instead of bbox_inches='tight', which ignores 3D axis labels
+        fig1.subplots_adjust(left=0.0, right=0.88, bottom=0.02, top=0.90)
+
+        # Rotate slightly and pull camera back to prevent right-side z-axis clipping
+        ax.view_init(elev=28, azim=-50)
+        ax.set_box_aspect([1.0, 1.0, 0.75], zoom=0.88)
+
+        out_path = os.path.join(FIGURES_DIR, f'phase_diagram_{NAME_APPEND}_yr{year}.pdf')
+        fig1.savefig(out_path)  # no bbox_inches='tight'
+        plt.close(fig1)
 
     # 2. 2D Likelihood of Survival Heatmap
     fig2, axes2 = plt.subplots(nrows=rows, ncols=cols, figsize=(14, 8), constrained_layout=True)
