@@ -82,7 +82,7 @@ def update_individuals(state, env, parameters, t):
     if T_seasonal - d <= 0: # avoid division by 0
         p_seasonal = 1
     else:
-        p_seasonal = 1/(T_seasonal-d)
+        p_seasonal = min(1,1/(T_seasonal-d))
 
     active_inf = len(In_old)
     active_IC = sum(1 for bat in In_old if bat[6] == 1)
@@ -113,7 +113,7 @@ def update_individuals(state, env, parameters, t):
         mu_i = np.random.gamma(shape=k_dead, scale=theta_dead)
 
         # bout exit hibernation
-        p_bouts = 1/T_TBD if T_AD >= 1 else 0
+        p_bouts = min(1,1/T_TBD) if T_AD >= 1 else 0
 
         if not Te and Hi and r1 < p_infected:
 
@@ -152,15 +152,12 @@ def update_individuals(state, env, parameters, t):
         Ot, res_num, cluster_num, _, check, _, _ = state["Ot"][i]
         r1 = rand.uniform(0, 1)
         r2 = rand.uniform(0, 1)
-        
-        p_bouts_ot = min(1, 1/T_AD) if T_AD > 0 else 1
-        p_seas = min(1, 1/T_seasonal) if T_seasonal > 0 else 1
 
         if Ot and not Te and not Re:
             De += 1
         elif not Te and Ot and check and r1 <= p_bouts_ot: # from hib. to arousal
             Hi_next.append([1, res_num, cluster_num, 0, 0, 0, 0])      
-        elif not Te and Ot and r2 <= p_seas: # from aroused to hibernating
+        elif not Te and Ot and r2 <= p_seasonal: # from aroused to hibernating
             Hi_next.append([1, res_num, cluster_num, 0, 0, 0, 0])
         else:
             Ot_next.append([Ot, res_num, cluster_num, 0, 0, check, 0])
