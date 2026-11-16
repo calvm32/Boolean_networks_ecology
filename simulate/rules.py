@@ -92,7 +92,8 @@ def update_individuals(state, env, parameters, t):
     # ---------
     for i in range(len(Hi_old)):
         Hi, res_num, cluster_num, _, _, _, _ = state["Hi"][i]
-        r = rand.uniform(0,1)
+        r1 = rand.uniform(0,1)
+        r2 = rand.uniform(0,1)
 
         # bat-to-bat contact WNS exposure
         lambda_i = weight*cluster_num
@@ -114,7 +115,7 @@ def update_individuals(state, env, parameters, t):
         # bout exit hibernation
         p_bouts = 1/T_TBD if T_AD >= 1 else 0
 
-        if (Hi and Te == 0 and r < p_infected):
+        if not Te and Hi and r1 < p_infected:
 
             # handle absolutes to prevent np.log(0) errors
             if p_bat == 1 and p_env == 1:
@@ -137,9 +138,9 @@ def update_individuals(state, env, parameters, t):
                         
             In_next.append([1, res_num, cluster_num, mu_i, 0, 0, 0])
 
-        elif not Te and Hi and r <= p_bouts:
+        elif not Te and Hi and r2 <= p_bouts:
             Ot_next.append([1, res_num, cluster_num, 0, 1, 0, 0]) # mark [...,1] to signify next hibernating rule is p_bouts and not p_seasonal
-        elif Te and Hi and r <= p_seasonal:
+        elif Te and Hi and r2 <= p_seasonal:
             Ot_next.append([1, res_num, cluster_num, 0, 0, 0, 0]) 
         else:
             Hi_next.append([Hi, res_num, cluster_num, 0, 0, 0, 0])
@@ -151,23 +152,16 @@ def update_individuals(state, env, parameters, t):
         Ot, res_num, cluster_num, _, check, _, _ = state["Ot"][i]
         r1 = rand.uniform(0, 1)
         r2 = rand.uniform(0, 1)
+        
+        p_bouts_ot = min(1, 1/T_AD) if T_AD > 0 else 1
+        p_seas = min(1, 1/T_seasonal) if T_seasonal > 0 else 1
 
         if Ot and not Te and not Re:
             De += 1
-        elif not Te and Ot and check: # from hib. to arousal
-            p_bouts_ot = min(1, 1/T_AD) if T_AD > 0 else 1
-            
-            if r1 <= p_bouts_ot:
-                Hi_next.append([1, res_num, cluster_num, 0, 0, 0, 0])
-            else:
-                Ot_next.append([Ot, res_num, cluster_num, 0, 0, check, 0])           
-        elif not Te and Ot: # from aroused to hibernating
-            p_seas = min(1, 1/T_seasonal) if T_seasonal > 0 else 1
-            
-            if r2 <= p_seas:
-                Hi_next.append([1, res_num, cluster_num, 0, 0, 0, 0])
-            else:
-                Ot_next.append([Ot, res_num, cluster_num, 0, 0, check, 0])
+        elif not Te and Ot and check and r1 <= p_bouts_ot: # from hib. to arousal
+            Hi_next.append([1, res_num, cluster_num, 0, 0, 0, 0])      
+        elif not Te and Ot and r2 <= p_seas: # from aroused to hibernating
+            Hi_next.append([1, res_num, cluster_num, 0, 0, 0, 0])
         else:
             Ot_next.append([Ot, res_num, cluster_num, 0, 0, check, 0])
 
