@@ -129,6 +129,9 @@ history_avg_zeros = {
 
 
 def main():
+    # ensure folder to save in exists
+    os.makedirs(FIGURES_DIR, exist_ok=True)
+
     problem = {
         "num_vars": 8,
         # Formatted cleanly to match LaTeX parameter standards
