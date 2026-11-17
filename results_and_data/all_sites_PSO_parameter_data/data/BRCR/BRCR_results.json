@@ -1,7 +1,7 @@
 {
     "site_name": "BRCR",
-    "best_loss": 24.668728180228516,
-    "wall_clock_seconds": 515.5057669114321,
+    "best_loss": 24.737001853215986,
+    "wall_clock_seconds": 693.4713443219953,
     "best_params": {
         "inf_alpha": 5.0,
         "inf_beta": 2.0,
@@ -13,11 +13,11 @@
         "k_imm": 1.0,
         "theta_imm": 1.0,
         "res_gain": 0.02,
-        "T_seasonal": 60.651296228811695,
-        "win_length": 143.41709777067697,
-        "win_start": 221.5545477639039,
-        "lambda_win": 7.879924709706026e-06,
-        "lambda_sum": 0.0002136913309846274,
-        "disp_r": 94.5121651622655
+        "T_seasonal": 40.0,
+        "win_length": 133.1199923874998,
+        "win_start": 242.69530296681555,
+        "lambda_win": 1e-05,
+        "lambda_sum": 0.00010338716487114143,
+        "disp_r": 98.23127751903527
     }
 }

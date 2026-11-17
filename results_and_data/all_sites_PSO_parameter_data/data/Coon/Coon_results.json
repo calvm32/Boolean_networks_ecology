@@ -1,7 +1,7 @@
 {
     "site_name": "Coon",
-    "best_loss": 95.17104471545026,
-    "wall_clock_seconds": 4788.362483016215,
+    "best_loss": 95.27124998776496,
+    "wall_clock_seconds": 11866.663980880985,
     "best_params": {
         "inf_alpha": 5.0,
         "inf_beta": 2.0,
@@ -13,11 +13,11 @@
         "k_imm": 1.0,
         "theta_imm": 1.0,
         "res_gain": 0.02,
-        "T_seasonal": 41.2273900916265,
-        "win_length": 145.96359760582143,
-        "win_start": 279.86163069603526,
-        "lambda_win": 7.721101654191337e-06,
-        "lambda_sum": 0.00018754453763519617,
-        "disp_r": 1.4929011965907955
+        "T_seasonal": 69.04405717909289,
+        "win_length": 191.75117508596037,
+        "win_start": 304.0463197226242,
+        "lambda_win": 3.0170555387514357e-07,
+        "lambda_sum": 0.0002590651672741035,
+        "disp_r": 1.4155767834492432
     }
 }

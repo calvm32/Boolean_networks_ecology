@@ -1,7 +1,7 @@
 {
     "site_name": "STJM",
-    "best_loss": 14.100003405210611,
-    "wall_clock_seconds": 296.2874733870849,
+    "best_loss": 14.09826897931487,
+    "wall_clock_seconds": 545.899814133998,
     "best_params": {
         "inf_alpha": 5.0,
         "inf_beta": 2.0,
@@ -13,11 +13,11 @@
         "k_imm": 1.0,
         "theta_imm": 1.0,
         "res_gain": 0.02,
-        "T_seasonal": 73.69437391164645,
+        "T_seasonal": 78.11032826515869,
         "win_length": 120.0,
-        "win_start": 212.11364024209902,
-        "lambda_win": 3.6193164931416593e-06,
+        "win_start": 207.65374357763932,
+        "lambda_win": 6.19397955356288e-06,
         "lambda_sum": 0.0001,
-        "disp_r": 16.33520503273357
+        "disp_r": 31.08045773043906
     }
 }

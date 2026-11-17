@@ -1,7 +1,7 @@
 {
     "site_name": "Clyfty",
-    "best_loss": 72.31357786834596,
-    "wall_clock_seconds": 12224.666595983319,
+    "best_loss": 72.52293211339959,
+    "wall_clock_seconds": 8785.528329671011,
     "best_params": {
         "inf_alpha": 5.0,
         "inf_beta": 2.0,
@@ -13,11 +13,11 @@
         "k_imm": 1.0,
         "theta_imm": 1.0,
         "res_gain": 0.02,
-        "T_seasonal": 65.60100129401421,
-        "win_length": 132.0073163685731,
-        "win_start": 251.01594686870516,
-        "lambda_win": 9.673830553074023e-06,
-        "lambda_sum": 0.0001175985672631871,
-        "disp_r": 7.143858030678269
+        "T_seasonal": 79.93419522597291,
+        "win_length": 161.52220087305892,
+        "win_start": 300.15514410766315,
+        "lambda_win": 1.8225481598605971e-06,
+        "lambda_sum": 0.00013016699231675275,
+        "disp_r": 5.8688968677556375
     }
 }

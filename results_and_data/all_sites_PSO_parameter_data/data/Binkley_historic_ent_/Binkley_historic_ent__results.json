@@ -1,7 +1,7 @@
 {
     "site_name": "Binkley_historic_ent_",
-    "best_loss": 25.47720260177158,
-    "wall_clock_seconds": 2637.1525800507516,
+    "best_loss": 25.60858766394756,
+    "wall_clock_seconds": 4886.0252374600095,
     "best_params": {
         "inf_alpha": 5.0,
         "inf_beta": 2.0,
@@ -13,11 +13,11 @@
         "k_imm": 1.0,
         "theta_imm": 1.0,
         "res_gain": 0.02,
-        "T_seasonal": 45.8658843208092,
+        "T_seasonal": 57.84311649186089,
         "win_length": 120.0,
-        "win_start": 350.0,
-        "lambda_win": 2.544929124010464e-06,
-        "lambda_sum": 0.0004,
-        "disp_r": 2.7345653674561374
+        "win_start": 346.1970048068576,
+        "lambda_win": 8.346874355885516e-06,
+        "lambda_sum": 0.00039621761501028253,
+        "disp_r": 2.5219331399964418
     }
 }

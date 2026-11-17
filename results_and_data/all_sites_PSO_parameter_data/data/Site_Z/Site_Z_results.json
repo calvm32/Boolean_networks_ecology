@@ -1,7 +1,7 @@
 {
     "site_name": "Site_Z",
-    "best_loss": 59.13662239242676,
-    "wall_clock_seconds": 1210.4365384085104,
+    "best_loss": 58.453061296553585,
+    "wall_clock_seconds": 935.972960323008,
     "best_params": {
         "inf_alpha": 5.0,
         "inf_beta": 2.0,
@@ -13,11 +13,11 @@
         "k_imm": 1.0,
         "theta_imm": 1.0,
         "res_gain": 0.02,
-        "T_seasonal": 40.25893689974957,
-        "win_length": 172.67704695854619,
-        "win_start": 237.23045753181864,
-        "lambda_win": 8.009079444836632e-06,
-        "lambda_sum": 0.00039934292868293536,
-        "disp_r": 0.14519064498487771
+        "T_seasonal": 47.78259258854905,
+        "win_length": 120.0,
+        "win_start": 295.3210169546115,
+        "lambda_win": 2.7656963206189776e-07,
+        "lambda_sum": 0.00038802726128216706,
+        "disp_r": 0.18907591311316563
     }
 }

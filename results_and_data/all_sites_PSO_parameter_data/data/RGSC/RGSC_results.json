@@ -1,7 +1,7 @@
 {
     "site_name": "RGSC",
-    "best_loss": 16.161072924901994,
-    "wall_clock_seconds": 342.92263204138726,
+    "best_loss": 15.964959638629702,
+    "wall_clock_seconds": 481.30160444416106,
     "best_params": {
         "inf_alpha": 5.0,
         "inf_beta": 2.0,
@@ -13,11 +13,11 @@
         "k_imm": 1.0,
         "theta_imm": 1.0,
         "res_gain": 0.02,
-        "T_seasonal": 77.73828790123054,
-        "win_length": 151.17223256366566,
+        "T_seasonal": 64.33875979682492,
+        "win_length": 154.49728800730173,
         "win_start": 200.0,
-        "lambda_win": 3.750724678493181e-07,
-        "lambda_sum": 0.00024235883550297616,
-        "disp_r": 97.89885291413803
+        "lambda_win": 1.5383166862961523e-06,
+        "lambda_sum": 0.00022488079727105593,
+        "disp_r": 86.57213671937524
     }
 }

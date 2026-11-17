@@ -1,7 +1,7 @@
 {
     "site_name": "Richs_Cave",
-    "best_loss": 24.192999026926024,
-    "wall_clock_seconds": 4170.415818662383,
+    "best_loss": 24.53909456861435,
+    "wall_clock_seconds": 4262.197579350002,
     "best_params": {
         "inf_alpha": 5.0,
         "inf_beta": 2.0,
@@ -13,11 +13,11 @@
         "k_imm": 1.0,
         "theta_imm": 1.0,
         "res_gain": 0.02,
-        "T_seasonal": 80.0,
-        "win_length": 221.6816743308646,
-        "win_start": 349.5196420722307,
-        "lambda_win": 8.929888489869319e-06,
-        "lambda_sum": 0.0001000934999316584,
-        "disp_r": 1.1888675685940688
+        "T_seasonal": 79.75796899791142,
+        "win_length": 237.86259384125637,
+        "win_start": 350.0,
+        "lambda_win": 2.4097757517469484e-06,
+        "lambda_sum": 0.0001404819127469147,
+        "disp_r": 1.0801302755730897
     }
 }

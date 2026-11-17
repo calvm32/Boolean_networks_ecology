@@ -1,7 +1,7 @@
 {
     "site_name": "Site_BB",
-    "best_loss": 31.31170019176733,
-    "wall_clock_seconds": 1055.9612495945767,
+    "best_loss": 30.903787511921053,
+    "wall_clock_seconds": 520.4403391107917,
     "best_params": {
         "inf_alpha": 5.0,
         "inf_beta": 2.0,
@@ -13,11 +13,11 @@
         "k_imm": 1.0,
         "theta_imm": 1.0,
         "res_gain": 0.02,
-        "T_seasonal": 40.0,
-        "win_length": 123.9473570614534,
-        "win_start": 349.87908414504005,
-        "lambda_win": 6.703243228866369e-06,
-        "lambda_sum": 0.0004,
-        "disp_r": 4.101921408007571
+        "T_seasonal": 64.86688784497642,
+        "win_length": 120.0,
+        "win_start": 350.0,
+        "lambda_win": 0.0,
+        "lambda_sum": 0.0003871800962958025,
+        "disp_r": 4.180738683389455
     }
 }

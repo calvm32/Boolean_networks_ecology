@@ -1,7 +1,7 @@
 {
     "site_name": "Buckner",
-    "best_loss": 58.8951634039689,
-    "wall_clock_seconds": 8285.651279211044,
+    "best_loss": 59.41529788151742,
+    "wall_clock_seconds": 5476.595786096994,
     "best_params": {
         "inf_alpha": 5.0,
         "inf_beta": 2.0,
@@ -13,11 +13,11 @@
         "k_imm": 1.0,
         "theta_imm": 1.0,
         "res_gain": 0.02,
-        "T_seasonal": 80.0,
-        "win_length": 164.44153992156595,
-        "win_start": 349.0334990193856,
-        "lambda_win": 8.486307627182865e-06,
-        "lambda_sum": 0.0001,
-        "disp_r": 1.1981164836385543
+        "T_seasonal": 78.04359188570447,
+        "win_length": 188.04510612770022,
+        "win_start": 349.9242195677715,
+        "lambda_win": 3.5388052933846156e-06,
+        "lambda_sum": 0.00011111863775088168,
+        "disp_r": 0.8736887510911504
     }
 }

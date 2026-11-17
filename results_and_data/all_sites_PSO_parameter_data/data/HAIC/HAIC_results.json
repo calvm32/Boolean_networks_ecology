@@ -1,7 +1,7 @@
 {
     "site_name": "HAIC",
-    "best_loss": 19.101896062437017,
-    "wall_clock_seconds": 606.6468593226746,
+    "best_loss": 19.161496015036168,
+    "wall_clock_seconds": 450.6242690542713,
     "best_params": {
         "inf_alpha": 5.0,
         "inf_beta": 2.0,
@@ -13,11 +13,11 @@
         "k_imm": 1.0,
         "theta_imm": 1.0,
         "res_gain": 0.02,
-        "T_seasonal": 40.4080421333967,
-        "win_length": 126.16306450988472,
-        "win_start": 238.82428340527687,
-        "lambda_win": 1.745160344192493e-06,
-        "lambda_sum": 0.00022042129627596895,
-        "disp_r": 100.0
+        "T_seasonal": 40.0,
+        "win_length": 146.6825558040327,
+        "win_start": 218.24080015407495,
+        "lambda_win": 4.9498992484890265e-06,
+        "lambda_sum": 0.0003175574749344753,
+        "disp_r": 37.664444435069285
     }
 }

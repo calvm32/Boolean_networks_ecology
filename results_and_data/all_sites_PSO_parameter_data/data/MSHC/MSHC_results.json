@@ -1,7 +1,7 @@
 {
     "site_name": "MSHC",
-    "best_loss": 15.067497955412133,
-    "wall_clock_seconds": 580.3627954209223,
+    "best_loss": 15.969153673432217,
+    "wall_clock_seconds": 287.46769376378506,
     "best_params": {
         "inf_alpha": 5.0,
         "inf_beta": 2.0,
@@ -14,10 +14,10 @@
         "theta_imm": 1.0,
         "res_gain": 0.02,
         "T_seasonal": 40.0,
-        "win_length": 149.79454194311182,
-        "win_start": 210.52294961572397,
-        "lambda_win": 5.860798302295021e-07,
-        "lambda_sum": 0.0003887704398192184,
-        "disp_r": 24.61678313748575
+        "win_length": 161.40337604222495,
+        "win_start": 200.0,
+        "lambda_win": 6.812957236461184e-07,
+        "lambda_sum": 0.0004,
+        "disp_r": 46.54270643716934
     }
 }

@@ -1,7 +1,7 @@
 {
     "site_name": "King_Blair_Brinegar",
-    "best_loss": 55.09635191317479,
-    "wall_clock_seconds": 2532.734022389166,
+    "best_loss": 55.07690184437629,
+    "wall_clock_seconds": 3378.6216904623434,
     "best_params": {
         "inf_alpha": 5.0,
         "inf_beta": 2.0,
@@ -13,11 +13,11 @@
         "k_imm": 1.0,
         "theta_imm": 1.0,
         "res_gain": 0.02,
-        "T_seasonal": 46.29440978774234,
-        "win_length": 233.21837408782457,
-        "win_start": 228.71328382339016,
-        "lambda_win": 2.1719501614863367e-06,
-        "lambda_sum": 0.00010223484822674809,
-        "disp_r": 4.111579489325846
+        "T_seasonal": 69.34572533241169,
+        "win_length": 234.90887728227287,
+        "win_start": 253.89730740272023,
+        "lambda_win": 1e-05,
+        "lambda_sum": 0.00010141894798574841,
+        "disp_r": 3.707613744977645
     }
 }
