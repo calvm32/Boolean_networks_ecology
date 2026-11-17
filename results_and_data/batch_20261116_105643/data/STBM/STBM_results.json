@@ -1,0 +1,23 @@
+{
+    "site_name": "STBM",
+    "best_loss": 14.666719065980686,
+    "wall_clock_seconds": 244.016398685053,
+    "best_params": {
+        "inf_alpha": 5.0,
+        "inf_beta": 2.0,
+        "delta": 0.05,
+        "T_inf": 30.0,
+        "T_TBD": 4.1,
+        "T_AD": 0.06145833333333333,
+        "res_max": 0.2,
+        "k_imm": 1.0,
+        "theta_imm": 1.0,
+        "res_gain": 0.02,
+        "T_seasonal": 51.86078191250632,
+        "win_length": 120.0,
+        "win_start": 231.105148542327,
+        "lambda_win": 8.905138396393448e-06,
+        "lambda_sum": 0.0003087707347705556,
+        "disp_r": 12.794269902099149
+    }
+}

@@ -1,0 +1,23 @@
+{
+    "site_name": "Saltpeter_Crawford_",
+    "best_loss": 63.38325925384878,
+    "wall_clock_seconds": 5901.016784502193,
+    "best_params": {
+        "inf_alpha": 5.0,
+        "inf_beta": 2.0,
+        "delta": 0.05,
+        "T_inf": 30.0,
+        "T_TBD": 4.1,
+        "T_AD": 0.06145833333333333,
+        "res_max": 0.2,
+        "k_imm": 1.0,
+        "theta_imm": 1.0,
+        "res_gain": 0.02,
+        "T_seasonal": 76.55324943531726,
+        "win_length": 190.08430376680414,
+        "win_start": 347.8375979245395,
+        "lambda_win": 1.0412208641413988e-07,
+        "lambda_sum": 0.00019799539095473968,
+        "disp_r": 1.7100375380777064
+    }
+}

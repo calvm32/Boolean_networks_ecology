@@ -1,0 +1,23 @@
+{
+    "site_name": "River",
+    "best_loss": 35.94208149571212,
+    "wall_clock_seconds": 6123.403602356993,
+    "best_params": {
+        "inf_alpha": 5.0,
+        "inf_beta": 2.0,
+        "delta": 0.05,
+        "T_inf": 30.0,
+        "T_TBD": 4.1,
+        "T_AD": 0.06145833333333333,
+        "res_max": 0.2,
+        "k_imm": 1.0,
+        "theta_imm": 1.0,
+        "res_gain": 0.02,
+        "T_seasonal": 65.26669922946016,
+        "win_length": 152.4730711614376,
+        "win_start": 200.0,
+        "lambda_win": 9.212839250913039e-06,
+        "lambda_sum": 0.00014908356127347068,
+        "disp_r": 7.2751136648669625
+    }
+}
