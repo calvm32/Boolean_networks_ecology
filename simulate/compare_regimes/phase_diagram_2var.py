@@ -104,24 +104,25 @@ res_gain = 0.02                             # resistance AFTER recovery
 # latitudinally-averaged parameters
 # ---------------------------------
 
-T_seasonal, win_length, win_start, lambda_sum, lambda_win = latitude2_SouthMidwest() # or latitude2_SouthMidwest()
+T_seasonal, win_length, win_start, lambda_sum, lambda_win = latitude1_NorthMidwest() # or latitude2_SouthMidwest()
 
 # ----------------------------------
 # phase diagram comparison variables
 # ----------------------------------
 
 times_list = [365, 3*365, 10*365, 20*365] # must be even and in ascending order
-num_params = 32 # how many samples in the given range
+num_params = 20 # how many samples in the given range
 num_seeds = 4   # number of stochastic realizations per cell (avgd later)
 
-# longterm survival: delta vs. k_imm = final persistance heatmap
-# param_change = ["delta", "k_imm"]
-# parameters_list = [np.linspace(0.001,0.04,num_params), np.linspace(0.1,10,num_params)]
+# longterm survival: delta vs. T_inf = final persistance heatmap
+param_change = ["delta", "res_gain"]
+parameters_list = [np.linspace(0.001,0.05,num_params), np.linspace(0,1,num_params)]
+NAME_APPEND = "final_persistence:infalpha_vs_resgain_lat1NMW"
 
 # outbreak severity: inf_alpha vs. T_inf = acute phase
-param_change = ["inf_alpha", "T_inf"]
-parameters_list = [np.linspace(1,8,num_params), np.linspace(10,45,num_params)]
-NAME_APPEND = "outbreak_severity:infalpha_vs_Tinf_lat1NMW"
+# param_change = ["inf_alpha", "T_inf"]
+# parameters_list = [np.linspace(1,8,num_params), np.linspace(10,45,num_params)]
+# NAME_APPEND = "outbreak_severity:infalpha_vs_Tinf_lat1NMW"
 
 # --------------
 # actual testing

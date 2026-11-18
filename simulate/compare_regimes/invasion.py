@@ -75,8 +75,6 @@ inf_alpha, inf_beta = 5, 2                  # infected variables for beta distri
                                             # moderate: alpha = 2, beta = 5
                                             # high: alpha = 5, beta = 2
 
-delta = 0.01                                # P. destructans decay rate, considered in [0.005, 0.03]
-
 # DEATH OR RECOVERY PATHWAYS
 T_inf = 30                                  # approximate time in dayseach bat spends infirm before recovering or dying, 
                                             # considered in [10, 40]
@@ -100,15 +98,17 @@ res_gain = 0.02                             # resistance AFTER recovery
 # latitudinally-averaged parameters
 # ---------------------------------
 
-T_seasonal, win_length, win_start, lambda_sum, lambda_win = latitude1_NorthMidwest() # or latitude2_SouthMidwest()
+T_seasonal, win_length, win_start, lambda_sum, lambda_win = latitude2_SouthMidwest() # or latitude2_SouthMidwest()
 
 # ----------
 # initialize
 # ----------
 
-time = 10# 365*20 # total days
-init_fractions = [0.01, 0.05, 0.10, 0.25]
-NAME_APPEND = "delta0.01_lat1NMW"
+delta = 0.01                                # P. destructans decay rate, considered in [0.005, 0.03]
+
+time = 365*20 # total days
+init_fractions = [0.01, 0.01, 0.10, 0.25]
+NAME_APPEND = "delta0.01_lat2SMW"
 
 # ==========================================================================================================================
 # ==========================================================================================================================

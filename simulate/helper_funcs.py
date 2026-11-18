@@ -91,7 +91,7 @@ def compute_metrics(history, Hi_list, num_infected):
     S_final = S[-1]             # final persistence
 
     # ----------------------------------------
-    # 3. mortality burded: M(t) = De(t) / N(0)
+    # 3. mortality burden: M(t) = De(t) / N(0)
     # ----------------------------------------
     M = np.array(history["De"]) / N0
     M_final = M[-1]

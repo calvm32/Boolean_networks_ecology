@@ -105,8 +105,8 @@ res_gain = 0.02                             # resistance AFTER recovery
 # latitudinally-averaged parameters
 # ---------------------------------
 
-T_seasonal, win_length, win_start, lambda_sum, lambda_win = latitude1_NorthMidwest() # or latitude2_SouthMidwest()
-NAME_APPEND = "lat1NMW"
+T_seasonal, win_length, win_start, lambda_sum, lambda_win = latitude2_SouthMidwest() # or latitude2_SouthMidwest()
+NAME_APPEND = "lat2SMW"
 
 # ----------
 # initialize
@@ -152,7 +152,7 @@ def main():
         ],
     }
 
-    num_samples = 2**6
+    num_samples = 2**6 #2**12 for large runs
     param_values = sobol_sample.sample(problem, num_samples, calc_second_order=False)
 
     Y_Pmax = np.zeros(len(param_values))
@@ -187,7 +187,7 @@ def main():
         Y_Mfinal[i] = m["M_final"]
         Y_R0[i]     = m["R0_empirical"]
 
-        if i % 1000 == 0:
+        if i % 10 == 0:
             print(f"Sobol run {i}/{len(param_values)}")
 
     Si_P = sobol.analyze(problem, Y_Pmax, calc_second_order=False, print_to_console=False)
