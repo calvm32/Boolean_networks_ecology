@@ -59,19 +59,19 @@ res_gain = 0.02                             # resistance AFTER recovery
 # --------------------------------------------
 
 def latitude1_NorthMidwest():
-    T_seasonal = 55
-    win_length = 147
-    win_start = 238
-    lambda_sum = 0.000238
-    lambda_win = 0.000004
+    T_seasonal = 63
+    win_length = 172
+    win_start = 288
+    lambda_sum = 0.000305
+    lambda_win = 0.000006
 
     return T_seasonal, win_length, win_start, lambda_sum, lambda_win
 
 def latitude2_SouthMidwest():
-    T_seasonal = 67
-    win_length = 183
-    win_start = 320
-    lambda_sum = 0.000202
-    lambda_win = 0.000004
+    T_seasonal = 55
+    win_length = 160
+    win_start = 280
+    lambda_sum = 0.000325
+    lambda_win = 0.000005
     
     return T_seasonal, win_length, win_start, lambda_sum, lambda_win
