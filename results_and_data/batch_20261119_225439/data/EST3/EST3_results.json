@@ -1,0 +1,26 @@
+{
+    "site_name": "EST3",
+    "best_loss": 13.305381453171071,
+    "wall_clock_seconds": 113.69311696698423,
+    "initial_tricolor": 29,
+    "initial_bigbrown": 0,
+    "initial_infected": 0,
+    "best_params": {
+        "inf_alpha": 5.0,
+        "inf_beta": 2.0,
+        "delta": 0.05,
+        "T_inf": 30.0,
+        "T_TBD": 4.1,
+        "T_AD": 0.06145833333333333,
+        "res_max": 0.2,
+        "k_imm": 1.0,
+        "theta_imm": 1.0,
+        "res_gain": 0.02,
+        "T_seasonal": 61.310872333649314,
+        "win_length": 160.68122759225335,
+        "win_start": 256.08715701456265,
+        "lambda_win": 1e-05,
+        "lambda_sum": 0.00014616554626461226,
+        "disp_r": 100.0
+    }
+}

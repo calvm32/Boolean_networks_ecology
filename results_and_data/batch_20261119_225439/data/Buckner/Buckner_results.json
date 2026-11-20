@@ -1,0 +1,26 @@
+{
+    "site_name": "Buckner",
+    "best_loss": 53.52585321512704,
+    "wall_clock_seconds": 4136.428945541382,
+    "initial_tricolor": 27,
+    "initial_bigbrown": 0,
+    "initial_infected": 0,
+    "best_params": {
+        "inf_alpha": 5.0,
+        "inf_beta": 2.0,
+        "delta": 0.05,
+        "T_inf": 30.0,
+        "T_TBD": 4.1,
+        "T_AD": 0.06145833333333333,
+        "res_max": 0.2,
+        "k_imm": 1.0,
+        "theta_imm": 1.0,
+        "res_gain": 0.02,
+        "T_seasonal": 77.6077841255844,
+        "win_length": 120.0,
+        "win_start": 350.0,
+        "lambda_win": 3.398570979334978e-07,
+        "lambda_sum": 0.0004,
+        "disp_r": 3.4864890823329926
+    }
+}

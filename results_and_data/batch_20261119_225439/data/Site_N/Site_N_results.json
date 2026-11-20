@@ -1,0 +1,26 @@
+{
+    "site_name": "Site_N",
+    "best_loss": 29.216554474551003,
+    "wall_clock_seconds": 2581.379537159577,
+    "initial_tricolor": 369,
+    "initial_bigbrown": 0,
+    "initial_infected": 0,
+    "best_params": {
+        "inf_alpha": 5.0,
+        "inf_beta": 2.0,
+        "delta": 0.05,
+        "T_inf": 30.0,
+        "T_TBD": 4.1,
+        "T_AD": 0.06145833333333333,
+        "res_max": 0.2,
+        "k_imm": 1.0,
+        "theta_imm": 1.0,
+        "res_gain": 0.02,
+        "T_seasonal": 76.48308070910625,
+        "win_length": 231.62239744794226,
+        "win_start": 224.16855268210895,
+        "lambda_win": 8.244713553258397e-06,
+        "lambda_sum": 0.0004,
+        "disp_r": 100.0
+    }
+}

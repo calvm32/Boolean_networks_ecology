@@ -1,0 +1,26 @@
+{
+    "site_name": "Rays",
+    "best_loss": 70.02452244781227,
+    "wall_clock_seconds": 1493.8387484090053,
+    "initial_tricolor": 14,
+    "initial_bigbrown": 0,
+    "initial_infected": 0,
+    "best_params": {
+        "inf_alpha": 5.0,
+        "inf_beta": 2.0,
+        "delta": 0.05,
+        "T_inf": 30.0,
+        "T_TBD": 4.1,
+        "T_AD": 0.06145833333333333,
+        "res_max": 0.2,
+        "k_imm": 1.0,
+        "theta_imm": 1.0,
+        "res_gain": 0.02,
+        "T_seasonal": 69.07585693942478,
+        "win_length": 123.82760456370028,
+        "win_start": 254.08606956418726,
+        "lambda_win": 1.1973841251553162e-08,
+        "lambda_sum": 0.0003422650550642095,
+        "disp_r": 3.6257494941252277
+    }
+}

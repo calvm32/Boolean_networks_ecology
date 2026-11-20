@@ -1,0 +1,26 @@
+{
+    "site_name": "PPSC",
+    "best_loss": 15.698156729818953,
+    "wall_clock_seconds": 171.11625854019076,
+    "initial_tricolor": 37,
+    "initial_bigbrown": 0,
+    "initial_infected": 0,
+    "best_params": {
+        "inf_alpha": 5.0,
+        "inf_beta": 2.0,
+        "delta": 0.05,
+        "T_inf": 30.0,
+        "T_TBD": 4.1,
+        "T_AD": 0.06145833333333333,
+        "res_max": 0.2,
+        "k_imm": 1.0,
+        "theta_imm": 1.0,
+        "res_gain": 0.02,
+        "T_seasonal": 40.98212129699492,
+        "win_length": 120.0,
+        "win_start": 288.318078013426,
+        "lambda_win": 9.185713746087006e-06,
+        "lambda_sum": 0.00039462831647438706,
+        "disp_r": 96.29532593946065
+    }
+}

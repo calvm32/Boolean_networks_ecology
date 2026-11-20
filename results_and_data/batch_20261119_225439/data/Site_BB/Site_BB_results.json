@@ -1,0 +1,26 @@
+{
+    "site_name": "Site_BB",
+    "best_loss": 35.515043756546945,
+    "wall_clock_seconds": 483.08270669699414,
+    "initial_tricolor": 32,
+    "initial_bigbrown": 0,
+    "initial_infected": 0,
+    "best_params": {
+        "inf_alpha": 5.0,
+        "inf_beta": 2.0,
+        "delta": 0.05,
+        "T_inf": 30.0,
+        "T_TBD": 4.1,
+        "T_AD": 0.06145833333333333,
+        "res_max": 0.2,
+        "k_imm": 1.0,
+        "theta_imm": 1.0,
+        "res_gain": 0.02,
+        "T_seasonal": 41.70268987703609,
+        "win_length": 122.18643779882495,
+        "win_start": 317.2301090593597,
+        "lambda_win": 3.883088737712236e-07,
+        "lambda_sum": 0.0003984343258033743,
+        "disp_r": 1.0224201332888205
+    }
+}
