@@ -21,12 +21,6 @@ from simulate.data import *
 
 start = timer.perf_counter()
 
-# -------------------------
-# set up initial population
-# -------------------------
-
-num_infected = 0
-
 # -------------------------------------------------------
 # Load site data first so initial population matches site
 # -------------------------------------------------------
@@ -39,11 +33,11 @@ if site_name in globals():
 else:
     raise ValueError(f"Error: Function {site_name} not found in simulate.data")
 
-# Set initial population from first survey (floor at 20 if Tri_Hi is 0/tiny to prevent instant stochastic extinction)
+# Set initial population from first survey
 init_tri = data[0]["Tri_Hi"]
 init_misc = data[0]["Misc_Hi"]
 
-tricolor_num = max(init_tri, 20) if (init_tri + init_misc) < 20 else init_tri
+tricolor_num = init_tri
 tricolor_cluster_sizeMIN = 1
 tricolor_cluster_sizeMAX = 2
 
@@ -51,12 +45,16 @@ bigbrown_num = init_misc
 bigbrown_cluster_sizeMIN = 1
 bigbrown_cluster_sizeMAX = 9
 
+# hibernating non-infected bats of each species
 Hi_list = [
     [tricolor_num, tricolor_cluster_sizeMIN, tricolor_cluster_sizeMAX],
     [bigbrown_num, bigbrown_cluster_sizeMIN, bigbrown_cluster_sizeMAX]
 ]
 
 num_infected = data[0].get("In", 0)
+
+# NOTICE : the remaining populations (Ot, Im) all start with 0 inhabitants
+# NOTICE : resistance starts at 0 for every bat
 
 # ---------------------------
 # system-governing parameters
@@ -328,6 +326,9 @@ def main(site_name, output_dir):
             "site_name": site_name,
             "best_loss": float(gbest_score),
             "wall_clock_seconds": elapsed_seconds,
+            "initial_tricolor": int(tricolor_num),
+            "initial_bigbrown": int(bigbrown_num),
+            "initial_infected": int(num_infected),
             "best_params": json_params
         }
         
@@ -337,8 +338,9 @@ def main(site_name, output_dir):
             
         print(f"[SAVED] Parameter data saved successfully to:\n{json_path}")
 
-        # Re-simulate + save plot
-        best_sim = simulate(make_initial_state(Hi_list, num_infected), steps=4500, parameters=best_final_params, Print=False)
+        # Re-simulate + save plot (covers full site timeline + 1 trailing year)
+        plot_steps = max(obs_times) + 365
+        best_sim = simulate(make_initial_state(Hi_list, num_infected), steps=plot_steps, parameters=best_final_params, Print=False)
         fig_path = os.path.join(output_dir, f"{site_name}_fit.png")
         
         plot_history_highlights(best_sim, 
@@ -358,39 +360,21 @@ if __name__ == "__main__":
     rank = comm.Get_rank()
     size = comm.Get_size()
 
-    site_name = None
     output_dir = "."
+    obs_package = None
 
     if rank == 0:
-        
-        # Read the environment variables populated by bash script
-        site_name = os.environ.get("SITE_NAME")
         output_dir = os.environ.get("SIM_OUTPUT_DIR", ".")
-        
-        if not site_name:
-            print("Error: SITE_NAME environment variable not set.")
-            sys.exit(1)
-            
         print(f"Dataset targeted: {site_name}")
         print(f"Output directory mapped: {output_dir}")
-        
-        if site_name in globals():
-            data = globals()[site_name]()
-        else:
-            print(f"Error: Function {site_name} not found in simulate.data")
-            sys.exit(1)
+        print(f"Initial Hi_list: {Hi_list}, Initial In: {num_infected}")
             
         obs_package = []
-        
         START_YEAR = data[0]["year"]
         for d in data:
-            t = d["day"] + 365*(d["year"]-START_YEAR)
+            t = d["day"] + 365 * (d["year"] - START_YEAR)
             obs_package.append((t, d["Tri_Hi"] + d["Misc_Hi"], d["In"]))
-    else:
-        obs_package = None
 
-    # Broadcast environment info and dataset to all worker nodes
-    site_name = comm.bcast(site_name, root=0)
     output_dir = comm.bcast(output_dir, root=0)
     obs_package = comm.bcast(obs_package, root=0)
 
