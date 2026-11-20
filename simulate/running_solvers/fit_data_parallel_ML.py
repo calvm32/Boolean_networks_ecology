@@ -81,7 +81,7 @@ T_seasonal, win_length, win_start, lambda_sum, lambda_win = latitude1_NorthMidwe
 # initialize
 # ----------
 
-time = 3650             # total days
+time = 365*20             # total days
 
 disp_r = 10             # dispersion parameter # ONLY USED FOR DATA FITTING
 

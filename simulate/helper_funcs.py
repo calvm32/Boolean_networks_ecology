@@ -287,7 +287,86 @@ def plot_residual_error(history, win_length, win_start, T_seasonal, sample=[], x
 
 
 def plot_wMAPE(history, win_length, win_start, T_seasonal, sample=[], xlim_max=None):
-    plot_residual_error(history, win_length, win_start, T_seasonal, sample=sample, xlim_max=xlim_max)
+    t = range(len(history["Hi"]))
+    n_days = len(t)
+
+    if xlim_max is None:
+        xlim_max = min(max(sample[0]), n_days - 1) if len(sample) != 0 else n_days - 1
+
+    fig, (ax1, ax2) = plt.subplots(
+        1, 2,
+        constrained_layout=True,
+        figsize=(14, 6)
+    )
+
+    ax1.plot(t, history["Hi"], label=r"Hibernating (Hi)", color=COLORS["Hi"], linewidth=1.8)
+    ax1.plot(t, history["Ot"], label=r"Susceptible (Ot)", color=COLORS["Ot"], linewidth=1.8)
+    total = np.array(history["Hi"]) + np.array(history["Ot"]) + np.array(history["In"]) + np.array(history["Im"])
+    ax1.plot(t, total, label="Total Population", color=COLORS["Total"], linewidth=2.2)
+
+    ax1.set_xlabel("Time Step (Days)")
+    ax1.set_ylabel("Population Count")
+    ax1.yaxis.set_major_locator(ticker.MaxNLocator(integer=True))
+    ax1.set_title("Reference Population Trajectories", fontweight='bold')
+    ax1.legend(frameon=True, facecolor='white', edgecolor='#cccccc', framealpha=0.9)
+    ax1.grid(True)
+
+    if len(sample) != 0:
+        obs_times, obs_Hi = np.array(sample[0]), np.array(sample[1], dtype=float)
+        fitted_Hi = np.array(history["Hi"], dtype=float)
+        sim_at_obs = np.array([fitted_Hi[int(t_val)] for t_val in obs_times])
+
+        # Compute cumulative wMAPE (%) at each observation step:
+        # wMAPE_k = (sum_{i=0..k} |O_i - S_i| / sum_{i=0..k} |O_i|) * 100
+        abs_errors = np.abs(obs_Hi - sim_at_obs)
+        cum_abs_err = np.cumsum(abs_errors)
+        cum_obs = np.cumsum(np.abs(obs_Hi))
+
+        # Guard against division by zero if initial observation(s) are 0
+        cum_wmape = np.where(cum_obs > 0, (cum_abs_err / cum_obs) * 100.0, 0.0)
+        final_wmape = cum_wmape[-1]
+
+        # Also plot observed Hi points on ax1 for direct visual comparison
+        ax1.scatter(obs_times, obs_Hi, color="black", zorder=5, s=25, label="Observed (Hi)")
+        ax1.legend(frameon=True, facecolor='white', edgecolor='#cccccc', framealpha=0.9)
+
+        ax2.plot(
+            obs_times,
+            cum_wmape,
+            marker='o',
+            color=COLORS["In"],
+            markersize=5,
+            linestyle='-',
+            linewidth=1.8,
+            label=f"Cumulative wMAPE (Final: {final_wmape:.2f}%)"
+        )
+        ax2.axhline(
+            final_wmape,
+            color='black',
+            linewidth=1.2,
+            linestyle='--',
+            label=f"Overall wMAPE ({final_wmape:.2f}%)"
+        )
+
+    ax2.set_xlabel("Time Step (Days)")
+    ax2.set_ylabel("wMAPE (%)")
+    ax2.set_ylim(bottom=0)
+    ax2.set_title("Weighted Mean Absolute Percentage Error (Hi)", fontweight='bold')
+    ax2.legend(frameon=True, facecolor='white', edgecolor='#cccccc', framealpha=0.9)
+    ax2.grid(True)
+
+    days_per_year = 365
+    cutoff = xlim_max + 1
+    n_years = int(np.ceil(cutoff / days_per_year))
+    win_length_padded = win_length + T_seasonal
+
+    highlighter(n_years, cutoff, days_per_year, win_start, win_length_padded, ax1, ax2, 0.35)
+
+    ax1.set_xlim(0, xlim_max)
+    ax2.set_xlim(0, xlim_max)
+
+    plt.savefig(os.path.join(FIGURES_DIR, 'history_wmape_plot.pdf'), bbox_inches='tight')
+    plt.show()
 
 
 def highlighter(n_years, cutoff, days_per_year, win_start, win_length, ax1, ax2, alpha):

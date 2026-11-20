@@ -82,7 +82,7 @@ inf_alpha, inf_beta = 5, 2                  # infected variables for beta distri
 delta = 0.05                                # P. destructans decay rate, considered in [0.005, 0.03]
 
 # DEATH OR RECOVERY PATHWAYS
-T_inf = 30                                  # approximate time in dayseach bat spends infirm before recovering or dying, 
+T_inf = 12                                  # approximate time in dayseach bat spends infirm before recovering or dying, 
                                             # considered in [10, 40]
 
 # BOUT and SEASONAL HIBERNATING PATHWAYS
@@ -98,13 +98,13 @@ T_AD = 88.5/1440                            # CONSTANT FOR TRICOLORED # length o
 res_max = 0.2                               # hereditary resistance of newborn, corresp. w/ rand.normalvariate(0, X)
 k_imm, theta_imm = 1, 1                     # number of days spent in recovery before re-infection is possible
                                             # corresp. w/ Gamma(k_imm, theta_imm)
-res_gain = 0.02                             # resistance AFTER recovery
+res_gain = 0.6                             # resistance AFTER recovery
 
 # ---------------------------------
 # latitudinally-averaged parameters
 # ---------------------------------
 
-T_seasonal, win_length, win_start, lambda_sum, lambda_win = latitude1_NorthMidwest() # or latitude2_SouthMidwest()
+T_seasonal, win_length, win_start, lambda_sum, lambda_win = latitude2_SouthMidwest() # or latitude2_SouthMidwest()
 
 # ----------------------------------
 # phase diagram comparison variables
@@ -114,15 +114,33 @@ times_list = [365, 3*365, 10*365, 20*365] # must be even and in ascending order
 num_params = 20 # how many samples in the given range
 num_seeds = 4   # number of stochastic realizations per cell (avgd later)
 
-# longterm survival: delta vs. T_inf = final persistance heatmap
-param_change = ["delta", "res_gain"]
-parameters_list = [np.linspace(0.001,0.05,num_params), np.linspace(0,1,num_params)]
-NAME_APPEND = "final_persistence:infalpha_vs_resgain_lat1NMW"
+# # longterm survival: delta vs. res_gain
+# param_change = ["delta", "res_gain"]
+# parameters_list = [np.linspace(0.005,0.05,num_params), np.linspace(0,1,num_params)]
+# NAME_APPEND = "final_persistence:delta_vs_resgain_lat2SMW"
+# param1_label = r"Fungal decay rate ($\delta$)"
+# param2_label = r"Acquired resistance ($r_{\mathrm{gain}}$)"
 
-# outbreak severity: inf_alpha vs. T_inf = acute phase
-# param_change = ["inf_alpha", "T_inf"]
-# parameters_list = [np.linspace(1,8,num_params), np.linspace(10,45,num_params)]
-# NAME_APPEND = "outbreak_severity:infalpha_vs_Tinf_lat1NMW"
+# # immune paradox 1: inf_alpha vs. res_gain
+# param_change = ["inf_alpha", "res_gain"]
+# parameters_list = [np.linspace(1,10,num_params), np.linspace(0,1,num_params)]
+# NAME_APPEND = "immune_paradox:infalpha_vs_resgain_lat1NMW"
+# param1_label = r"Infection parameter ($\alpha_{\mathrm{inf}}$)"
+# param2_label = r"Acquired resistance ($r_{\mathrm{gain}}$)"
+
+# immune paradox 2: T_inf vs. delta
+param_change = ["T_inf", "delta"]
+parameters_list = [np.linspace(5,45,num_params), np.linspace(0.005,0.05,num_params)]
+NAME_APPEND = "immune_paradox:Tinf_vs_delta_lat2SMW"
+param1_label = r"Infected period ($T_{\mathrm{inf}}$)"
+param2_label = r"Fungal decay rate ($\delta$)"
+
+# # peak vs. longterm: T_inf vs. res_gain
+# param_change = ["T_inf", "res_gain"]
+# parameters_list = [np.linspace(5,45,num_params), np.linspace(0,1,num_params)]
+# NAME_APPEND = "peakvslongterm:Tinf_vs_resgain_lat2SMW"
+# param1_label = r"Infected period ($T_{\mathrm{inf}}$)"
+# param2_label = r"Acquired resistance ($r_{\mathrm{gain}}$)"
 
 # --------------
 # actual testing
@@ -189,8 +207,8 @@ def main():
         Z_smooth = gaussian_filter(Z_pop, sigma=0.3)
         ax.plot_surface(X, Y, Z_smooth, cmap='viridis', edgecolor='none', alpha=0.92, antialiased=True)
 
-        ax.set_xlabel(r"Infection Parameter ($\alpha_{\mathrm{inf}}$)", labelpad=10)
-        ax.set_ylabel(r"Infectious Period ($T_{\mathrm{inf}}$)", labelpad=10)
+        ax.set_xlabel(param1_label, labelpad=10)
+        ax.set_ylabel(param2_label, labelpad=10)
         ax.set_zlabel("Population Count", labelpad=6)
         ax.set_title(f"Total Population at Year {year}", pad=-12, fontweight='bold')
 
@@ -230,8 +248,8 @@ def main():
         Z_smooth_like = gaussian_filter(Z_like, sigma=0.4)
         mesh = ax.pcolormesh(X, Y, Z_smooth_like, shading='auto', cmap='YlGnBu', vmin=0, vmax=1)
 
-        ax.set_xlabel(r"Infection Parameter ($\alpha_{\mathrm{inf}}$)")
-        ax.set_ylabel(r"Infectious Period ($T_{\mathrm{inf}}$)")
+        ax.set_xlabel(param1_label)
+        ax.set_ylabel(param2_label)
         ax.set_title(f"Likelihood of Survival at Year {time // 365}", fontweight='bold')
         ax.grid(False)
 

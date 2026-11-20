@@ -27,21 +27,36 @@ start = timer.perf_counter()
 
 num_infected = 0
 
-# first select number of bats belonging to each species
-tricolor_num = 100
+# -------------------------------------------------------
+# Load site data first so initial population matches site
+# -------------------------------------------------------
+site_name = os.environ.get("SITE_NAME")
+if not site_name:
+    raise ValueError("Error: SITE_NAME environment variable not set.")
+
+if site_name in globals():
+    data = globals()[site_name]()
+else:
+    raise ValueError(f"Error: Function {site_name} not found in simulate.data")
+
+# Set initial population from first survey (floor at 20 if Tri_Hi is 0/tiny to prevent instant stochastic extinction)
+init_tri = data[0]["Tri_Hi"]
+init_misc = data[0]["Misc_Hi"]
+
+tricolor_num = max(init_tri, 20) if (init_tri + init_misc) < 20 else init_tri
 tricolor_cluster_sizeMIN = 1
 tricolor_cluster_sizeMAX = 2
 
-bigbrown_num = 0
+bigbrown_num = init_misc
 bigbrown_cluster_sizeMIN = 1
 bigbrown_cluster_sizeMAX = 9
 
-# hibernating non-infected bats of each species
-Hi_list = [[tricolor_num, tricolor_cluster_sizeMIN, tricolor_cluster_sizeMAX], 
-           [bigbrown_num, bigbrown_cluster_sizeMIN, bigbrown_cluster_sizeMAX]] 
+Hi_list = [
+    [tricolor_num, tricolor_cluster_sizeMIN, tricolor_cluster_sizeMAX],
+    [bigbrown_num, bigbrown_cluster_sizeMIN, bigbrown_cluster_sizeMAX]
+]
 
-# NOTICE : the remaining populations (Ot, Im) all start with 0 inhabitants
-# NOTICE : resistance starts at 0 for every bat
+num_infected = data[0].get("In", 0)
 
 # ---------------------------
 # system-governing parameters
