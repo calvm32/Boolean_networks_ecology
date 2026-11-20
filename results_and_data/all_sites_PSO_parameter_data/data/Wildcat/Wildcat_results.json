@@ -1,7 +1,10 @@
 {
     "site_name": "Wildcat",
-    "best_loss": 49.551170353571386,
-    "wall_clock_seconds": 5108.950308519998,
+    "best_loss": 48.33538440714226,
+    "wall_clock_seconds": 2788.406247590028,
+    "initial_tricolor": 30,
+    "initial_bigbrown": 0,
+    "initial_infected": 0,
     "best_params": {
         "inf_alpha": 5.0,
         "inf_beta": 2.0,
@@ -13,11 +16,11 @@
         "k_imm": 1.0,
         "theta_imm": 1.0,
         "res_gain": 0.02,
-        "T_seasonal": 55.88269603901683,
-        "win_length": 221.49429480736316,
-        "win_start": 346.4068475706712,
-        "lambda_win": 5.7264855423098815e-06,
-        "lambda_sum": 0.00013766813365125746,
-        "disp_r": 3.0144382510666468
+        "T_seasonal": 42.729203390732216,
+        "win_length": 216.13502803712916,
+        "win_start": 200.0,
+        "lambda_win": 1e-05,
+        "lambda_sum": 0.00017414872012258559,
+        "disp_r": 3.861163491757459
     }
 }

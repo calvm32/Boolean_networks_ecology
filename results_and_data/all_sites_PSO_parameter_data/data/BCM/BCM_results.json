@@ -1,7 +1,10 @@
 {
     "site_name": "BCM",
-    "best_loss": 27.561379146231747,
-    "wall_clock_seconds": 579.8160320399911,
+    "best_loss": 27.925975120291014,
+    "wall_clock_seconds": 175.65631553099956,
+    "initial_tricolor": 40,
+    "initial_bigbrown": 0,
+    "initial_infected": 0,
     "best_params": {
         "inf_alpha": 5.0,
         "inf_beta": 2.0,
@@ -13,11 +16,11 @@
         "k_imm": 1.0,
         "theta_imm": 1.0,
         "res_gain": 0.02,
-        "T_seasonal": 61.68510668961042,
-        "win_length": 130.34920708616494,
-        "win_start": 234.6553813922276,
-        "lambda_win": 2.239202317394782e-06,
-        "lambda_sum": 0.00036751808805478476,
-        "disp_r": 4.794610070559427
+        "T_seasonal": 52.22460641746299,
+        "win_length": 120.0,
+        "win_start": 286.16376609661927,
+        "lambda_win": 6.751900750664519e-06,
+        "lambda_sum": 0.00039649627620310393,
+        "disp_r": 4.617142725028168
     }
 }

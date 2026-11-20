@@ -1,7 +1,10 @@
 {
     "site_name": "Endless",
-    "best_loss": 66.38997628630504,
-    "wall_clock_seconds": 7505.842195383273,
+    "best_loss": 62.316813173681304,
+    "wall_clock_seconds": 1390.2287259437144,
+    "initial_tricolor": 26,
+    "initial_bigbrown": 0,
+    "initial_infected": 0,
     "best_params": {
         "inf_alpha": 5.0,
         "inf_beta": 2.0,
@@ -13,11 +16,11 @@
         "k_imm": 1.0,
         "theta_imm": 1.0,
         "res_gain": 0.02,
-        "T_seasonal": 44.68946792442167,
-        "win_length": 142.84271214327896,
-        "win_start": 350.0,
-        "lambda_win": 1.095087169440103e-06,
-        "lambda_sum": 0.00020879220175085012,
-        "disp_r": 7.011867049371081
+        "T_seasonal": 43.3403052917399,
+        "win_length": 199.37714699644295,
+        "win_start": 266.0445854095973,
+        "lambda_win": 3.3408767936299097e-06,
+        "lambda_sum": 0.000342105542718382,
+        "disp_r": 13.22682514140335
     }
 }

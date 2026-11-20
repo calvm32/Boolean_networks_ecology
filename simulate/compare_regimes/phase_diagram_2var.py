@@ -82,7 +82,7 @@ inf_alpha, inf_beta = 5, 2                  # infected variables for beta distri
 delta = 0.05                                # P. destructans decay rate, considered in [0.005, 0.03]
 
 # DEATH OR RECOVERY PATHWAYS
-T_inf = 12                                  # approximate time in dayseach bat spends infirm before recovering or dying, 
+T_inf = 30                                  # approximate time in dayseach bat spends infirm before recovering or dying, 
                                             # considered in [10, 40]
 
 # BOUT and SEASONAL HIBERNATING PATHWAYS
@@ -98,28 +98,28 @@ T_AD = 88.5/1440                            # CONSTANT FOR TRICOLORED # length o
 res_max = 0.2                               # hereditary resistance of newborn, corresp. w/ rand.normalvariate(0, X)
 k_imm, theta_imm = 1, 1                     # number of days spent in recovery before re-infection is possible
                                             # corresp. w/ Gamma(k_imm, theta_imm)
-res_gain = 0.6                             # resistance AFTER recovery
+res_gain = 0.02                             # resistance AFTER recovery
 
 # ---------------------------------
 # latitudinally-averaged parameters
 # ---------------------------------
 
-T_seasonal, win_length, win_start, lambda_sum, lambda_win = latitude2_SouthMidwest() # or latitude2_SouthMidwest()
+T_seasonal, win_length, win_start, lambda_sum, lambda_win = latitude1_NorthMidwest() # or latitude2_SouthMidwest()
 
 # ----------------------------------
 # phase diagram comparison variables
 # ----------------------------------
 
-times_list = [365, 3*365, 10*365, 20*365] # must be even and in ascending order
+times_list = [365, 3*365, 5*365, 10*365] # must be even and in ascending order
 num_params = 20 # how many samples in the given range
 num_seeds = 4   # number of stochastic realizations per cell (avgd later)
 
-# # longterm survival: delta vs. res_gain
-# param_change = ["delta", "res_gain"]
-# parameters_list = [np.linspace(0.005,0.05,num_params), np.linspace(0,1,num_params)]
-# NAME_APPEND = "final_persistence:delta_vs_resgain_lat2SMW"
-# param1_label = r"Fungal decay rate ($\delta$)"
-# param2_label = r"Acquired resistance ($r_{\mathrm{gain}}$)"
+# longterm survival: delta vs. res_gain
+param_change = ["delta", "res_gain"]
+parameters_list = [np.linspace(0.005,0.05,num_params), np.linspace(0,1,num_params)]
+NAME_APPEND = "final_persistence:delta_vs_resgain_lat1NMW"
+param1_label = r"Fungal decay rate ($\delta$)"
+param2_label = r"Acquired resistance ($r_{\mathrm{gain}}$)"
 
 # # immune paradox 1: inf_alpha vs. res_gain
 # param_change = ["inf_alpha", "res_gain"]
@@ -128,12 +128,12 @@ num_seeds = 4   # number of stochastic realizations per cell (avgd later)
 # param1_label = r"Infection parameter ($\alpha_{\mathrm{inf}}$)"
 # param2_label = r"Acquired resistance ($r_{\mathrm{gain}}$)"
 
-# immune paradox 2: T_inf vs. delta
-param_change = ["T_inf", "delta"]
-parameters_list = [np.linspace(5,45,num_params), np.linspace(0.005,0.05,num_params)]
-NAME_APPEND = "immune_paradox:Tinf_vs_delta_lat2SMW"
-param1_label = r"Infected period ($T_{\mathrm{inf}}$)"
-param2_label = r"Fungal decay rate ($\delta$)"
+# # longevity: T_inf vs. delta
+# param_change = ["T_inf", "delta"]
+# parameters_list = [np.linspace(5,45,num_params), np.linspace(0.005,0.05,num_params)]
+# NAME_APPEND = "longevity:Tinf_vs_delta_lat2SMW"
+# param1_label = r"Infected period ($T_{\mathrm{inf}}$)"
+# param2_label = r"Fungal decay rate ($\delta$)"
 
 # # peak vs. longterm: T_inf vs. res_gain
 # param_change = ["T_inf", "res_gain"]
@@ -227,7 +227,7 @@ def main():
         ax.view_init(elev=28, azim=-50)
         ax.set_box_aspect([1.0, 1.0, 0.75], zoom=0.88)
 
-        out_path = os.path.join(FIGURES_DIR, f'phase_diagram_{NAME_APPEND}_yr{year}.pdf')
+        out_path = os.path.join(FIGURES_DIR, f'phase_diagram:{NAME_APPEND}_yr{year}.pdf')
         fig1.savefig(out_path)  # no bbox_inches='tight'
         plt.close(fig1)
 

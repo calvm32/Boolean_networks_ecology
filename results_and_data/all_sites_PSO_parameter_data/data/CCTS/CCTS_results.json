@@ -1,7 +1,10 @@
 {
     "site_name": "CCTS",
-    "best_loss": 34.961224408381106,
-    "wall_clock_seconds": 785.5334093105048,
+    "best_loss": 34.796961400612304,
+    "wall_clock_seconds": 1169.8741662009852,
+    "initial_tricolor": 121,
+    "initial_bigbrown": 0,
+    "initial_infected": 0,
     "best_params": {
         "inf_alpha": 5.0,
         "inf_beta": 2.0,
@@ -13,11 +16,11 @@
         "k_imm": 1.0,
         "theta_imm": 1.0,
         "res_gain": 0.02,
-        "T_seasonal": 61.813722463080666,
-        "win_length": 240.0,
-        "win_start": 346.86322517241996,
-        "lambda_win": 5.393598013089176e-06,
-        "lambda_sum": 0.0001,
-        "disp_r": 4.8951600961213195
+        "T_seasonal": 75.45506282609784,
+        "win_length": 218.14240319775163,
+        "win_start": 349.2979799064913,
+        "lambda_win": 1.9263584796246548e-06,
+        "lambda_sum": 0.0001293057505931824,
+        "disp_r": 4.262346377514646
     }
 }

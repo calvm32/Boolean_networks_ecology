@@ -1,7 +1,10 @@
 {
     "site_name": "River",
-    "best_loss": 35.94208149571212,
-    "wall_clock_seconds": 6123.403602356993,
+    "best_loss": 35.46597954914269,
+    "wall_clock_seconds": 4096.168910961598,
+    "initial_tricolor": 65,
+    "initial_bigbrown": 0,
+    "initial_infected": 0,
     "best_params": {
         "inf_alpha": 5.0,
         "inf_beta": 2.0,
@@ -13,11 +16,11 @@
         "k_imm": 1.0,
         "theta_imm": 1.0,
         "res_gain": 0.02,
-        "T_seasonal": 65.26669922946016,
-        "win_length": 152.4730711614376,
-        "win_start": 200.0,
-        "lambda_win": 9.212839250913039e-06,
-        "lambda_sum": 0.00014908356127347068,
-        "disp_r": 7.2751136648669625
+        "T_seasonal": 44.456973731914005,
+        "win_length": 238.47074204341826,
+        "win_start": 288.6386300520106,
+        "lambda_win": 9.647176714029754e-06,
+        "lambda_sum": 0.0003459932796557916,
+        "disp_r": 8.065149388515263
     }
 }

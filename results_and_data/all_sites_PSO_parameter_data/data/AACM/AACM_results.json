@@ -1,7 +1,10 @@
 {
     "site_name": "AACM",
-    "best_loss": 23.27488560740265,
-    "wall_clock_seconds": 862.787503618747,
+    "best_loss": 22.75628777446252,
+    "wall_clock_seconds": 385.9891452360898,
+    "initial_tricolor": 74,
+    "initial_bigbrown": 0,
+    "initial_infected": 0,
     "best_params": {
         "inf_alpha": 5.0,
         "inf_beta": 2.0,
@@ -13,11 +16,11 @@
         "k_imm": 1.0,
         "theta_imm": 1.0,
         "res_gain": 0.02,
-        "T_seasonal": 80.0,
-        "win_length": 153.85323503467612,
-        "win_start": 207.27972824898768,
-        "lambda_win": 4.485402938658754e-06,
-        "lambda_sum": 0.0001,
-        "disp_r": 69.53074461304034
+        "T_seasonal": 69.61014642343169,
+        "win_length": 226.59165768500395,
+        "win_start": 341.2804034530003,
+        "lambda_win": 9.200743051685384e-06,
+        "lambda_sum": 0.00012013296174868149,
+        "disp_r": 100.0
     }
 }

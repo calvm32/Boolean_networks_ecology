@@ -1,7 +1,10 @@
 {
     "site_name": "Site_E",
-    "best_loss": 22.004270693977833,
-    "wall_clock_seconds": 1066.2657598030055,
+    "best_loss": 19.464165807737608,
+    "wall_clock_seconds": 341.8197743539931,
+    "initial_tricolor": 18,
+    "initial_bigbrown": 0,
+    "initial_infected": 0,
     "best_params": {
         "inf_alpha": 5.0,
         "inf_beta": 2.0,
@@ -13,11 +16,11 @@
         "k_imm": 1.0,
         "theta_imm": 1.0,
         "res_gain": 0.02,
-        "T_seasonal": 79.64374066115937,
-        "win_length": 240.0,
-        "win_start": 349.9882289872152,
-        "lambda_win": 3.917725481349807e-06,
-        "lambda_sum": 0.00010702796504232936,
-        "disp_r": 1.2206243847157272
+        "T_seasonal": 41.09994016468961,
+        "win_length": 122.77333460387092,
+        "win_start": 328.4184475766513,
+        "lambda_win": 3.040724926423296e-06,
+        "lambda_sum": 0.0003919267142105424,
+        "disp_r": 3.970948421161373
     }
 }

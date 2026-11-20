@@ -1,7 +1,10 @@
 {
     "site_name": "Wyandotte_historic_ent_",
-    "best_loss": 58.037042569550536,
-    "wall_clock_seconds": 10352.8327456275,
+    "best_loss": 55.29453849204725,
+    "wall_clock_seconds": 204.28234885603888,
+    "initial_tricolor": 2,
+    "initial_bigbrown": 0,
+    "initial_infected": 0,
     "best_params": {
         "inf_alpha": 5.0,
         "inf_beta": 2.0,
@@ -13,11 +16,11 @@
         "k_imm": 1.0,
         "theta_imm": 1.0,
         "res_gain": 0.02,
-        "T_seasonal": 80.0,
-        "win_length": 240.0,
-        "win_start": 349.2801183272039,
-        "lambda_win": 1.9988312488581813e-06,
-        "lambda_sum": 0.00011231787803327779,
-        "disp_r": 1.3830897871444292
+        "T_seasonal": 70.28953980492356,
+        "win_length": 134.75739573127663,
+        "win_start": 265.9207352769894,
+        "lambda_win": 3.5505757456208166e-06,
+        "lambda_sum": 0.0004,
+        "disp_r": 1.4871187306905744
     }
 }

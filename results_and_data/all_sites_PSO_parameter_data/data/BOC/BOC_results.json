@@ -1,7 +1,10 @@
 {
     "site_name": "BOC",
-    "best_loss": 15.111921340191277,
-    "wall_clock_seconds": 363.02707141498104,
+    "best_loss": 14.669696081083455,
+    "wall_clock_seconds": 62.27767335897079,
+    "initial_tricolor": 15,
+    "initial_bigbrown": 0,
+    "initial_infected": 0,
     "best_params": {
         "inf_alpha": 5.0,
         "inf_beta": 2.0,
@@ -13,11 +16,11 @@
         "k_imm": 1.0,
         "theta_imm": 1.0,
         "res_gain": 0.02,
-        "T_seasonal": 40.0,
-        "win_length": 134.45854833536973,
-        "win_start": 230.04227596813186,
-        "lambda_win": 0.0,
-        "lambda_sum": 0.00017019658863208953,
-        "disp_r": 88.34190995090206
+        "T_seasonal": 53.39179018557725,
+        "win_length": 120.0,
+        "win_start": 329.4386952465781,
+        "lambda_win": 4.750027921554617e-06,
+        "lambda_sum": 0.0004,
+        "disp_r": 56.55410369391799
     }
 }

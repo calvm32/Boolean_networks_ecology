@@ -1,7 +1,10 @@
 {
     "site_name": "MRM",
-    "best_loss": 39.92598513656246,
-    "wall_clock_seconds": 624.2138275759935,
+    "best_loss": 23.92706008183002,
+    "wall_clock_seconds": 2440.195982147008,
+    "initial_tricolor": 371,
+    "initial_bigbrown": 0,
+    "initial_infected": 0,
     "best_params": {
         "inf_alpha": 5.0,
         "inf_beta": 2.0,
@@ -13,11 +16,11 @@
         "k_imm": 1.0,
         "theta_imm": 1.0,
         "res_gain": 0.02,
-        "T_seasonal": 40.0,
-        "win_length": 123.20398423825367,
-        "win_start": 325.524768829634,
-        "lambda_win": 0.0,
-        "lambda_sum": 0.0003966789668501765,
-        "disp_r": 0.510077695529922
+        "T_seasonal": 64.89929590714614,
+        "win_length": 238.4642364518137,
+        "win_start": 203.3817839819614,
+        "lambda_win": 8.290015667753087e-07,
+        "lambda_sum": 0.0004,
+        "disp_r": 100.0
     }
 }

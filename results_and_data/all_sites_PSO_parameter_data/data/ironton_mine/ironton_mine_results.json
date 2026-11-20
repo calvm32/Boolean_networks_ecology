@@ -1,7 +1,10 @@
 {
     "site_name": "ironton_mine",
-    "best_loss": 24.904398749064818,
-    "wall_clock_seconds": 1498.6618653368205,
+    "best_loss": 24.619673876306905,
+    "wall_clock_seconds": 590.3037757249549,
+    "initial_tricolor": 38,
+    "initial_bigbrown": 0,
+    "initial_infected": 0,
     "best_params": {
         "inf_alpha": 5.0,
         "inf_beta": 2.0,
@@ -13,11 +16,11 @@
         "k_imm": 1.0,
         "theta_imm": 1.0,
         "res_gain": 0.02,
-        "T_seasonal": 42.284723581045604,
-        "win_length": 120.74261330557884,
-        "win_start": 338.1177934188382,
-        "lambda_win": 0.0,
-        "lambda_sum": 0.0003919997307252348,
-        "disp_r": 5.253203439449627
+        "T_seasonal": 42.22579059908289,
+        "win_length": 121.4874377478031,
+        "win_start": 269.98353432939956,
+        "lambda_win": 3.818477530137596e-06,
+        "lambda_sum": 0.0003969386959195519,
+        "disp_r": 4.633828557248984
     }
 }

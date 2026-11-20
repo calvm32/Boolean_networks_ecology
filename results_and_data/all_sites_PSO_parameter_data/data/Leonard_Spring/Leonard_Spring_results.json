@@ -1,7 +1,10 @@
 {
     "site_name": "Leonard_Spring",
-    "best_loss": 58.623861045884425,
-    "wall_clock_seconds": 3210.045637403615,
+    "best_loss": 62.52047417867989,
+    "wall_clock_seconds": 1534.897181455046,
+    "initial_tricolor": 17,
+    "initial_bigbrown": 0,
+    "initial_infected": 0,
     "best_params": {
         "inf_alpha": 5.0,
         "inf_beta": 2.0,
@@ -13,11 +16,11 @@
         "k_imm": 1.0,
         "theta_imm": 1.0,
         "res_gain": 0.02,
-        "T_seasonal": 74.62069040111206,
-        "win_length": 190.95392459636753,
-        "win_start": 315.9859637124894,
-        "lambda_win": 5.2889730702691215e-06,
-        "lambda_sum": 0.00010764059300437831,
-        "disp_r": 4.331555708054955
+        "T_seasonal": 72.0400969087628,
+        "win_length": 120.05627673452321,
+        "win_start": 252.86286056492332,
+        "lambda_win": 6.3604563033210466e-06,
+        "lambda_sum": 0.0003998146207799817,
+        "disp_r": 2.5939552364033966
     }
 }

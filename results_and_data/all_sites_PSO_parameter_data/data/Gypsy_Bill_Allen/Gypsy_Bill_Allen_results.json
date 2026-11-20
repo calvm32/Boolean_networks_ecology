@@ -1,7 +1,10 @@
 {
     "site_name": "Gypsy_Bill_Allen",
-    "best_loss": 22.94436660959224,
-    "wall_clock_seconds": 2354.9961470682174,
+    "best_loss": 19.298469711355857,
+    "wall_clock_seconds": 283.2649410190061,
+    "initial_tricolor": 34,
+    "initial_bigbrown": 0,
+    "initial_infected": 0,
     "best_params": {
         "inf_alpha": 5.0,
         "inf_beta": 2.0,
@@ -13,11 +16,11 @@
         "k_imm": 1.0,
         "theta_imm": 1.0,
         "res_gain": 0.02,
-        "T_seasonal": 78.97315727986545,
-        "win_length": 213.80157906292828,
-        "win_start": 349.3814933584867,
-        "lambda_win": 3.89911505793307e-06,
-        "lambda_sum": 0.00019673328987254956,
-        "disp_r": 7.266084120416191
+        "T_seasonal": 50.89331378349412,
+        "win_length": 230.24793449995732,
+        "win_start": 337.1477299391068,
+        "lambda_win": 4.703560863171314e-06,
+        "lambda_sum": 0.0001,
+        "disp_r": 100.0
     }
 }

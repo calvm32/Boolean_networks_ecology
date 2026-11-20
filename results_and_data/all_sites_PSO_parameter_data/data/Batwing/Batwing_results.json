@@ -1,7 +1,10 @@
 {
     "site_name": "Batwing",
-    "best_loss": 61.55465319717625,
-    "wall_clock_seconds": 9568.113058549352,
+    "best_loss": 56.63043083005234,
+    "wall_clock_seconds": 1012.4773905819748,
+    "initial_tricolor": 11,
+    "initial_bigbrown": 0,
+    "initial_infected": 0,
     "best_params": {
         "inf_alpha": 5.0,
         "inf_beta": 2.0,
@@ -13,11 +16,11 @@
         "k_imm": 1.0,
         "theta_imm": 1.0,
         "res_gain": 0.02,
-        "T_seasonal": 80.0,
-        "win_length": 239.881044167104,
-        "win_start": 349.9213940290458,
-        "lambda_win": 6.157891457973746e-06,
-        "lambda_sum": 0.00010367260526379884,
-        "disp_r": 1.1221410941011145
+        "T_seasonal": 48.44686785588046,
+        "win_length": 120.0,
+        "win_start": 226.69953425807333,
+        "lambda_win": 5.137446298336647e-06,
+        "lambda_sum": 0.00019120746764511766,
+        "disp_r": 3.346301705334174
     }
 }

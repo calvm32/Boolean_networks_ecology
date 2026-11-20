@@ -1,7 +1,10 @@
 {
     "site_name": "STJM",
-    "best_loss": 14.09826897931487,
-    "wall_clock_seconds": 545.899814133998,
+    "best_loss": 15.54099066812374,
+    "wall_clock_seconds": 253.90142289362848,
+    "initial_tricolor": 31,
+    "initial_bigbrown": 0,
+    "initial_infected": 0,
     "best_params": {
         "inf_alpha": 5.0,
         "inf_beta": 2.0,
@@ -13,11 +16,11 @@
         "k_imm": 1.0,
         "theta_imm": 1.0,
         "res_gain": 0.02,
-        "T_seasonal": 78.11032826515869,
-        "win_length": 120.0,
-        "win_start": 207.65374357763932,
-        "lambda_win": 6.19397955356288e-06,
-        "lambda_sum": 0.0001,
-        "disp_r": 31.08045773043906
+        "T_seasonal": 79.90792098013624,
+        "win_length": 144.3459382481765,
+        "win_start": 200.0,
+        "lambda_win": 9.93435621826654e-06,
+        "lambda_sum": 0.00018425510572059333,
+        "disp_r": 10.142449051124485
     }
 }

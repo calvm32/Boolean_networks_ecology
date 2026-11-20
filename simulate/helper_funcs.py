@@ -327,7 +327,7 @@ def plot_wMAPE(history, win_length, win_start, T_seasonal, sample=[], xlim_max=N
         final_wmape = cum_wmape[-1]
 
         # Also plot observed Hi points on ax1 for direct visual comparison
-        ax1.scatter(obs_times, obs_Hi, color="black", zorder=5, s=25, label="Observed (Hi)")
+        #ax1.scatter(obs_times, obs_Hi, color="black", zorder=5, s=25, label="Observed (Hi)")
         ax1.legend(frameon=True, facecolor='white', edgecolor='#cccccc', framealpha=0.9)
 
         ax2.plot(
